@@ -3,6 +3,7 @@ using UnityEngine;
 
 public enum Direction
 {
+    Neutral,
     Up,
     Down,
     Forward,
@@ -30,5 +31,6 @@ public struct InputData
 {
     public Direction direction;
     public AttackKey attack;
-    public int chargeDuration;
+    public int backCharge;
+    public int downCharge;
 }
