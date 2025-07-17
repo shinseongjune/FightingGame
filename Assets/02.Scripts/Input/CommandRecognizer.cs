@@ -104,7 +104,9 @@ public static class InputRecognizer
             Direction.DownForward => actual is Direction.Down or Direction.Forward or Direction.DownForward,
             Direction.DownBack => actual is Direction.Down or Direction.Back or Direction.DownBack,
 
-            _ => false, // NeutralÀº Á¦¿Ü
+            Direction.Neutral => actual is Direction.Neutral,
+
+            _ => false,
         };
     }
 }
