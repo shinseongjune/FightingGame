@@ -8,6 +8,9 @@ public class CharacterProperty : MonoBehaviour
     public bool isSitting;
     public bool isFacingRight;
     public bool isSpecialPosing;
+    public bool isAttacking;
+
+    public Skill currentSkill;
 
     public readonly List<Skill> usableSkills = new List<Skill>();
 }

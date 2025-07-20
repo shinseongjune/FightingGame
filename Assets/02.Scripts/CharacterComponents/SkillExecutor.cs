@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterProperty), typeof(InputBuffer), typeof(AnimationPlayer))]
-public class SkillExecuter : MonoBehaviour, ITicker
+public class SkillExecutor : MonoBehaviour, ITicker
 {
     private CharacterProperty property;
     private InputBuffer buffer;
@@ -27,10 +27,19 @@ public class SkillExecuter : MonoBehaviour, ITicker
     {
         animator.Play(skill.animationClipName, ReturnToNeutralPose);
         // TODO: 데미지, 상태 설정 등 추가
+
+        property.currentSkill = skill;
+        property.usableSkills.Clear();
+        property.usableSkills.AddRange(skill.nextSkills);
     }
 
     private void ReturnToNeutralPose()
     {
-        // TODO: 상태에 따라 "Idle", "AirIdle", "CrouchIdle" 등으로 전환
+        string idleClip = property.isJumping ? "AirIdle"
+                        : property.isSitting ? "CrouchIdle"
+                        : "Idle";
+        animator.Play(idleClip);
+
+        property.currentSkill = null;
     }
 }

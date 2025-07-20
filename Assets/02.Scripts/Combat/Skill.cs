@@ -28,4 +28,6 @@ public class Skill : ScriptableObject
 
     [Space(20)]
     public string animationClipName;
+
+    public Skill[] nextSkills;
 }
