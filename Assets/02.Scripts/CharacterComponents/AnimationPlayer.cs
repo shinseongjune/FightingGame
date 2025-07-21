@@ -19,6 +19,9 @@ public class AnimationPlayer : MonoBehaviour, ITicker
 
     private const float TickDuration = TickMaster.TICK_INTERVAL;
 
+    public int CurrentFrame => Mathf.FloorToInt(currentTime / TickMaster.TICK_INTERVAL);
+    public string CurrentClipName => currentKey;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
