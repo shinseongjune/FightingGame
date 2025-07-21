@@ -22,6 +22,8 @@ public class BoxComponent : MonoBehaviour
     public bool IsTrigger => type != BoxType.Body && type != BoxType.Map;
     public bool IsEnabled => enabled && gameObject.activeInHierarchy;
 
+    public HitDirection direction = HitDirection.Front;
+
     public Rect WorldBounds
     {
         get

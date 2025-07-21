@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 121
+  controlID: 68
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -167,8 +167,8 @@ MonoBehaviour:
     y: 0
     width: 849
     height: 449
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 226}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -246,8 +246,8 @@ MonoBehaviour:
     y: 0
     width: 548
     height: 420
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 226}
+  m_MaxSize: {x: 4002, y: 4026}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/02.Scripts/CharacterComponents/PhysicsComponents
+    - Assets/02.Scripts/CharacterComponents
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -365,16 +365,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/02.Scripts/CharacterComponents/PhysicsComponents
+  - Assets/02.Scripts/CharacterComponents
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: f2b60000
-    m_LastClickedID: 46834
-    m_ExpandedIDs: 0000000056b5000058b500005ab500005cb500005eb5000060b50000ccb60000f2b6000000ca9a3b
+    m_SelectedIDs: eeb60000
+    m_LastClickedID: 46830
+    m_ExpandedIDs: 0000000078b500007ab500007cb500007eb5000080b5000082b50000eeb6000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -403,7 +403,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000056b5000058b500005ab500005cb500005eb5000060b50000
+    m_ExpandedIDs: 0000000078b500007ab500007cb500007eb5000080b5000082b50000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1435,9 +1435,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 62b80000
+      m_SelectedIDs: 3c810000
       m_LastClickedID: 0
-      m_ExpandedIDs: 0efbffff
+      m_ExpandedIDs: dafaffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 

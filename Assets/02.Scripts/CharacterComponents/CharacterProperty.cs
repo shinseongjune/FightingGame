@@ -1,8 +1,66 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterProperty : MonoBehaviour
+/// <summary>
+/// 공격의 방향
+/// </summary>
+public enum HitDirection
 {
+    Front,
+    Left,
+    Right,
+    Up,
+    Down
+}
+
+/// <summary>
+/// 맞은 부위 높이
+/// </summary>
+public enum HitRegion
+{
+    Head,
+    Body,
+    Legs
+}
+
+public struct LastHitInfo
+{
+    public PhysicsEntity attacker;
+    public BoxComponent hitBox;
+    public BoxComponent hurtBox;
+
+    public Vector2 hitPoint;      // 적중 위치 (AABB 기반 추정)
+    public HitDirection direction; // 애니메이션 연출용 방향
+    public bool fromFront;        // 실제로 정면에서 맞았는지 (false면서 direction이 front인 경우 뒤에서 맞은 것으로 취급)
+    public HitRegion region;      // 신체 부위 분류
+
+    public int damage;
+    public int hitStun;
+    public bool launches;
+    public bool causesKnockdown;
+}
+
+public enum CharacterStateTag
+{
+    Standing,
+    Crouching,
+    Jumping
+}
+
+public class CharacterProperty : MonoBehaviour
+{// 항상 존재하는 바디 박스 (움직임/충돌용)
+    public BoxComponent bodyBox;
+
+    [Header("기본 히트박스 (자세별)")]
+    public List<BoxComponent> idleHurtBoxes;
+    public List<BoxComponent> crouchHurtBoxes;
+    public List<BoxComponent> jumpHurtBoxes;
+
+    [Header("기본 윕퍼니시 박스 (자세별)")]
+    public List<BoxComponent> idleWhiffBoxes;
+    public List<BoxComponent> crouchWhiffBoxes;
+    public List<BoxComponent> jumpWhiffBoxes;
+
     public bool isGuarding;
     public bool isJumping;
     public bool isSitting;
@@ -12,5 +70,45 @@ public class CharacterProperty : MonoBehaviour
 
     public Skill currentSkill;
 
+    public LastHitInfo lastHitInfo;
+
     public readonly List<Skill> usableSkills = new List<Skill>();
+
+    // 활성 상태에 따라 on/off 제어됨
+    public void EnableDefaultBoxes(CharacterStateTag tag)
+    {
+        // 전부 끄기
+        SetActiveAll(idleHurtBoxes, false);
+        SetActiveAll(crouchHurtBoxes, false);
+        SetActiveAll(jumpHurtBoxes, false);
+        SetActiveAll(idleWhiffBoxes, false);
+        SetActiveAll(crouchWhiffBoxes, false);
+        SetActiveAll(jumpWhiffBoxes, false);
+
+        // 해당 태그만 켜기
+        switch (tag)
+        {
+            case CharacterStateTag.Standing:
+                SetActiveAll(idleHurtBoxes, true);
+                SetActiveAll(idleWhiffBoxes, true);
+                break;
+            case CharacterStateTag.Crouching:
+                SetActiveAll(crouchHurtBoxes, true);
+                SetActiveAll(crouchWhiffBoxes, true);
+                break;
+            case CharacterStateTag.Jumping:
+                SetActiveAll(jumpHurtBoxes, true);
+                SetActiveAll(jumpWhiffBoxes, true);
+                break;
+        }
+    }
+
+    private void SetActiveAll(List<BoxComponent> boxes, bool active)
+    {
+        foreach (var box in boxes)
+        {
+            if (box != null)
+                box.gameObject.SetActive(active);
+        }
+    }
 }

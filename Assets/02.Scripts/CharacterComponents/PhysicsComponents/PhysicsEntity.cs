@@ -80,8 +80,30 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
     {
         Debug.Log($"[Hit] {name} was hit by {attacker.name}");
 
-        // 데미지 계산, 경직 적용, 넉백 등
-        // 이후 SkillExecutor 등과 연동 가능
+        var prop = GetComponent<CharacterProperty>();
+        Vector2 hitPoint = EstimateHitPoint(hitBox, hurtBox);
+        Vector2 toAttacker = attacker.transform.position - transform.position;
+        bool isFacingRight = GetComponent<CharacterProperty>().isFacingRight;
+
+        var attackerProperty = attacker.GetComponent<CharacterProperty>();
+        var currentSkill = attackerProperty != null ? attackerProperty.currentSkill : null;
+
+        prop.lastHitInfo = new LastHitInfo
+        {
+            attacker = attacker,
+            hitBox = hitBox,
+            hurtBox = hurtBox,
+            hitPoint = hitPoint,
+
+            direction = hitBox.direction,
+            fromFront = Vector2.Dot(toAttacker.normalized, isFacingRight ? Vector2.right : Vector2.left) >= 0,
+            region = DetermineRegion(hitPoint),
+
+            damage = currentSkill != null ? currentSkill.damageOnHit : 0,
+            hitStun = currentSkill != null ? currentSkill.hitstunDuration : 0,
+            launches = currentSkill != null ? currentSkill.causesLaunch : false,
+            causesKnockdown = currentSkill != null ? currentSkill.causesKnockdown : false
+        };
     }
 
     public void OnThrow(PhysicsEntity thrower, BoxComponent throwBox, BoxComponent bodyBox)
@@ -97,5 +119,23 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
 
         // TODO: 상태 전환, 가드 입력 비교, 애니메이션 전환 등
         // 예: if (isHoldingBack) → 성공적인 가드
+    }
+
+    Vector2 EstimateHitPoint(BoxComponent hit, BoxComponent hurt)
+    {
+        // 간단히 중앙값 평균
+        return (hit.WorldBounds.center + hurt.WorldBounds.center) * 0.5f;
+    }
+
+    bool DetermineFront(Vector2 attackerPos, Vector2 targetPos, bool targetFacingRight)
+    {
+        Vector2 toAttacker = attackerPos - targetPos;
+        return Vector2.Dot(toAttacker.normalized, targetFacingRight ? Vector2.right : Vector2.left) >= 0;
+    }
+
+    HitRegion DetermineRegion(Vector2 hitPoint)
+    {
+        return HitRegion.Body;
+        //TODO: 임시처리. 머리/몸통/다리 위치 가져와서 비교할 것.
     }
 }

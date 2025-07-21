@@ -63,6 +63,9 @@ public class Skill : ScriptableObject
     public int hitstunDuration;
     public int blockstunDuration;
 
+    public bool causesLaunch;
+    public bool causesKnockdown;
+
     [Space(20)]
     public string animationClipName;
 
