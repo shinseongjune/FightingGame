@@ -19,50 +19,52 @@ public class BoxPresetApplier : MonoBehaviour, ITicker
 
     public void Tick()
     {
-        if (currentSkill == null || currentSkill.frameToBoxes == null)
-        {
-            ClearBoxes();
+        ClearExpiredBoxes();
+
+        if (currentSkill == null || currentSkill.boxLifetimes == null)
             return;
-        }
 
-        int currentFrame = animPlayer.CurrentFrame;
+        int frame = animPlayer.CurrentFrame;
 
-        if (!currentSkill.frameToBoxes.TryGetBoxes(currentFrame, out var boxDataList))
+        foreach (var entry in currentSkill.boxLifetimes)
         {
-            ClearBoxes();
-            return;
-        }
+            if (entry.startFrame == frame)
+            {
+                var go = new GameObject($"Box_{entry.box.type}");
+                go.transform.SetParent(transform);
+                go.transform.localPosition = entry.box.center;
 
-        ApplyBoxes(boxDataList);
+                var box = go.AddComponent<BoxComponent>();
+                box.type = entry.box.type;
+                box.center = Vector2.zero;
+                box.size = entry.box.size;
+                box.layer = entry.box.layer;
+
+                // 수명 정보 저장용 태그
+                go.AddComponent<FrameTag>().endFrame = entry.endFrame;
+
+                currentBoxes.Add(box);
+            }
+        }
     }
 
-    private void ClearBoxes()
+    private void ClearExpiredBoxes()
     {
-        foreach (var box in currentBoxes)
+        int frame = animPlayer.CurrentFrame;
+        for (int i = currentBoxes.Count - 1; i >= 0; i--)
         {
-            if (box != null)
+            var box = currentBoxes[i];
+            var tag = box.GetComponent<FrameTag>();
+            if (tag != null && frame > tag.endFrame)
+            {
                 Destroy(box.gameObject);
+                currentBoxes.RemoveAt(i);
+            }
         }
-        currentBoxes.Clear();
     }
 
-    private void ApplyBoxes(BoxData[] boxDataList)
+    private class FrameTag : MonoBehaviour
     {
-        ClearBoxes();
-
-        foreach (var data in boxDataList)
-        {
-            GameObject go = new GameObject($"Box_{data.type}");
-            go.transform.SetParent(transform);
-            go.transform.localPosition = data.center;
-
-            BoxComponent box = go.AddComponent<BoxComponent>();
-            box.type = data.type;
-            box.center = Vector2.zero; // 이미 localPosition으로 반영
-            box.size = data.size;
-            box.layer = data.layer;
-
-            currentBoxes.Add(box);
-        }
+        public int endFrame;
     }
 }

@@ -36,6 +36,7 @@ public struct LastHitInfo
 
     public int damage;
     public int hitStun;
+    public int blockStun;
     public bool launches;
     public bool causesKnockdown;
 }
@@ -44,7 +45,8 @@ public enum CharacterStateTag
 {
     Standing,
     Crouching,
-    Jumping
+    Jumping,
+    Down,
 }
 
 public class CharacterProperty : MonoBehaviour
@@ -72,7 +74,10 @@ public class CharacterProperty : MonoBehaviour
 
     public LastHitInfo lastHitInfo;
 
-    public readonly List<Skill> usableSkills = new List<Skill>();
+    public List<Skill> idleSkills;
+    public List<Skill> crouchSkills;
+    public List<Skill> jumpSkills;
+    public List<Skill> usableSkills = new();
 
     // 활성 상태에 따라 on/off 제어됨
     public void EnableDefaultBoxes(CharacterStateTag tag)
@@ -99,6 +104,8 @@ public class CharacterProperty : MonoBehaviour
             case CharacterStateTag.Jumping:
                 SetActiveAll(jumpHurtBoxes, true);
                 SetActiveAll(jumpWhiffBoxes, true);
+                break;
+            case CharacterStateTag.Down:
                 break;
         }
     }

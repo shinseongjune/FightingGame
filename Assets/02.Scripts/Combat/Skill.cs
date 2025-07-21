@@ -21,30 +21,12 @@ public struct BoxData
 }
 
 [Serializable]
-public class SerializableFrameBoxMap
+public struct BoxLifetime
 {
-    public List<FrameBoxEntry> entries = new();
+    public int startFrame;
+    public int endFrame; // inclusive
 
-    [Serializable]
-    public struct FrameBoxEntry
-    {
-        public int frame;
-        public BoxData[] boxes;
-    }
-
-    public bool TryGetBoxes(int frame, out BoxData[] result)
-    {
-        foreach (var entry in entries)
-        {
-            if (entry.frame == frame)
-            {
-                result = entry.boxes;
-                return true;
-            }
-        }
-        result = null;
-        return false;
-    }
+    public BoxData box;
 }
 
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
@@ -72,5 +54,5 @@ public class Skill : ScriptableObject
     public Skill[] nextSkills;
 
     [Header("박스 정보")]
-    public SerializableFrameBoxMap frameToBoxes;
+    public List<BoxLifetime> boxLifetimes = new();
 }

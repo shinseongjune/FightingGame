@@ -101,6 +101,7 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
 
             damage = currentSkill != null ? currentSkill.damageOnHit : 0,
             hitStun = currentSkill != null ? currentSkill.hitstunDuration : 0,
+            blockStun = currentSkill != null ? currentSkill.blockstunDuration : 0,
             launches = currentSkill != null ? currentSkill.causesLaunch : false,
             causesKnockdown = currentSkill != null ? currentSkill.causesKnockdown : false
         };
