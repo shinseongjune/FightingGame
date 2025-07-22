@@ -111,7 +111,15 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
     {
         Debug.Log($"[Throw] {name} was thrown by {thrower.name}");
 
-        // TODO: 잡기 연출, 상태 고정, 위치 이동 등
+        var fsm = bodyBox.GetComponentInParent<CharacterFSM>();
+        if (fsm != null)
+        {
+            fsm.TransitionTo(new BeingThrownState(fsm));
+        }
+        else
+        {
+            Debug.LogWarning("[Throw] 대상에 FSM이 없습니다.");
+        }
     }
 
     public void OnGuardTrigger(PhysicsEntity threat, BoxComponent triggerBox, BoxComponent bodyBox)
