@@ -37,7 +37,7 @@ public class PhysicsResolver : Singleton<PhysicsResolver>, ITicker
                 if (a.transform.root == b.transform.root) continue;
                 if (!aBox.WorldBounds.Overlaps(bBox.WorldBounds)) continue;
 
-                Vector2 resolution = ResolveYOverlapWithXPush(aBox.WorldBounds, bBox.WorldBounds);
+                Vector2 resolution = ResolveX(aBox.WorldBounds, bBox.WorldBounds);
                 if (resolution == Vector2.zero) continue;
 
                 bool aMovable = a.velocity != Vector2.zero;
@@ -118,12 +118,11 @@ public class PhysicsResolver : Singleton<PhysicsResolver>, ITicker
     /// <summary>
     /// x축으로 밀어내는 해소 벡터 계산
     /// </summary>
-    private Vector2 ResolveYOverlapWithXPush(Rect a, Rect b)
+    private Vector2 ResolveX(Rect a, Rect b)
     {
         float xOverlap = Mathf.Min(a.xMax, b.xMax) - Mathf.Max(a.xMin, b.xMin);
-        float yOverlap = Mathf.Min(a.yMax, b.yMax) - Mathf.Max(a.yMin, b.yMin);
 
-        if (xOverlap <= 0 || yOverlap <= 0)
+        if (xOverlap <= 0)
             return Vector2.zero;
 
         float pushX = (a.center.x < b.center.x) ? -xOverlap : xOverlap;

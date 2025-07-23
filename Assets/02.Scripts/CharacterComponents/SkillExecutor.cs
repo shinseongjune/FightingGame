@@ -46,5 +46,8 @@ public class SkillExecutor : MonoBehaviour, ITicker
         animator.Play(idleClip);
 
         property.currentSkill = null;
+        property.usableSkills = property.isJumping ? property.jumpSkills
+                              : property.isSitting ? property.crouchSkills
+                              : property.idleSkills;
     }
 }

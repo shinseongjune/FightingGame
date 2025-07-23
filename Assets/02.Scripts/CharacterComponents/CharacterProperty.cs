@@ -51,7 +51,9 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour
 {// 항상 존재하는 바디 박스 (움직임/충돌용)
-    public BoxComponent bodyBox;
+    public BoxComponent idleBodyBox;
+    public BoxComponent crouchBodyBox;
+    public BoxComponent jumpBodyBox;
 
     [Header("기본 히트박스 (자세별)")]
     public List<BoxComponent> idleHurtBoxes;
@@ -83,6 +85,9 @@ public class CharacterProperty : MonoBehaviour
     public void EnableDefaultBoxes(CharacterStateTag tag)
     {
         // 전부 끄기
+        idleBodyBox.gameObject.SetActive(false);
+        crouchBodyBox.gameObject.SetActive(false);
+        jumpBodyBox.gameObject.SetActive(false);
         SetActiveAll(idleHurtBoxes, false);
         SetActiveAll(crouchHurtBoxes, false);
         SetActiveAll(jumpHurtBoxes, false);
@@ -94,18 +99,22 @@ public class CharacterProperty : MonoBehaviour
         switch (tag)
         {
             case CharacterStateTag.Standing:
+                idleBodyBox.gameObject.SetActive(true);
                 SetActiveAll(idleHurtBoxes, true);
                 SetActiveAll(idleWhiffBoxes, true);
                 break;
             case CharacterStateTag.Crouching:
+                crouchBodyBox.gameObject.SetActive(true);
                 SetActiveAll(crouchHurtBoxes, true);
                 SetActiveAll(crouchWhiffBoxes, true);
                 break;
             case CharacterStateTag.Jumping:
+                jumpBodyBox.gameObject.SetActive(true);
                 SetActiveAll(jumpHurtBoxes, true);
                 SetActiveAll(jumpWhiffBoxes, true);
                 break;
             case CharacterStateTag.Down:
+                crouchBodyBox.gameObject.SetActive(true);
                 break;
         }
     }

@@ -136,12 +136,6 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
         return (hit.WorldBounds.center + hurt.WorldBounds.center) * 0.5f;
     }
 
-    bool DetermineFront(Vector2 attackerPos, Vector2 targetPos, bool targetFacingRight)
-    {
-        Vector2 toAttacker = attackerPos - targetPos;
-        return Vector2.Dot(toAttacker.normalized, targetFacingRight ? Vector2.right : Vector2.left) >= 0;
-    }
-
     HitRegion DetermineRegion(Vector2 hitPoint)
     {
         return HitRegion.Body;

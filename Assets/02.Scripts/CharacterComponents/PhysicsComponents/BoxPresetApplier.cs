@@ -50,16 +50,23 @@ public class BoxPresetApplier : MonoBehaviour, ITicker
 
     private void ClearExpiredBoxes()
     {
+        List<BoxComponent> deleteList = new List<BoxComponent>();
+
         int frame = animPlayer.CurrentFrame;
         for (int i = currentBoxes.Count - 1; i >= 0; i--)
         {
             var box = currentBoxes[i];
             var tag = box.GetComponent<FrameTag>();
-            if (tag != null && frame > tag.endFrame)
+            if (tag != null && frame >= tag.endFrame)
             {
-                Destroy(box.gameObject);
-                currentBoxes.RemoveAt(i);
+                deleteList.Add(box);
             }
+        }
+
+        foreach (var box in deleteList)
+        {
+            currentBoxes.Remove(box);
+            Destroy(box.gameObject);
         }
     }
 
