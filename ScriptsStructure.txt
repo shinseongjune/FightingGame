@@ -49,7 +49,7 @@ DirectionMatches(Direction, Direction)
 [SkillExecutor]
 Tick : InputRecognizer.Recognize() -> PlaySkill()
 PlaySkill : animator.Play(), entity.RefreshBoxes, property:currentSkill, usableSkills갱신
-ReturnToNeutralPose
+ReturnToNeutralPose : #FSM으로 변경
 
 - property갱신
 
@@ -147,3 +147,11 @@ ClearExpiredBoxes : GetComponent<FrameTag>
 [WakeUpState]
 
 [ForcedAnimationState]
+
+##tick 순서 : physics entity -> resolver -> animator -> fsm
+#skill executor tick 제거 -> state에서 커맨드 감지 호출
+#물리 제외 모든 처리 및 transition을 state에서 처리할 것.
+(1)[->커맨드 감지->이동/점프/앉기]->(2)[애님 재생->트랜지션]
+(2): 모든 state
+(1): idle, walk, jump(조건부), fall(조건부), land, crouch,
+     skill
