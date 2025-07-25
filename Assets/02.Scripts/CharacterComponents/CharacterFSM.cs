@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class CharacterFSM : MonoBehaviour, ITicker
@@ -33,17 +34,20 @@ public class CharacterFSM : MonoBehaviour, ITicker
         current?.OnEnter();
     }
 
-    public void TransitionTo(string next)
+    public void TransitionTo(string stateName)
     {
-        if (!statePool.ContainsKey(next))
+        if (!statePool.TryGetValue(stateName, out var next))
         {
+            Debug.LogWarning($"[FSM] 상태 '{stateName}' 를 찾을 수 없습니다.");
             return;
         }
+
+        if (current == next) return;
 
         Debug.Log($"[FSM] {current?.GetType().Name} → {next.GetType().Name}");
 
         current?.OnExit();
-        current = statePool[next];
+        current = next;
         current?.OnEnter();
     }
 
