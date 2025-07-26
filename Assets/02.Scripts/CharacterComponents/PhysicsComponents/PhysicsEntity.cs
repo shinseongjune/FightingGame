@@ -18,7 +18,7 @@ public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceive
     private List<BoxComponent> boxes = new();
     public IReadOnlyList<BoxComponent> Boxes => boxes;
 
-    public BoxComponent BodyBox { get; private set; }
+    public BoxComponent BodyBox { get; set; }
 
     private void Awake()
     {

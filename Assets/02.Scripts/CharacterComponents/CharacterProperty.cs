@@ -81,6 +81,13 @@ public class CharacterProperty : MonoBehaviour
     public List<Skill> jumpSkills;
     public List<Skill> usableSkills = new();
 
+    private PhysicsEntity physicsEntity;
+
+    private void Start()
+    {
+        physicsEntity = GetComponent<PhysicsEntity>();
+    }
+
     // 활성 상태에 따라 on/off 제어됨
     public void EnableDefaultBoxes(CharacterStateTag tag)
     {
@@ -95,26 +102,27 @@ public class CharacterProperty : MonoBehaviour
         SetActiveAll(crouchWhiffBoxes, false);
         SetActiveAll(jumpWhiffBoxes, false);
 
-        // 해당 태그만 켜기
+        // 해당 태그만 켜기 및 물리 엔티티 박스 갱신
         switch (tag)
         {
             case CharacterStateTag.Standing:
                 idleBodyBox.gameObject.SetActive(true);
                 SetActiveAll(idleHurtBoxes, true);
-                SetActiveAll(idleWhiffBoxes, true);
+                physicsEntity.BodyBox = idleBodyBox;
                 break;
             case CharacterStateTag.Crouching:
                 crouchBodyBox.gameObject.SetActive(true);
                 SetActiveAll(crouchHurtBoxes, true);
-                SetActiveAll(crouchWhiffBoxes, true);
+                physicsEntity.BodyBox = crouchBodyBox;
                 break;
             case CharacterStateTag.Jumping:
                 jumpBodyBox.gameObject.SetActive(true);
                 SetActiveAll(jumpHurtBoxes, true);
-                SetActiveAll(jumpWhiffBoxes, true);
+                physicsEntity.BodyBox = jumpBodyBox;
                 break;
             case CharacterStateTag.Down:
                 crouchBodyBox.gameObject.SetActive(true);
+                physicsEntity.BodyBox = crouchBodyBox;
                 break;
         }
     }
@@ -125,6 +133,28 @@ public class CharacterProperty : MonoBehaviour
         {
             if (box != null)
                 box.gameObject.SetActive(active);
+        }
+    }
+
+    public void SetWhiffBox(bool active)
+    {
+        // 전부 끄기
+        SetActiveAll(idleWhiffBoxes, false);
+        SetActiveAll(crouchWhiffBoxes, false);
+        SetActiveAll(jumpWhiffBoxes, false);
+
+        // 현재 자세 따라 세팅
+        if (isSitting)
+        {
+            SetActiveAll(crouchWhiffBoxes, active);
+        }
+        else if (isJumping)
+        {
+            SetActiveAll(jumpWhiffBoxes, active);
+        }
+        else
+        {
+            SetActiveAll(idleWhiffBoxes, active);
         }
     }
 }

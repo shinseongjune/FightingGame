@@ -74,4 +74,15 @@ public class BoxPresetApplier : MonoBehaviour, ITicker
     {
         public int endFrame;
     }
+
+    public void ClearAllBoxes()
+    {
+        for (int i = currentBoxes.Count - 1; i >= 0; i--)
+        {
+            var box = currentBoxes[i];
+            if (box != null)
+                Destroy(box.gameObject);
+            currentBoxes.RemoveAt(i);
+        }
+    }
 }

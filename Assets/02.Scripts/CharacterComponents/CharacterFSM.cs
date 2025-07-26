@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class CharacterFSM : MonoBehaviour, ITicker
 {
+    [Header("캐릭터 컴포넌트")]
+    private CharacterProperty property;
+    private SkillExecutor skillExecutor;
+    private BoxPresetApplier boxPresetApplier;
+    private AnimationPlayer animPlayer;
+    private PhysicsEntity physicsEntity;
+
     private Dictionary<string, CharacterState> statePool = new();
 
     private CharacterState current;
@@ -14,7 +21,11 @@ public class CharacterFSM : MonoBehaviour, ITicker
     {
         InitializeStates();
 
-        //TODO: 기본 컴포넌트들 fsm에 내장. state에서는 받아 쓰도록.
+        property = GetComponent<CharacterProperty>();
+        skillExecutor = GetComponent<SkillExecutor>();
+        boxPresetApplier = GetComponent<BoxPresetApplier>();
+        animPlayer = GetComponent<AnimationPlayer>();
+        physicsEntity = GetComponent<PhysicsEntity>();
     }
 
     public void Tick()
