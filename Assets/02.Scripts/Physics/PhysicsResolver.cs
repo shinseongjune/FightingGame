@@ -80,22 +80,19 @@ public class PhysicsResolver : Singleton<PhysicsResolver>, ITicker
                         if (!targetBox.IsEnabled || targetBox == attackBox) continue;
                         if (!attackBox.WorldBounds.Overlaps(targetBox.WorldBounds)) continue;
 
-                        switch (attackBox.type)
+                        var evtType = GetCollisionType(attackBox.type, targetBox.type);
+                        if (evtType == null) continue;
+
+                        if (target.TryGetComponent(out CollisionHandler handler))
                         {
-                            case BoxType.Hit when targetBox.type == BoxType.Hurt:
-                                if (target.TryGetComponent(out IHitReceiver receiver))
-                                    receiver.OnHit(attacker, attackBox, targetBox);
-                                break;
-
-                            case BoxType.Throw when targetBox.type == BoxType.Body:
-                                if (target.TryGetComponent(out IThrowReceiver throwReceiver))
-                                    throwReceiver.OnThrow(attacker, attackBox, targetBox);
-                                break;
-
-                            case BoxType.GuardTrigger when targetBox.type == BoxType.Body:
-                                if (target.TryGetComponent(out IGuardReceiver guardReceiver))
-                                    guardReceiver.OnGuardTrigger(attacker, attackBox, targetBox);
-                                break;
+                            handler.Enqueue(new CollisionEvent
+                            {
+                                type = evtType.Value,
+                                attacker = attacker,
+                                attackerBox = attackBox,
+                                target = target,
+                                targetBox = targetBox,
+                            });
                         }
                     }
                 }
@@ -127,5 +124,16 @@ public class PhysicsResolver : Singleton<PhysicsResolver>, ITicker
 
         float pushX = (a.center.x < b.center.x) ? -xOverlap : xOverlap;
         return new Vector2(pushX, 0);
+    }
+
+    private CollisionEventType? GetCollisionType(BoxType attackerType, BoxType targetType)
+    {
+        return (attackerType, targetType) switch
+        {
+            (BoxType.Hit, BoxType.Hurt) => CollisionEventType.Hit,
+            (BoxType.Throw, BoxType.Body) => CollisionEventType.Throw,
+            (BoxType.GuardTrigger, BoxType.Body) => CollisionEventType.Guard,
+            _ => null
+        };
     }
 }
