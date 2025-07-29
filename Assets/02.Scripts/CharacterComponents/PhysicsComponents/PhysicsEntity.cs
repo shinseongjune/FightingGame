@@ -6,7 +6,7 @@ using UnityEngine;
 /// 자신의 박스를 기반으로 움직이며, Resolver에 의해 충돌/해소됨.
 /// </summary>
 [RequireComponent(typeof(CharacterProperty))]
-public class PhysicsEntity : MonoBehaviour, ITicker
+public class PhysicsEntity : MonoBehaviour, ITicker, IHitReceiver, IThrowReceiver, IGuardReceiver
 {
     [Tooltip("디버그 전용")]
     public bool autoRefreshBoxes;
@@ -74,5 +74,71 @@ public class PhysicsEntity : MonoBehaviour, ITicker
         boxes.Clear();
         GetComponentsInChildren<BoxComponent>(includeInactive: true, result: boxes);
         BodyBox = boxes.Find(b => b.type == BoxType.Body);
+    }
+
+    public void OnHit(PhysicsEntity attacker, BoxComponent hitBox, BoxComponent hurtBox)
+    {
+        Debug.Log($"[Hit] {name} was hit by {attacker.name}");
+
+        var prop = GetComponent<CharacterProperty>();
+        Vector2 hitPoint = EstimateHitPoint(hitBox, hurtBox);
+        Vector2 toAttacker = attacker.transform.position - transform.position;
+        bool isFacingRight = GetComponent<CharacterProperty>().isFacingRight;
+
+        var attackerProperty = attacker.GetComponent<CharacterProperty>();
+        var currentSkill = attackerProperty != null ? attackerProperty.currentSkill : null;
+
+        prop.lastHitInfo = new LastHitInfo
+        {
+            attacker = attacker,
+            hitBox = hitBox,
+            hurtBox = hurtBox,
+            hitPoint = hitPoint,
+
+            direction = hitBox.direction,
+            fromFront = Vector2.Dot(toAttacker.normalized, isFacingRight ? Vector2.right : Vector2.left) >= 0,
+            region = DetermineRegion(hitPoint),
+
+            damage = currentSkill != null ? currentSkill.damageOnHit : 0,
+            hitStun = currentSkill != null ? currentSkill.hitstunDuration : 0,
+            blockStun = currentSkill != null ? currentSkill.blockstunDuration : 0,
+            launches = currentSkill != null ? currentSkill.causesLaunch : false,
+            causesKnockdown = currentSkill != null ? currentSkill.causesKnockdown : false
+        };
+    }
+
+    public void OnThrow(PhysicsEntity thrower, BoxComponent throwBox, BoxComponent bodyBox)
+    {
+        Debug.Log($"[Throw] {name} was thrown by {thrower.name}");
+
+        var fsm = bodyBox.GetComponentInParent<CharacterFSM>();
+        if (fsm != null)
+        {
+            fsm.TransitionTo(new BeingThrownState(fsm));
+        }
+        else
+        {
+            Debug.LogWarning("[Throw] 대상에 FSM이 없습니다.");
+        }
+    }
+
+    public void OnGuardTrigger(PhysicsEntity threat, BoxComponent triggerBox, BoxComponent bodyBox)
+    {
+        Debug.Log($"[GuardTrigger] {name} is forced to guard due to {threat.name}");
+
+        // TODO: 상태 전환, 가드 입력 비교, 애니메이션 전환 등
+        // 예: if (isHoldingBack) → 성공적인 가드
+    }
+
+    Vector2 EstimateHitPoint(BoxComponent hit, BoxComponent hurt)
+    {
+        // 간단히 중앙값 평균
+        return (hit.WorldBounds.center + hurt.WorldBounds.center) * 0.5f;
+    }
+
+    HitRegion DetermineRegion(Vector2 hitPoint)
+    {
+        return HitRegion.Body;
+        //TODO: 임시처리. 머리/몸통/다리 위치 가져와서 비교할 것.
     }
 }

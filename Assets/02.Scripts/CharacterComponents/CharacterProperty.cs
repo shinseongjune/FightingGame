@@ -180,10 +180,4 @@ public class CharacterProperty : MonoBehaviour
             SetActiveAll(idleWhiffBoxes, active);
         }
     }
-
-    public void UpdateUsableSkills(List<Skill> skills)
-    {
-        usableSkills.Clear();
-        usableSkills.AddRange(skills);
-    }
 }
