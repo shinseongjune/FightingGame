@@ -18,6 +18,12 @@ public struct BoxData
     public Vector2 center;
     public Vector2 size;
     public int layer;
+
+    public HitRegion hitRegion;      // (고정값) 기본 상중하단
+    public bool isAirAttack;         // 공중공격(동적 판정) 여부
+    public InvincibleType invincibleType;
+    public int superArmorCount;
+    public int hitId;
 }
 
 [Serializable]

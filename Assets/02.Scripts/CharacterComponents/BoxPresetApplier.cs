@@ -40,6 +40,12 @@ public class BoxPresetApplier : MonoBehaviour, ITicker
                 box.size = entry.box.size;
                 box.layer = entry.box.layer;
 
+                box.hitRegion = entry.box.hitRegion;
+                box.isAirAttack = entry.box.isAirAttack;
+                box.invincibleType = entry.box.invincibleType;
+                box.superArmorCount = entry.box.superArmorCount;
+                box.hitId = entry.box.hitId;
+
                 // 수명 정보 저장용 태그
                 go.AddComponent<FrameTag>().endFrame = entry.endFrame;
 

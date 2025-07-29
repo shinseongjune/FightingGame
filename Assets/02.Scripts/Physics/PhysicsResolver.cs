@@ -83,9 +83,10 @@ public class PhysicsResolver : Singleton<PhysicsResolver>, ITicker
                         var evtType = GetCollisionType(attackBox.type, targetBox.type);
                         if (evtType == null) continue;
 
-                        if (target.TryGetComponent(out CollisionHandler handler))
+                        if (target.TryGetComponent(out CharacterProperty property))
                         {
-                            handler.Enqueue(new CollisionEvent
+                            // 전역 버스에 전달
+                            CollisionEventBus.Instance.Enqueue(new CollisionEvent
                             {
                                 type = evtType.Value,
                                 attacker = attacker,

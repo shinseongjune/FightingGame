@@ -23,6 +23,16 @@ public enum HitRegion
     Legs
 }
 
+public enum InvincibleType
+{
+    None,
+    All,
+    AirAttack,
+    Low,
+    Mid,
+    Throw
+}
+
 public struct LastHitInfo
 {
     public PhysicsEntity attacker;
@@ -64,6 +74,19 @@ public class CharacterProperty : MonoBehaviour
     public List<BoxComponent> idleWhiffBoxes;
     public List<BoxComponent> crouchWhiffBoxes;
     public List<BoxComponent> jumpWhiffBoxes;
+
+    [Header("상태 플래그")]
+    public bool isInvincible = false;
+    public InvincibleType invincibleType = InvincibleType.None;
+    public int superArmorCount = 0;
+
+    [Header("콤보/피격이력")]
+    public int comboCount = 0;
+    public float comboTimer = 0f;
+    public List<int> lastHitIds = new();
+
+    // (선택) 머리/허리/다리 기준점 transform or float 값
+    public Transform headPoint, bodyPoint, legsPoint;
 
     public bool isGuarding;
     public bool isJumping;

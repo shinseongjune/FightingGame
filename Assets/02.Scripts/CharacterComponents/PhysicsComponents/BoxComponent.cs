@@ -19,6 +19,12 @@ public class BoxComponent : MonoBehaviour
     public Vector2 size = Vector2.one;
     public int layer = 0;
 
+    public HitRegion hitRegion = HitRegion.Body;
+    public bool isAirAttack = false;
+    public InvincibleType invincibleType = InvincibleType.None;
+    public int superArmorCount = 0;
+    public int hitId = 0;
+
     public bool IsTrigger => type != BoxType.Body && type != BoxType.Map;
     public bool IsEnabled => enabled && gameObject.activeInHierarchy;
 
