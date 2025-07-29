@@ -135,20 +135,20 @@
       "RelativeMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\states\\locomotionstates\\landstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\iguardreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\iguardreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\ithrowreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\ithrowreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\core\\interface\\iticker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|solutionrelative:assets\\02.scripts\\core\\interface\\iticker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\core\\singleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E14ADAAC-FBC7-2A82-D3BE-CB1D6D8DD9C0}|Assembly-CSharp.csproj|solutionrelative:assets\\02.scripts\\core\\singleton.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\iguardreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\iguardreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\ithrowreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\interface\\ithrowreceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -191,8 +191,7 @@
               "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
               "ViewState": "AgIAAIQAAAAAAAAAAAAEwKQAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-20T08:37:59.887Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-20T08:37:59.887Z"
             },
             {
               "$type": "Document",
@@ -204,8 +203,7 @@
               "RelativeToolTip": "Assets\\02.Scripts\\Physics\\PhysicsResolver.cs",
               "ViewState": "AgIAAEMAAAAAAAAAAAAuwFoAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-21T03:55:04.731Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-21T03:55:04.731Z"
             },
             {
               "$type": "Document",
@@ -217,8 +215,7 @@
               "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAuwBAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-21T03:46:00.45Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-21T03:46:00.45Z"
             },
             {
               "$type": "Document",
@@ -230,8 +227,7 @@
               "RelativeToolTip": "Assets\\02.Scripts\\Physics\\CollisionEvent.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-27T11:41:26.144Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-27T11:41:26.144Z"
             },
             {
               "$type": "Document",
@@ -570,7 +566,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "IGuardReceiver.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\Interface\\IGuardReceiver.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\Interface\\IGuardReceiver.cs",
@@ -582,7 +578,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "IThrowReceiver.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\Interface\\IThrowReceiver.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\Interface\\IThrowReceiver.cs",
@@ -594,7 +590,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 33,
               "Title": "ITicker.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Core\\Interface\\ITicker.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Core\\Interface\\ITicker.cs",
@@ -606,7 +602,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 34,
               "Title": "Singleton.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Core\\Singleton.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Core\\Singleton.cs",

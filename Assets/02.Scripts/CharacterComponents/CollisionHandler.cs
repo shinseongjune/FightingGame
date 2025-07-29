@@ -11,6 +11,8 @@ public class CollisionHandler : MonoBehaviour, ITicker
     private readonly List<CollisionEvent> throwCandidates = new();
     private readonly List<CollisionEvent> guardCandidates = new();
 
+    private Skill alreadyHitSkill;
+
     private void Start()
     {
         property = GetComponent<CharacterProperty>();
@@ -49,55 +51,61 @@ public class CollisionHandler : MonoBehaviour, ITicker
         // 처리 우선순위
         if (hitCandidates.Count > 0)
         {
-            HandleHit(hitCandidates[0]); // 첫 번째만 처리
+            HandleHit(hitCandidates);
             return;
         }
 
         if (throwCandidates.Count > 0)
         {
-            HandleThrow(throwCandidates[0]);
+            HandleThrow(throwCandidates);
             return;
         }
 
         if (guardCandidates.Count > 0)
         {
-            // 여러 가드 후보 중 최적 후보 선택 (ex. 가장 가까운 위협?)
             HandleGuard(ChooseBestGuard(guardCandidates));
             return;
         }
     }
 
-    private void HandleHit(CollisionEvent e)
+    void HandleHit(List<CollisionEvent> eventList)
     {
-        // 중복 필터, 무적 체크, 우선순위, 방향 판단 등
-        Vector2 hitPoint = EstimateHitPoint(e.attackerBox, e.targetBox);
-        CharacterProperty attackerProperty = e.attacker.GetComponent<CharacterProperty>();
-        property.lastHitInfo = new()
+        foreach (var e in eventList)
         {
-            attacker = e.attacker,
-            hitBox = e.attackerBox,
-            hurtBox = e.targetBox,
-            hitPoint = hitPoint,
-            direction = e.attackerBox.direction,
-            fromFront = (property.isFacingRight && e.attacker.transform.position.x > e.target.transform.position.x)
-                        || (!property.isFacingRight && e.attacker.transform.position.x < e.target.transform.position.x),
-            region = DetermineRegion(hitPoint),
-            damage = attackerProperty.currentSkill.damageOnHit,
-            hitStun = attackerProperty.currentSkill.hitstunDuration,
-            blockStun = attackerProperty.currentSkill.blockstunDuration,
-            launches = attackerProperty.currentSkill.causesLaunch,
-            causesKnockdown = attackerProperty.currentSkill.causesKnockdown
-        };
+            // 중복 필터, 무적 체크, 우선순위, 방향 판단 등
+            CharacterProperty attackerProperty = e.attacker.GetComponent<CharacterProperty>();
 
-        // FSM 상태 전이 등
+            if (alreadyHitSkill == attackerProperty.currentSkill) continue;
+
+            Vector2 hitPoint = EstimateHitPoint(e.attackerBox, e.targetBox);
+            property.lastHitInfo = new()
+            {
+                attacker = e.attacker,
+                hitBox = e.attackerBox,
+                hurtBox = e.targetBox,
+                hitPoint = hitPoint,
+                direction = e.attackerBox.direction,
+                fromFront = (property.isFacingRight && e.attacker.transform.position.x > e.target.transform.position.x)
+                            || (!property.isFacingRight && e.attacker.transform.position.x < e.target.transform.position.x),
+                region = DetermineRegion(hitPoint),
+                damage = attackerProperty.currentSkill.damageOnHit,
+                hitStun = attackerProperty.currentSkill.hitstunDuration,
+                blockStun = attackerProperty.currentSkill.blockstunDuration,
+                launches = attackerProperty.currentSkill.causesLaunch,
+                causesKnockdown = attackerProperty.currentSkill.causesKnockdown
+            };
+
+            // FSM 상태 전이 등
+            return;
+        }
     }
 
-    private void HandleThrow(CollisionEvent e)
+    void HandleThrow(List<CollisionEvent> eventList)
     {
         // FSM에 BeingThrownState 전이 등
     }
 
-    private void HandleGuard(CollisionEvent e)
+    void HandleGuard(CollisionEvent e)
     {
         var fsm = e.target.GetComponent<CharacterFSM>();
         var input = e.target.GetComponent<InputBuffer>();
@@ -113,7 +121,7 @@ public class CollisionHandler : MonoBehaviour, ITicker
         }
     }
 
-    private bool IsHoldingBack(InputBuffer input, CharacterProperty property)
+    bool IsHoldingBack(InputBuffer input, CharacterProperty property)
     {
         if (input.inputQueue.Count == 0)
             return false;
@@ -121,14 +129,11 @@ public class CollisionHandler : MonoBehaviour, ITicker
         var latest = input.inputQueue.Peek();
         bool isFacingRight = property.isFacingRight;
 
-        return (isFacingRight && latest.direction == Direction.Back) ||
-               (!isFacingRight && latest.direction == Direction.Forward);
+        return latest.direction == Direction.Back;
     }
 
-    private CollisionEvent ChooseBestGuard(List<CollisionEvent> guards)
+    CollisionEvent ChooseBestGuard(List<CollisionEvent> guards)
     {
-        // 단순히 첫 번째 처리하거나, 아래처럼 커스텀 로직 가능
-        // 예: 가장 가까운 위협 → Vector2.Distance(attacker, this)
         return guards[0];
     }
 
@@ -142,5 +147,14 @@ public class CollisionHandler : MonoBehaviour, ITicker
     {
         return HitRegion.Body;
         //TODO: 임시처리. 머리/몸통/다리 위치 가져와서 비교할 것.
+    }
+
+    /// <summary>
+    /// IdleState OnEnter에서 null로 초기화할 것.
+    /// </summary>
+    /// <param name="skill"></param>
+    public void SetAlreadyHitSkill(Skill skill)
+    {
+        alreadyHitSkill = skill;
     }
 }
