@@ -1,0 +1,81 @@
+Input Buffer (Command Recognizer) - 사용된 커맨드, 선입력, sa보정, 누적방식
+////////////////////////
+
+Character Property
+ 현재동작(idle 앉 앞점 뒤점 중점 앞걷 뒤걷 기술 피격 공중피격 가드중 가드피격 넉다운 하드넉다운 임팩 러시 패리 리버설 잡기 잡힘 강제모션)
+ 현재 상태 프레임 경과
+ 투사체들
+ 후딜중
+ 입력가능
+ 기술캔슬가능
+ isFacingRight
+ 무적
+ 대공무적
+ 장풍무적
+ 슈퍼아머count
+ 
+ 체력
+
+ sa게이지 0123 ca
+ sa게이지충전(량)
+
+ 탈진
+ 드라이브 게이지
+ 드라이브회복중
+ 드라이브초당회복량
+ 드라이브회복(량)
+
+ lastHitData
+
+Skill Executor
+ 현재스킬
+ 스킬실행()
+
+Skill
+ 이름 설명
+ 조건
+ 커맨드
+ 딜
+ 히트스턴
+ 블록스턴
+ 런치
+ 넉다운(enum none 넉다 하드넉다)
+ 애니클립네임
+ 박스정보
+ 높이계산?
+ 기본높이(enum 상 중 하)
+
+Physics Entity
+ current bodybox
+ idle바디박스 윕박스
+ 앉바디박스 윕박스
+ 점바디박스 윕박스
+ 다운바디박스
+
+BoxComponent
+ 센터
+ x y
+ tl tr bl br
+ HitBoxes
+ CollisionData AABB()
+ BoxManager
+ SendCollsion(CollisionData)
+
+CollisionData
+ Enter Stay Exit
+ BoxA
+ BoxB
+ HitPoint (중점)
+
+BoxManager Singleton
+ HitData Queue (throw -> hit -> guardTrigger)
+ Tick(bodybox)
+ HandleCollision(throw -> hit -> guard trigger)
+
+HitData
+ CollisionData
+ Attacker
+ Taker
+ Skill
+ hit높이(enum 상중하)
+
