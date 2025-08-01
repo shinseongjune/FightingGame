@@ -16,115 +16,76 @@ public enum HitDirection
 /// <summary>
 /// 맞은 부위 높이
 /// </summary>
-public enum HitRegion
+public enum HitHeight
 {
-    Head,
-    Body,
-    Legs
-}
-
-public struct LastHitInfo
-{
-    public PhysicsEntity attacker;
-    public BoxComponent hitBox;
-    public BoxComponent hurtBox;
-
-    public Vector2 hitPoint;      // 적중 위치 (AABB 기반 추정)
-    public HitDirection direction; // 애니메이션 연출용 방향
-    public bool fromFront;        // 실제로 정면에서 맞았는지 (false면서 direction이 front인 경우 뒤에서 맞은 것으로 취급)
-    public HitRegion region;      // 신체 부위 분류
-
-    public int damage;
-    public int hitStun;
-    public int blockStun;
-    public bool launches;
-    public bool causesKnockdown;
+    High,
+    Middle,
+    Low,
 }
 
 public enum CharacterStateTag
 {
-    Standing,
-    Crouching,
-    Jumping,
-    Down,
+    Idle,
+    Crouch,
+    Jump_Up,
+    Jump_Forward,
+    Jump_Backward,
+    Walk_Forward,
+    Walk_Backward,
+    Dash_Forward,
+    Dash_Backward,
+    Skill,
+    Hit,
+    Hit_Air,
+    Hit_Guard,
+    Guarding,
+    Knockdown,
+    HardKnockdown,
+    DriveImpact,
+    DriveRush,
+    DriveParry,
+    DriveReversal,
+    Throw,
+    BeingThrown,
+    ForcedAnimation,
 }
 
 public class CharacterProperty : MonoBehaviour
-{// 항상 존재하는 바디 박스 (움직임/충돌용)
-    public BoxComponent idleBodyBox;
-    public BoxComponent crouchBodyBox;
-    public BoxComponent jumpBodyBox;
+{
+    public CharacterStateTag characterStateTag;
 
-    [Header("기본 히트박스 (자세별)")]
-    public List<BoxComponent> idleHurtBoxes;
-    public List<BoxComponent> crouchHurtBoxes;
-    public List<BoxComponent> jumpHurtBoxes;
+    public readonly List<GameObject> projectiles;
 
-    [Header("기본 윕퍼니시 박스 (자세별)")]
-    public List<BoxComponent> idleWhiffBoxes;
-    public List<BoxComponent> crouchWhiffBoxes;
-    public List<BoxComponent> jumpWhiffBoxes;
-
-    public bool isGuarding;
-    public bool isJumping;
-    public bool isSitting;
     public bool isFacingRight;
-    public bool isSpecialPosing;
-    public bool isAttacking;
 
-    public Skill currentSkill;
+    public bool isStartUp;
+    public bool isRecovery;
+    public bool isInputEnabled;
+    public bool isSkillCancelable;
+    public bool isInvincible;
+    public bool isAirInvincible;
+    public bool isProjectileInvincible;
+    public int superArmorCount;
 
-    public LastHitInfo lastHitInfo;
+    public float hp;
+    public float maxHp = 10000;
 
-    public List<Skill> idleSkills;
-    public List<Skill> crouchSkills;
-    public List<Skill> jumpSkills;
-    public List<Skill> usableSkills = new();
+    public float saGauge;
+    public float maxSAGauge = 300;
 
-    // 활성 상태에 따라 on/off 제어됨
-    public void EnableDefaultBoxes(CharacterStateTag tag)
+    public bool isExhausted;
+    public bool isDriveGaugeCharging;
+    public float driveGauge;
+    public float maxDriveGauge = 600;
+    public float driveGaugeTickChargeAmount = 1;
+
+    public void ChargeSAGauge(float amount)
     {
-        // 전부 끄기
-        idleBodyBox.gameObject.SetActive(false);
-        crouchBodyBox.gameObject.SetActive(false);
-        jumpBodyBox.gameObject.SetActive(false);
-        SetActiveAll(idleHurtBoxes, false);
-        SetActiveAll(crouchHurtBoxes, false);
-        SetActiveAll(jumpHurtBoxes, false);
-        SetActiveAll(idleWhiffBoxes, false);
-        SetActiveAll(crouchWhiffBoxes, false);
-        SetActiveAll(jumpWhiffBoxes, false);
-
-        // 해당 태그만 켜기
-        switch (tag)
-        {
-            case CharacterStateTag.Standing:
-                idleBodyBox.gameObject.SetActive(true);
-                SetActiveAll(idleHurtBoxes, true);
-                SetActiveAll(idleWhiffBoxes, true);
-                break;
-            case CharacterStateTag.Crouching:
-                crouchBodyBox.gameObject.SetActive(true);
-                SetActiveAll(crouchHurtBoxes, true);
-                SetActiveAll(crouchWhiffBoxes, true);
-                break;
-            case CharacterStateTag.Jumping:
-                jumpBodyBox.gameObject.SetActive(true);
-                SetActiveAll(jumpHurtBoxes, true);
-                SetActiveAll(jumpWhiffBoxes, true);
-                break;
-            case CharacterStateTag.Down:
-                crouchBodyBox.gameObject.SetActive(true);
-                break;
-        }
+        saGauge = Mathf.Min(saGauge + amount, maxSAGauge);
     }
 
-    private void SetActiveAll(List<BoxComponent> boxes, bool active)
+    public void ChargeDriveGauge(float amount)
     {
-        foreach (var box in boxes)
-        {
-            if (box != null)
-                box.gameObject.SetActive(active);
-        }
+        driveGauge = Mathf.Min(driveGauge + amount, maxDriveGauge);
     }
 }
