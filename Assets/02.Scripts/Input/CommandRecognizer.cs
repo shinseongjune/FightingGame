@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 public static class InputRecognizer
 {
-    public static Skill Recognize(Queue<InputData> buffer, List<Skill> skills)
+    public static Skill_SO Recognize(Queue<InputData> buffer, List<Skill_SO> skills)
     {
-        foreach (Skill skill in skills)
+        foreach (Skill_SO skill in skills)
         {
             if (Match(buffer, skill.command))
                 return skill;

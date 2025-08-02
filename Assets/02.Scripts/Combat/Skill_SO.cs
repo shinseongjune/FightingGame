@@ -30,7 +30,7 @@ public struct BoxLifetime
 }
 
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
-public class Skill : ScriptableObject
+public class Skill_SO : ScriptableObject
 {
     public string skillName;
     [TextArea] public string description;
@@ -51,7 +51,7 @@ public class Skill : ScriptableObject
     [Space(20)]
     public string animationClipName;
 
-    public Skill[] nextSkills;
+    public Skill_SO[] nextSkills;
 
     [Header("박스 정보")]
     public List<BoxLifetime> boxLifetimes = new();

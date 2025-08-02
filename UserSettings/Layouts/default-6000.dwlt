@@ -225,7 +225,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 69
+  controlID: 49
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/02.Scripts/CharacterComponents
+    - Assets/02.Scripts/Combat
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -365,15 +365,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/02.Scripts/CharacterComponents
+  - Assets/02.Scripts/Combat
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: aab50000
-    m_LastClickedID: 46506
+    m_SelectedIDs: 22b70000
+    m_LastClickedID: 46882
     m_ExpandedIDs: 000000009eb50000a0b50000a2b50000a4b50000a6b50000a8b50000aab50000acb50000aeb5000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -435,18 +435,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: 2c800000d48100009e6900001e7300003a850000548500006a0a0100b28f0000b88f0000568000007280000054800000f6130100ea130100221301009a130100be130100523601003a130100f47b0000047c0000f87b0000ee74000078bc0000588eecff607c0000387e00003c8800005488000050880000f68a0000fa8a0000b88900007a8900007e89000092890000ae89000086890000a28900005c8900006e89000072890000768900009a890000b6890000b2890000a68900003a88000078890000748900008c8900000e9500000000000024fc0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: CharacterProperty
-      m_OriginalName: CharacterProperty
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 18242
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
       m_ClientGUIView: {fileID: 11}
@@ -1435,7 +1435,7 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 42470000
+      m_SelectedIDs: 
       m_LastClickedID: 0
       m_ExpandedIDs: 0efbffff
       m_RenameOverlay:

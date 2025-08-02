@@ -6,7 +6,7 @@ public class SkillState : CharacterState
     private AnimationPlayer animator;
     private BoxPresetApplier boxApplier;
 
-    private Skill currentSkill;
+    private Skill_SO currentSkill;
 
     public SkillState(CharacterFSM fsm) : base(fsm)
     {
