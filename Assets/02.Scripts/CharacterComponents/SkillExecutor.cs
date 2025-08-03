@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterProperty), typeof(InputBuffer), typeof(AnimationPlayer))]
 public class SkillExecutor : MonoBehaviour, ITicker
@@ -10,6 +10,8 @@ public class SkillExecutor : MonoBehaviour, ITicker
     private InputBuffer buffer;
     private AnimationPlayer animator;
 
+    [SerializeField] private List<Skill_SO> allSkills;
+
     private void Awake()
     {
         property = GetComponent<CharacterProperty>();
@@ -19,6 +21,7 @@ public class SkillExecutor : MonoBehaviour, ITicker
 
     public void Tick()
     {
+        //TODO: 조건탐색->skills 전달
         Skill_SO matched = InputRecognizer.Recognize(buffer.inputQueue, property.usableSkills);
         if (matched != null)
         {
