@@ -3,28 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
+public struct SkillCondition
+{
+    public Skill_SO currentSkill;
+    public CharacterStateTag currentCharacterState;
+}
+
+[Serializable]
 public struct SkillInputData
 {
-    public InputData inputData;
+    public InputData[] inputData;
     public bool isStrict;
-    public int requiredChargeDuration;
     public int maxFrameGap;
 }
 
 [Serializable]
 public struct BoxData
 {
-    public BoxType type;
     public Vector2 center;
     public Vector2 size;
-    public int layer;
 }
 
 [Serializable]
 public struct BoxLifetime
 {
     public int startFrame;
-    public int endFrame; // inclusive
+    public int endFrame;
 
     public BoxData box;
 }
@@ -37,7 +41,11 @@ public class Skill_SO : ScriptableObject
 
     [Space(20)]
 
-    public SkillInputData[] command;
+    public SkillCondition condition;
+
+    [Space(20)]
+
+    public SkillInputData command;
 
     [Space(20)]
     
@@ -50,8 +58,6 @@ public class Skill_SO : ScriptableObject
 
     [Space(20)]
     public string animationClipName;
-
-    public Skill_SO[] nextSkills;
 
     [Header("박스 정보")]
     public List<BoxLifetime> boxLifetimes = new();

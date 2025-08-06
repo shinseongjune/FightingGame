@@ -25,6 +25,7 @@ public enum HitHeight
 
 public enum CharacterStateTag
 {
+    None,
     Idle,
     Crouch,
     Jump_Up,

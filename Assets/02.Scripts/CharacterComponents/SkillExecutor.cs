@@ -21,8 +21,18 @@ public class SkillExecutor : MonoBehaviour, ITicker
 
     public void Tick()
     {
-        //TODO: 조건탐색->skills 전달
-        Skill_SO matched = InputRecognizer.Recognize(buffer.inputQueue, property.usableSkills);
+        List<Skill_SO> usableSkills = new List<Skill_SO>();
+
+        foreach (Skill_SO skill in allSkills)
+        {
+            if ((skill.condition.currentSkill == null || skill.condition.currentSkill == currentSkill)
+                && (skill.condition.currentCharacterState == CharacterStateTag.None || skill.condition.currentCharacterState == property.characterStateTag))
+            {
+                usableSkills.Add(skill);
+            }
+        }
+
+        Skill_SO matched = InputRecognizer.Recognize(buffer.inputQueue, usableSkills);
         if (matched != null)
         {
             PlaySkill(matched);
@@ -39,6 +49,6 @@ public class SkillExecutor : MonoBehaviour, ITicker
 
     private void ReturnToNeutralPose()
     {
-
+        //TODO: currentskill 초기화, 자세 초기화, 박스 변경
     }
 }
