@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Project
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets
+    - Assets/02.Scripts/Input
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -365,16 +365,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets
+  - Assets/02.Scripts/Input
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: ba0b0200
-    m_LastClickedID: 134074
-    m_ExpandedIDs: 00000000ba0b0200bc0b0200be0b0200c00b0200c20b0200c40b0200c60b0200c80b0200ca0b020000ca9a3b
+    m_SelectedIDs: 28b70000
+    m_LastClickedID: 46888
+    m_ExpandedIDs: 000000009eb50000a0b50000a2b50000a4b50000a6b50000a8b50000aab50000acb50000aeb5000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -403,7 +403,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000ba0b0200bc0b0200be0b0200c00b0200c20b0200c40b0200c60b0200c80b0200ca0b0200
+    m_ExpandedIDs: 000000009eb50000a0b50000a2b50000a4b50000a6b50000a8b50000aab50000acb50000aeb50000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1435,9 +1435,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: 40470000
       m_LastClickedID: 0
-      m_ExpandedIDs: 701ffeff
+      m_ExpandedIDs: 0efbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 

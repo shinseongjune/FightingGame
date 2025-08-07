@@ -1,28 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 공격의 방향
-/// </summary>
-public enum HitDirection
-{
-    Front,
-    Left,
-    Right,
-    Up,
-    Down
-}
-
-/// <summary>
-/// 맞은 부위 높이
-/// </summary>
-public enum HitHeight
-{
-    High,
-    Middle,
-    Low,
-}
-
 public enum CharacterStateTag
 {
     None,
