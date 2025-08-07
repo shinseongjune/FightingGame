@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 public static class InputRecognizer
 {
-    public static Skill Recognize(Queue<InputData> buffer, List<Skill> skills)
+    public static Skill_SO Recognize(Queue<InputData> buffer, List<Skill_SO> skills)
     {
-        foreach (Skill skill in skills)
+        foreach (Skill_SO skill in skills)
         {
             if (Match(buffer, skill.command))
                 return skill;
@@ -12,34 +12,32 @@ public static class InputRecognizer
         return null;
     }
 
-    private static bool Match(Queue<InputData> buffer, SkillInputData[] command)
+    private static bool Match(Queue<InputData> buffer, SkillInputData command)
     {
-        if (command.Length == 0 || buffer.Count == 0)
+        if (command.inputData.Length == 0 || buffer.Count == 0)
             return false;
 
         InputData[] inputs = buffer.ToArray();
         int bufferIndex = inputs.Length - 1;
-        int cmdIndex = command.Length - 1;
+        int cmdIndex = command.inputData.Length - 1;
         int gapCount = 0;
 
         // 공격 입력 먼저 검사
-        SkillInputData? attackCmd = null;
-        if (command[cmdIndex].inputData.attack != AttackKey.None)
-        {
-            attackCmd = command[cmdIndex];
-            if (!MatchAttack(inputs, attackCmd.Value))
-                return false;
+        InputData? attackCmd = null;
 
-            cmdIndex--; // 나머지는 방향 매칭용
-        }
+        attackCmd = command.inputData[cmdIndex];
+        if (!MatchAttack(inputs, attackCmd.Value))
+            return false;
+
+        cmdIndex--; // 나머지는 방향 매칭용
 
         // 방향 입력 역순으로 검사
         while (cmdIndex >= 0 && bufferIndex >= 0)
         {
             InputData input = inputs[bufferIndex];
-            SkillInputData expected = command[cmdIndex];
+            InputData expected = command.inputData[cmdIndex];
 
-            if (MatchInput(input, expected))
+            if (MatchInput(input, expected, command.isStrict))
             {
                 cmdIndex--;
                 gapCount = 0;
@@ -47,7 +45,7 @@ public static class InputRecognizer
             else
             {
                 gapCount++;
-                if (gapCount > expected.maxFrameGap)
+                if (gapCount > command.maxFrameGap)
                     return false;
             }
 
@@ -57,30 +55,30 @@ public static class InputRecognizer
         return cmdIndex < 0;
     }
 
-    private static bool MatchInput(InputData actual, SkillInputData expected)
+    private static bool MatchInput(InputData actual, InputData expected, bool isStrict)
     {
         // 차지 조건만 충족되면 방향 무시하고 성공
-        if ((expected.inputData.backCharge != 0 && actual.backCharge >= expected.inputData.backCharge) &&
-            (expected.inputData.downCharge != 0 && actual.downCharge >= expected.inputData.downCharge))
+        if ((expected.backCharge != 0 && actual.backCharge >= expected.backCharge) &&
+            (expected.downCharge != 0 && actual.downCharge >= expected.downCharge))
         {
             return true;
         }
 
-        if (expected.isStrict)
+        if (isStrict)
         {
-            return actual.direction == expected.inputData.direction;
+            return actual.direction == expected.direction;
         }
         else
         {
-            return DirectionMatches(actual.direction, expected.inputData.direction);
+            return DirectionMatches(actual.direction, expected.direction);
         }
     }
 
-    private static bool MatchAttack(InputData[] inputs, SkillInputData attackCmd)
+    private static bool MatchAttack(InputData[] inputs, InputData attackCmd)
     {
         for (int i = inputs.Length - 1; i >= 0; i--)
         {
-            if ((inputs[i].attack & attackCmd.inputData.attack) != 0)
+            if ((inputs[i].attack & attackCmd.attack) != 0)
             {
                 return true; // 공격 키만 확인
             }

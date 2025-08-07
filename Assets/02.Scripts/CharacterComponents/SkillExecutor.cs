@@ -1,53 +1,54 @@
+using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(CharacterProperty), typeof(InputBuffer), typeof(AnimationPlayer))]
-public class SkillExecutor : MonoBehaviour
+public class SkillExecutor : MonoBehaviour, ITicker
 {
+    public Skill_SO currentSkill;
+
     private CharacterProperty property;
     private InputBuffer buffer;
     private AnimationPlayer animator;
-    private PhysicsEntity entity;
+
+    [SerializeField] private List<Skill_SO> allSkills;
 
     private void Awake()
     {
         property = GetComponent<CharacterProperty>();
         buffer = GetComponent<InputBuffer>();
         animator = GetComponent<AnimationPlayer>();
-        entity = GetComponent<PhysicsEntity>();
     }
 
-    //public void Tick()
-    //{
-    //    Skill matched = InputRecognizer.Recognize(buffer.inputQueue, property.usableSkills);
-    //    if (matched != null)
-    //    {
-    //        PlaySkill(matched);
-    //    }
-    //}
-    //
-    //private void PlaySkill(Skill skill)
-    //{
-    //    animator.Play(skill.animationClipName, ReturnToNeutralPose);
-    //    // TODO: 데미지, 상태 설정 등 추가
-    //
-    //    entity.RefreshBoxes();
-    //
-    //    property.currentSkill = skill;
-    //    property.usableSkills.Clear();
-    //    property.usableSkills.AddRange(skill.nextSkills);
-    //}
-
-    public void ReturnToNeutralPose()
+    public void Tick()
     {
-        //string idleClip = property.isJumping ? "AirIdle"
-        //                : property.isSitting ? "CrouchIdle"
-        //                : "Idle";
-        //animator.Play(idleClip);
-        //
-        //property.currentSkill = null;
-        //property.usableSkills = property.isJumping ? property.jumpSkills
-        //                      : property.isSitting ? property.crouchSkills
-        //                      : property.idleSkills;
+        List<Skill_SO> usableSkills = new List<Skill_SO>();
+
+        foreach (Skill_SO skill in allSkills)
+        {
+            if ((skill.condition.currentSkill == null || skill.condition.currentSkill == currentSkill)
+                && (skill.condition.currentCharacterState == CharacterStateTag.None || skill.condition.currentCharacterState == property.characterStateTag))
+            {
+                usableSkills.Add(skill);
+            }
+        }
+
+        Skill_SO matched = InputRecognizer.Recognize(buffer.inputQueue, usableSkills);
+        if (matched != null)
+        {
+            PlaySkill(matched);
+        }
+    }
+
+    private void PlaySkill(Skill_SO skill)
+    {
+        currentSkill = skill;
+
+        animator.Play(skill.animationClipName, ReturnToNeutralPose);
+        // TODO: 데미지, 상태 설정 등 추가
+    }
+
+    private void ReturnToNeutralPose()
+    {
+        //TODO: currentskill 초기화, 자세 초기화, 박스 변경
     }
 }

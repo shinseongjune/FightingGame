@@ -1,67 +1,56 @@
 using UnityEngine;
 
-public enum BoxType
-{
-    Map,
-    Body,
-    Hit,
-    Hurt,
-    Throw,
-    GuardTrigger
-}
+public enum BoxType { Body, Hit, Hurt, Throw, GuardTrigger }
 
-[ExecuteAlways]
 public class BoxComponent : MonoBehaviour
 {
-    [Header("Box Settings")]
     public BoxType type;
-    public Vector2 center = Vector2.zero;
-    public Vector2 size = Vector2.one;
-    public int layer = 0;
+    public Vector2 offset;
+    public Vector2 size;
+    public PhysicsEntity owner;
 
-    public HitRegion hitRegion = HitRegion.Body;
-    public bool isAirAttack = false;
-    public InvincibleType invincibleType = InvincibleType.None;
-    public int superArmorCount = 0;
-    public int hitId = 0;
-
-    public bool IsTrigger => type != BoxType.Body && type != BoxType.Map;
-    public bool IsEnabled => enabled && gameObject.activeInHierarchy;
-
-    public HitDirection direction = HitDirection.Front;
-
-    public Rect WorldBounds
+    public Rect GetAABB()
     {
-        get
-        {
-            Vector2 worldCenter = (Vector2)transform.position + center;
-            return new Rect(worldCenter - size * 0.5f, size);
-        }
+        Vector2 pos = (Vector2)owner.Position + offset;
+        return new Rect(pos - size * 0.5f, size);
     }
+}
 
-    public Vector2 TopLeft => (Vector2)transform.position + center + new Vector2(-size.x, size.y) * 0.5f;
-    public Vector2 BottomRight => (Vector2)transform.position + center + new Vector2(size.x, -size.y) * 0.5f;
+public class CollisionData
+{
+    public BoxComponent boxA;
+    public BoxComponent boxB;
+    public Vector2 hitPoint;
+}
 
-    private void OnDrawGizmos()
-    {
-        if (!IsEnabled) return;
+public class HitData
+{
+    public CollisionData collision;
+    public PhysicsEntity attacker;
+    public PhysicsEntity taker;
+    public Skill_SO skill;
+    public HitHeight height;
+    public HitDirection direction;
+}
 
-        Gizmos.color = GetBoxColor(type);
-        Rect r = WorldBounds;
-        Gizmos.DrawWireCube(r.center, r.size);
-    }
+/// <summary>
+/// 공격의 방향
+/// </summary>
+public enum HitDirection
+{
+    Front,
+    Left,
+    Right,
+    Up,
+    Down
+}
 
-    private Color GetBoxColor(BoxType type)
-    {
-        return type switch
-        {
-            BoxType.Map => Color.gray7,
-            BoxType.Body => Color.gray,
-            BoxType.Hit => Color.yellow,
-            BoxType.Hurt => Color.green,
-            BoxType.Throw => new Color(1f, 0.5f, 0f),
-            BoxType.GuardTrigger => Color.red,
-            _ => Color.white,
-        };
-    }
+/// <summary>
+/// 맞은 부위 높이
+/// </summary>
+public enum HitHeight
+{
+    High,
+    Middle,
+    Low,
 }
