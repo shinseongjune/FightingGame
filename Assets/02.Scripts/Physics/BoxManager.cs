@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoxManager : Singleton<BoxManager>, ITicker
 {
     public List<BoxComponent> activeBoxes = new();
+
+    public event Action<CollisionData> OnCollision;
 
     public void Register(BoxComponent box) => activeBoxes.Add(box);
     public void Unregister(BoxComponent box) => activeBoxes.Remove(box);
@@ -23,7 +26,7 @@ public class BoxManager : Singleton<BoxManager>, ITicker
                 
                 if (AABBCheck(a, b))
                 {
-
+                    OnCollision?.Invoke(new CollisionData{ boxA = a, boxB = b, hitPoint = a.GetHitPoint(b) });
                 }
             }
         }

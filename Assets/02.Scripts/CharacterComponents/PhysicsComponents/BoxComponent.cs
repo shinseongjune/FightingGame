@@ -14,6 +14,13 @@ public class BoxComponent : MonoBehaviour
         Vector2 pos = (Vector2)owner.Position + offset;
         return new Rect(pos - size * 0.5f, size);
     }
+
+    public Vector2 GetHitPoint(BoxComponent other)
+    {
+        Vector2 thisPos = owner.Position + offset;
+        Vector2 otherPos = other.owner.Position + offset;
+        return (thisPos + otherPos) / 2;
+    }
 }
 
 public class CollisionData

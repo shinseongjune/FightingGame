@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PhysicsEntity : MonoBehaviour
 {
-    public Vector2 Position;
+    public Vector2 Position => (Vector2)transform.position;
     public Vector2 Velocity;
     public bool isGravityOn = true;
     public bool isGrounded = false;
