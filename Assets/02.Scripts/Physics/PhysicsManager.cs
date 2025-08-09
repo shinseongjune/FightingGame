@@ -19,41 +19,31 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
 
     public void Tick()
     {
-        foreach (var entity in entities)
+        foreach (var e in entities)
         {
-            // 중력
-            if (entity.isGravityOn && !entity.isGrounded)
-                entity.Velocity += Vector2.down * gravity * TickMaster.TICK_INTERVAL;
-
-            // 이동
-            entity.Position += entity.Velocity * TickMaster.TICK_INTERVAL;
-
-            // 지상 판정
-            if (entity.Position.y <= entity.groundY) // 바닥 닿음
+            switch (e.mode)
             {
-                if (!entity.isGrounded)
-                {
-                    // 착지 이벤트 발생(FSM 상태 전이 등)
-                    entity.isGrounded = true;
-                    entity.Position = new Vector2(entity.Position.x, entity.groundY);
-                    entity.Velocity = new Vector2(entity.Velocity.x, 0f);
+                case PhysicsMode.Normal:
+                    if (e.isGravityOn && !e.isGrounded)
+                        e.Velocity += Vector2.down * gravity * TickMaster.TICK_INTERVAL;
+                    e.Position += e.Velocity * TickMaster.TICK_INTERVAL;
+                    // (착지 판정 유지)
+                    break;
 
-                    // 상태머신에 통보하거나, OnLand 이벤트 호출 가능
-                }
-                else
-                {
-                    // 이미 착지 상태라면 y/fall속도 보정만
-                    entity.Position = new Vector2(entity.Position.x, entity.groundY);
-                    entity.Velocity = new Vector2(entity.Velocity.x, 0f);
-                }
-            }
-            else
-            {
-                entity.isGrounded = false;
+                case PhysicsMode.Kinematic:
+                    // 외부가 e.Position을 직접 제어(상태/애니메이션 이벤트에서)
+                    // 여기서는 중력/이동을 건드리지 않음.
+                    break;
+
+                case PhysicsMode.Carried:
+                    if (e.followTarget != null)
+                        e.Position = e.followTarget.Position + e.followOffset;
+                    // 중력/이동/착지 무시
+                    break;
             }
 
-            // 위치 동기화
-            entity.transform.position = entity.Position;
+            // ... groundY 판정(원하면 Normal일 때만 수행)
+            e.transform.position = e.Position;
         }
     }
 }
