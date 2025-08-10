@@ -1,13 +1,11 @@
 using System.Linq;
-using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
-public class GuardState : CharacterState
+public class GuardingState : CharacterState
 {
     private CharacterProperty property;
     private AnimationPlayer animator;
 
-    public GuardState(CharacterFSM fsm) : base(fsm)
+    public GuardingState(CharacterFSM fsm) : base(fsm)
     {
         this.fsm = fsm;
         this.owner = fsm.gameObject;

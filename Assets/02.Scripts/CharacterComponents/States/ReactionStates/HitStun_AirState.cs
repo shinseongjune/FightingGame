@@ -1,45 +1,51 @@
-using UnityEngine;
-
-public class HitStunState : CharacterState
+public class HitStun_AirState : CharacterState
 {
     private CharacterProperty property;
     private AnimationPlayer animator;
+    private PhysicsEntity physics;
 
     private float stunDuration;
     private float elapsed;
 
-    public HitStunState(CharacterFSM fsm) : base(fsm)
+    public HitStun_AirState(CharacterFSM fsm) : base(fsm)
     {
         this.fsm = fsm;
         this.owner = fsm.gameObject;
+
         this.property = owner.GetComponent<CharacterProperty>();
         this.animator = owner.GetComponent<AnimationPlayer>();
+        this.physics = owner.GetComponent<PhysicsEntity>();
     }
 
     public override void OnEnter()
     {
         property.isAttacking = false;
+        property.isJumping = true;
 
         var hitInfo = property.lastHitInfo;
         stunDuration = hitInfo.hitStun * TickMaster.TICK_INTERVAL;
         elapsed = 0f;
 
-        // 기본적으로 스탠딩 박스
-        property.EnableDefaultBoxes(CharacterStateTag.Standing);
+        property.EnableDefaultBoxes(CharacterStateTag.Jumping);
 
-        animator.Play("HitStun");
+        animator.Play("AirStun");
     }
 
     public override void OnUpdate()
     {
         elapsed += TickMaster.TICK_INTERVAL;
 
+        // 공중 경직 도중 착지하면 즉시 착지 상태로 전이
+        if (physics.grounded)
+        {
+            fsm.TransitionTo(new LandState(fsm));
+            return;
+        }
+
         if (elapsed >= stunDuration)
         {
-            if (property.isSitting)
-                fsm.TransitionTo(new CrouchState(fsm));
-            else
-                fsm.TransitionTo(new IdleState(fsm));
+            // 경직 끝났지만 아직 공중이면 Fall 상태로
+            fsm.TransitionTo(new FallState(fsm));
         }
     }
 

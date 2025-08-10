@@ -9,6 +9,7 @@ public class SkillExecutor : MonoBehaviour, ITicker
     private CharacterProperty property;
     private InputBuffer buffer;
     private AnimationPlayer animator;
+    private BoxPresetApplier boxApplier;
 
     [SerializeField] private List<Skill_SO> allSkills;
 
@@ -17,6 +18,7 @@ public class SkillExecutor : MonoBehaviour, ITicker
         property = GetComponent<CharacterProperty>();
         buffer = GetComponent<InputBuffer>();
         animator = GetComponent<AnimationPlayer>();
+        boxApplier = GetComponent<BoxPresetApplier>();
     }
 
     public void Tick()
@@ -42,9 +44,9 @@ public class SkillExecutor : MonoBehaviour, ITicker
     private void PlaySkill(Skill_SO skill)
     {
         currentSkill = skill;
+        boxApplier.ApplySkill(skill);
 
         animator.Play(skill.animationClipName, ReturnToNeutralPose);
-        // TODO: 데미지, 상태 설정 등 추가
     }
 
     private void ReturnToNeutralPose()

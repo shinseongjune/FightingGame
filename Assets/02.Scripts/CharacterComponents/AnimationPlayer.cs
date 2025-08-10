@@ -22,6 +22,16 @@ public class AnimationPlayer : MonoBehaviour, ITicker
     public int CurrentFrame => Mathf.FloorToInt(currentTime / TickMaster.TICK_INTERVAL);
     public string CurrentClipName => currentKey;
 
+    public void Pause() => playing = false;
+
+    public void StepFrames(int frames)
+    {
+        if (!currentPlayable.IsValid()) return;
+        currentTime = Mathf.Clamp(currentTime + frames * TickDuration, 0f, clipLength);
+        currentPlayable.SetTime(currentTime);
+        graph.Evaluate(0); // 시간만 점프
+    }
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -64,6 +74,9 @@ public class AnimationPlayer : MonoBehaviour, ITicker
 
     public void Tick()
     {
+        var gate = GetComponent<DebugFreeze>();
+        if (gate != null && gate.IsFrozen()) return;
+
         if (!playing) return;
 
         currentTime += TickDuration;
