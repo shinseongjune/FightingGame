@@ -1,64 +1,46 @@
-using System.Linq;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
-public class JumpState : CharacterState
+public abstract class BaseJumpState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
-    private PhysicsEntity physics;
-    private InputBuffer inputBuffer;
+    protected float jumpSpeed = 12f;
+    protected float horizSpeed = 4.5f;
 
-    private float jumpVelocity = 12f; // 튀어오르는 y속도
-    private float elapsedTime = 0f;
+    protected BaseJumpState(CharacterFSM f) : base(f) { }
 
-    public JumpState(CharacterFSM fsm) : base(fsm)
+    protected override void OnEnter()
     {
-        this.fsm = fsm;
-        this.owner = fsm.gameObject;
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
-        this.physics = owner.GetComponent<PhysicsEntity>();
-        this.inputBuffer = owner.GetComponent<InputBuffer>();
+        phys.isGrounded = false;
+        phys.mode = PhysicsMode.Normal;
+        phys.isGravityOn = true;
+        phys.SetPose(CharacterStateTag.Jump_Up);
+        Play(animCfg.GetClipKey(AnimKey.JumpUp));
+        phys.Velocity = new Vector2(Horizontal(), jumpSpeed);
     }
 
-    public override void OnEnter()
+    protected override void OnTick()
     {
-        property.isJumping = true;
-        property.isSitting = false;
-        property.isAttacking = false;
+        if (TryStartSkill()) return;
 
-        property.usableSkills = property.jumpSkills.ToList();
-        property.EnableDefaultBoxes(CharacterStateTag.Jumping);
-
-        animator.Play("JumpStart");
-
-        // y속도 부여
-        physics.velocity = new Vector2(physics.velocity.x, jumpVelocity);
-
-        elapsedTime = 0f;
+        if (phys.Velocity.y <= 0f) Transition("Fall");
     }
 
-    public override void OnUpdate()
-    {
-        if (property.currentSkill != null)
-        {
-            fsm.TransitionTo(new SkillState(fsm));
-            return;
-        }
+    protected virtual float Horizontal() => 0f;
+    protected override void OnExit() { }
+}
 
-        elapsedTime += TickMaster.TICK_INTERVAL;
+public class JumpUpState : BaseJumpState
+{
+    public JumpUpState(CharacterFSM f) : base(f) { }
+}
 
-        // 점프 시작 연출 후 바로 FallState 전이 가능
-        if (physics.velocity.y <= 0f && elapsedTime >= TickMaster.TICK_INTERVAL * 2)
-        {
-            fsm.TransitionTo(new FallState(fsm));
-            return;
-        }
-    }
+public class JumpForwardState : BaseJumpState
+{
+    public JumpForwardState(CharacterFSM f) : base(f) { }
+    protected override float Horizontal() => +horizSpeed;
+}
 
-    public override void OnExit()
-    {
-
-    }
+public class JumpBackwardState : BaseJumpState
+{
+    public JumpBackwardState(CharacterFSM f) : base(f) { }
+    protected override float Horizontal() => -horizSpeed;
 }

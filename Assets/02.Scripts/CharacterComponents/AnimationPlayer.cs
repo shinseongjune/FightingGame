@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
-public class AnimationPlayer : MonoBehaviour, ITicker
+public class AnimationPlayer : MonoBehaviour
 {
     private PlayableGraph graph;
     private AnimationPlayableOutput output;

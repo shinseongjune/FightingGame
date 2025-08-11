@@ -1,50 +1,34 @@
+// ForcedAnimationState.cs
 using UnityEngine;
 
+/// <summary>
+/// 연출 전용: 외부에서 clipKey 지정해서 1회 재생 후 중립 복귀
+/// </summary>
 public class ForcedAnimationState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
+    string clipKey;
 
-    private readonly string clipName;
-    private readonly CharacterState nextState;
+    public ForcedAnimationState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.ForcedAnimation;
 
-    private bool finished = false;
+    public void SetClip(string key) => clipKey = key;
 
-    public ForcedAnimationState(CharacterFSM fsm, string clipName, CharacterState nextState = null) : base(fsm)
+    protected override void OnEnter()
     {
-        this.clipName = clipName;
-        this.nextState = nextState ?? new IdleState(fsm); // 기본 복귀는 Idle
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
+        phys.mode = PhysicsMode.Kinematic;
+        phys.isGravityOn = false;
+
+        var k = string.IsNullOrEmpty(clipKey) ? animCfg.GetClipKey(AnimKey.Forced) : clipKey;
+        Play(k, ReturnToNeutralPose);
     }
 
-    public override void OnEnter()
+    protected override void OnTick() { }
+
+
+    protected override void OnExit()
     {
-        property.isAttacking = false;
-        property.isJumping = false;
-        property.isSitting = false;
-        property.isSpecialPosing = true;
-
-        property.EnableDefaultBoxes(CharacterStateTag.Standing); // 또는 필요 없을 수도 있음
-
-        animator.Play(clipName, OnComplete);
-    }
-
-    private void OnComplete()
-    {
-        finished = true;
-    }
-
-    public override void OnUpdate()
-    {
-        if (finished)
-        {
-            fsm.TransitionTo(nextState);
-        }
-    }
-
-    public override void OnExit()
-    {
-        property.isSpecialPosing = false;
+        phys.mode = PhysicsMode.Normal;
+        phys.isGravityOn = true;
+        clipKey = null;
     }
 }

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aab8be40dd86ce34f81ad3d7420b77da, type: 3}
+  m_Name: TestAnimSet
+  m_EditorClassIdentifier: 
+  entries:
+  - key: 0
+    clipKey: TestIdle
+  - key: 1
+    clipKey: TestCrouch
+  - key: 2
+    clipKey: TestWalkF
+  - key: 3
+    clipKey: TestWalkB
+  - key: 4
+    clipKey: TestJumpUp
+  - key: 5
+    clipKey: TestJumpF
+  - key: 6
+    clipKey: TestJumpB
+  - key: 7
+    clipKey: TestFall
+  - key: 8
+    clipKey: TestLand
+  - key: 9
+    clipKey: TestGuardIdle
+  - key: 10
+    clipKey: TestGuardHit
+  - key: 11
+    clipKey: TestHitGround
+  - key: 12
+    clipKey: TestHitAir
+  - key: 13
+    clipKey: TestKnockdown
+  - key: 14
+    clipKey: TestHardKnockdown
+  - key: 15
+    clipKey: TestWakeUp
+  - key: 16
+    clipKey: TestThrowStart
+  - key: 17
+    clipKey: TestThrowLoop
+  - key: 18
+    clipKey: TestThrowEnd
+  - key: 19
+    clipKey: TestBeingThrown
+  - key: 20
+    clipKey: TestForced

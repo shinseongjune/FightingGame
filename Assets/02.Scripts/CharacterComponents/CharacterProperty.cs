@@ -33,6 +33,10 @@ public class CharacterProperty : MonoBehaviour
 {
     public CharacterStateTag characterStateTag;
 
+    [Header("Skill Settings")]
+    public List<Skill_SO> allSkills; // 캐릭터가 가진 전체 스킬
+    public Skill_SO currentSkill;
+
     public readonly List<GameObject> projectiles;
 
     public bool isFacingRight;
@@ -57,6 +61,20 @@ public class CharacterProperty : MonoBehaviour
     public float driveGauge;
     public float maxDriveGauge = 600;
     public float driveGaugeTickChargeAmount = 1;
+
+    public int pendingHitstunFrames;
+    public int pendingBlockstunFrames;
+    public Vector2 pendingKnockback;
+
+    public void SetHitstun(int frames, Vector2 kb)
+    {
+        pendingHitstunFrames = frames;
+        pendingKnockback = kb;
+    }
+    public void SetBlockstun(int frames)
+    {
+        pendingBlockstunFrames = frames;
+    }
 
     public void ChargeSAGauge(float amount)
     {

@@ -1,42 +1,97 @@
+// ThrowStates.cs
 using UnityEngine;
 
+/// <summary> 시전자(공격자) 쪽 잡기 상태 </summary>
 public class ThrowState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
+    PhysicsEntity target;      // 잡힌 대상
+    Vector2 holdOffset = new Vector2(0.6f, 0.9f); // 시전자 기준 붙잡는 위치
 
-    private bool readyToExit = false;
+    public void SetTarget(PhysicsEntity t) => target = t;
 
-    public ThrowState(CharacterFSM fsm) : base(fsm)
+    public ThrowState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Throw;
+
+    protected override void OnEnter()
     {
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
+        property.isInputEnabled = false;
+        phys.mode = PhysicsMode.Kinematic;   // 연출 동안 루트 제어
+        phys.isGravityOn = false;
+
+        Play(animCfg.GetClipKey(AnimKey.ThrowStart), OnCatchMoment);
     }
 
-    public override void OnEnter()
-    {
-        property.isAttacking = true;
-        property.EnableDefaultBoxes(CharacterStateTag.Standing);
+    protected override void OnTick() { }
 
-        // 추후 스킬 기반 연출도 가능하지만 지금은 고정
-        animator.Play("Throw", OnThrowAnimationFinished);
-    }
-
-    private void OnThrowAnimationFinished()
+    // ThrowStart 끝나는 타이밍에 실제 ‘들기’
+    void OnCatchMoment()
     {
-        readyToExit = true;
-    }
-
-    public override void OnUpdate()
-    {
-        if (readyToExit)
+        if (target != null)
         {
-            fsm.TransitionTo(new IdleState(fsm));
+            target.mode = PhysicsMode.Carried;
+            target.followTarget = phys;
+            target.followOffset = holdOffset;
         }
+
+        // 이어서 던지기 모션
+        Play(animCfg.GetClipKey(AnimKey.ThrowEnd), OnThrowRelease);
     }
 
-    public override void OnExit()
+    void OnThrowRelease()
     {
-        property.isAttacking = false;
+        if (target != null)
+        {
+            // 붙잡기 해제 + 던지기 속도 부여
+            target.mode = PhysicsMode.Normal;
+            target.followTarget = null;
+
+            // 간단한 던지기 값(필요시 Skill_SO로 파라미터화)
+            Vector2 launch = new Vector2(property.isFacingRight ? 6f : -6f, 8f);
+            target.Velocity = launch;
+
+            // 맞는 쪽은 공중 피격/다운으로
+            var targetFSM = target.GetComponent<CharacterFSM>();
+            if (targetFSM != null)
+            {
+                // 상황에 맞게 하드/일반 다운 분기
+                targetFSM.TransitionTo("HardKnockdown");
+            }
+        }
+
+        // 시전자는 후딜 처리
+        ReturnToNeutralPose();
+    }
+
+    protected override void OnExit()
+    {
+        property.isInputEnabled = true;
+        phys.mode = PhysicsMode.Normal;
+        phys.isGravityOn = true;
+    }
+}
+
+/// <summary> 피격자(잡힌 쪽) 상태 </summary>
+public class BeingThrownState : CharacterState
+{
+    public BeingThrownState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.BeingThrown;
+
+    protected override void OnEnter()
+    {
+        property.isInputEnabled = false;
+        phys.mode = PhysicsMode.Carried; // ThrowState에서 followTarget 세팅
+        phys.isGravityOn = false;
+
+        Play(animCfg.GetClipKey(AnimKey.BeingThrown));
+        phys.Velocity = Vector2.zero;
+    }
+
+    protected override void OnTick() { }
+
+    // 던져진 뒤(ThrowState에서 Carried 해제) 공중에 떠 있으므로 낙하/다운으로 이어짐
+    protected override void OnExit()
+    {
+        property.isInputEnabled = true;
+        // mode/중력은 시전자 쪽에서 해제 시점에 조정
     }
 }

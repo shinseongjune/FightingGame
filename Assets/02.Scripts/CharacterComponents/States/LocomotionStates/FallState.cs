@@ -1,49 +1,21 @@
-using System.Linq;
 using UnityEngine;
 
 public class FallState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
-    private PhysicsEntity physics;
+    public FallState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Jump_Up; // 점프 포즈 유지
 
-    public FallState(CharacterFSM fsm) : base(fsm)
+    protected override void OnEnter()
     {
-        this.fsm = fsm;
-        this.owner = fsm.gameObject;
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
-        this.physics = owner.GetComponent<PhysicsEntity>();
+        Play(animCfg.GetClipKey(AnimKey.Fall));
     }
 
-    public override void OnEnter()
+    protected override void OnTick()
     {
-        property.isJumping = true;
-        property.isSitting = false;
-        property.isAttacking = false;
+        if (TryStartSkill()) return;
 
-        property.usableSkills = property.jumpSkills.ToList();
-        property.EnableDefaultBoxes(CharacterStateTag.Jumping);
-
-        animator.Play("Fall");
+        if (phys.isGrounded) Transition("Land");
     }
 
-    public override void OnUpdate()
-    {
-        if (property.currentSkill != null)
-        {
-            fsm.TransitionTo(new SkillState(fsm));
-            return;
-        }
-
-        if (physics.grounded)
-        {
-            fsm.TransitionTo(new LandState(fsm));
-        }
-    }
-
-    public override void OnExit()
-    {
-
-    }
+    protected override void OnExit() { }
 }

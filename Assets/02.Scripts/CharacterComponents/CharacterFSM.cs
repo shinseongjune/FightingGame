@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxPresetApplier))]
-public class CharacterFSM : MonoBehaviour, ITicker
+public class CharacterFSM : MonoBehaviour
 {
     private BoxPresetApplier boxPresetApplier;
 
@@ -81,5 +81,10 @@ public class CharacterFSM : MonoBehaviour, ITicker
 
         currentState = nextState;
         currentState.Enter();
+    }
+
+    public T GetState<T>(string key) where T : CharacterState
+    {
+        return statePool.TryGetValue(key, out var s) ? s as T : null;
     }
 }

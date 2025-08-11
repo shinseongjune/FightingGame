@@ -11,7 +11,7 @@ public class BoxDebugDrawer : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1)) visible = !visible;
+        //if (Input.GetKeyDown(KeyCode.F1)) visible = !visible;
     }
 
     void OnDrawGizmos()

@@ -30,8 +30,11 @@ public struct BoxLifetime
     public int startFrame;
     public int endFrame;
 
+    public BoxType type;
     public BoxData box;
 }
+
+public enum HitLevel { High, Mid, Low, Overhead }
 
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
 public class Skill_SO : ScriptableObject
@@ -55,6 +58,8 @@ public class Skill_SO : ScriptableObject
 
     public bool causesLaunch;
     public bool causesKnockdown;
+
+    public HitLevel hitLevel = HitLevel.High;
 
     [Space(20)]
     public string animationClipName;

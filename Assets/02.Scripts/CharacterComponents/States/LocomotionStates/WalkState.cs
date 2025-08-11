@@ -1,81 +1,51 @@
-using System.Linq;
 using UnityEngine;
 
-public class WalkState : CharacterState
+public class WalkForwardState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
-    private PhysicsEntity physics;
-    private InputBuffer inputBuffer;
+    public float moveSpeed = 3.5f;
 
-    public WalkState(CharacterFSM fsm) : base(fsm)
+    public WalkForwardState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Walk_Forward;
+
+    protected override void OnEnter()
     {
-        this.fsm = fsm;
-        this.owner = fsm.gameObject;
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
-        this.physics = owner.GetComponent<PhysicsEntity>();
-        this.inputBuffer = owner.GetComponent<InputBuffer>();
+        phys.SetPose(CharacterStateTag.Walk_Forward);
+        Play(animCfg.GetClipKey(AnimKey.WalkF));
     }
 
-    public override void OnEnter()
+    protected override void OnTick()
     {
-        property.isJumping = false;
-        property.isSitting = false;
-        property.isAttacking = false;
+        // 1) 스킬 발동 시도
+        if (TryStartSkill()) return;
 
-        property.usableSkills = property.idleSkills.ToList();
-        property.EnableDefaultBoxes(CharacterStateTag.Standing);
+        var d = input != null ? input.LastInput.direction : Direction.Neutral;
+        if (d != Direction.Forward) { Transition("Idle"); return; }
+        phys.Position += new Vector2(moveSpeed * TickMaster.TICK_INTERVAL, 0f);
+    }
+    protected override void OnExit() { }
+}
 
-        animator.Play("Walk");
+public class WalkBackwardState : CharacterState
+{
+    public float moveSpeed = 3.0f;
+
+    public WalkBackwardState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Walk_Backward;
+
+    protected override void OnEnter()
+    {
+        phys.SetPose(CharacterStateTag.Walk_Backward);
+        Play(animCfg.GetClipKey(AnimKey.WalkB));
     }
 
-    public override void OnUpdate()
+    protected override void OnTick()
     {
-        if (inputBuffer.inputQueue.Count == 0)
-            return;
+        // 1) 스킬 발동 시도
+        if (TryStartSkill()) return;
 
-        if (property.currentSkill != null)
-        {
-            fsm.TransitionTo(new SkillState(fsm));
-            return;
-        }
-
-        InputData latest = inputBuffer.inputQueue.Peek();
-
-        bool up = latest.direction is Direction.Up or Direction.UpForward or Direction.UpBack;
-        bool down = latest.direction is Direction.Down or Direction.DownForward or Direction.DownBack;
-        bool forward = latest.direction == Direction.Forward;
-        bool back = latest.direction == Direction.Back;
-
-        // 상태 전이 우선순위
-        if (up)
-        {
-            fsm.TransitionTo(new JumpState(fsm));
-            return;
-        }
-        if (down)
-        {
-            fsm.TransitionTo(new CrouchState(fsm));
-            return;
-        }
-        if (!forward && !back)
-        {
-            fsm.TransitionTo(new IdleState(fsm));
-            return;
-        }
-
-        // 이동 처리 (간단히 x축 속도 설정)
-        float moveSpeed = 5f;
-        physics.velocity = new Vector2(
-            forward ? moveSpeed : (back ? -moveSpeed : 0f),
-            physics.velocity.y
-        );
+        var d = input != null ? input.LastInput.direction : Direction.Neutral;
+        if (d != Direction.Back) { Transition("Idle"); return; }
+        phys.Position += new Vector2(-moveSpeed * TickMaster.TICK_INTERVAL, 0f);
     }
-
-    public override void OnExit()
-    {
-        // 정지 처리
-        physics.velocity = new Vector2(0, physics.velocity.y);
-    }
+    protected override void OnExit() { }
 }

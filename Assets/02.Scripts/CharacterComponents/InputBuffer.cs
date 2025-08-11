@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterProperty))]
-public class InputBuffer : MonoBehaviour, ITicker
+public class InputBuffer : MonoBehaviour
 {
     private CharacterProperty character;
 
@@ -16,6 +16,8 @@ public class InputBuffer : MonoBehaviour, ITicker
     private InputData previousInput;
     private int backHold = 0;
     private int downHold = 0;
+
+    public InputData LastInput { get; private set; }
 
     private void Awake()
     {
@@ -46,6 +48,7 @@ public class InputBuffer : MonoBehaviour, ITicker
         };
 
         previousInput = input;
+        LastInput = input;
 
         inputQueue.Enqueue(input);
         while (inputQueue.Count > maxBufferSize)

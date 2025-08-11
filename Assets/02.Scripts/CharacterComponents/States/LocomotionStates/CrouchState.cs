@@ -1,64 +1,24 @@
-using System.Linq;
 using UnityEngine;
 
 public class CrouchState : CharacterState
 {
-    private CharacterProperty property;
-    private AnimationPlayer animator;
-    private InputBuffer inputBuffer;
+    public CrouchState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Crouch;
 
-    public CrouchState(CharacterFSM fsm) : base(fsm)
+    protected override void OnEnter()
     {
-        this.fsm = fsm;
-        this.owner = fsm.gameObject;
-        this.property = owner.GetComponent<CharacterProperty>();
-        this.animator = owner.GetComponent<AnimationPlayer>();
-        this.inputBuffer = owner.GetComponent<InputBuffer>();
+        phys.SetPose(CharacterStateTag.Crouch);
+        Play(animCfg.GetClipKey(AnimKey.Crouch));
     }
 
-    public override void OnEnter()
+    protected override void OnTick()
     {
-        property.isSitting = true;
-        property.isJumping = false;
-        property.isAttacking = false;
+        // 1) 스킬 발동 시도
+        if (TryStartSkill()) return;
 
-        property.usableSkills = property.crouchSkills.ToList();
-        property.EnableDefaultBoxes(CharacterStateTag.Crouching);
-
-        animator.Play("Crouch");
+        var d = input != null ? input.LastInput.direction : Direction.Neutral;
+        bool keep = d is Direction.Down or Direction.DownBack or Direction.DownForward;
+        if (!keep) Transition("Idle");
     }
-
-    public override void OnUpdate()
-    {
-        if (inputBuffer.inputQueue.Count == 0)
-            return;
-
-        if (property.currentSkill != null)
-        {
-            fsm.TransitionTo(new SkillState(fsm));
-            return;
-        }
-
-        InputData latest = inputBuffer.inputQueue.Peek();
-
-        bool up = latest.direction is Direction.Up or Direction.UpForward or Direction.UpBack;
-        bool down = latest.direction is Direction.Down or Direction.DownForward or Direction.DownBack;
-
-        if (up)
-        {
-            fsm.TransitionTo(new JumpState(fsm));
-            return;
-        }
-
-        if (!down)
-        {
-            fsm.TransitionTo(new IdleState(fsm));
-            return;
-        }
-    }
-
-    public override void OnExit()
-    {
-
-    }
+    protected override void OnExit() { }
 }

@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a035117b5aaf5640817826b316697f1, type: 3}
+  m_Name: TestPunch
+  m_EditorClassIdentifier: 
+  skillName: TestPunch
+  description: Test Basic Punch
+  condition:
+    currentSkill: {fileID: 0}
+    currentCharacterState: 1
+  command:
+    inputData:
+    - direction: 0
+      attack: 1
+      backCharge: 0
+      downCharge: 0
+    isStrict: 0
+    maxFrameGap: 0
+  damageOnHit: 0
+  hitstunDuration: 0
+  blockstunDuration: 0
+  causesLaunch: 0
+  causesKnockdown: 0
+  hitLevel: 0
+  animationClipName: 
+  boxLifetimes:
+  - startFrame: 1
+    endFrame: 5
+    type: 1
+    box:
+      center: {x: 0.5, y: 1.5}
+      size: {x: 0.8, y: 0.2}

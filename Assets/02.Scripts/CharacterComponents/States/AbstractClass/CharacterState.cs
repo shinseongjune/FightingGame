@@ -18,9 +18,10 @@ public abstract class CharacterState
     protected readonly CharacterProperty property;
     protected readonly PhysicsEntity phys;
     protected readonly AnimationPlayer anim;
-    protected readonly SkillExecutor skillExec;
     protected readonly BoxPresetApplier boxApplier;
     protected readonly CollisionResolver resolver;
+    protected readonly InputBuffer input;
+    protected readonly CharacterAnimationConfig animCfg;
 
     // Tick info
     protected int elapsedFrames;
@@ -44,9 +45,51 @@ public abstract class CharacterState
         property = fsm.GetComponent<CharacterProperty>();
         phys = fsm.GetComponent<PhysicsEntity>();
         anim = fsm.GetComponent<AnimationPlayer>();
-        skillExec = fsm.GetComponent<SkillExecutor>();
         boxApplier = fsm.GetComponent<BoxPresetApplier>();
         resolver = fsm.GetComponent<CollisionResolver>();
+        input = fsm.GetComponent<InputBuffer>();
+        animCfg = fsm.GetComponent<CharacterAnimationConfig>();
+    }
+
+    // Neutral/Cancelable 상태가 호출할 유틸
+    protected bool TryStartSkill()
+    {
+        if (property == null || property.allSkills == null || property.allSkills.Count == 0)
+            return false;
+
+        var buf = fsm.GetComponent<InputBuffer>()?.inputQueue;
+        if (buf == null) return false;
+
+        var matched = InputRecognizer.Recognize(buf, property.allSkills);
+        if (matched == null) return false;
+
+        // 전이용 컨텍스트 저장
+        property.characterStateTag = CharacterStateTag.Skill;
+        property.currentSkill = matched;            // ▼ CharacterProperty에 필드 추가(아래 3번)
+        fsm.TransitionTo("Skill");
+        return true;
+    }
+
+    protected void ReturnToNeutralPose()
+    {
+        var d = fsm.GetComponent<InputBuffer>()?.LastInput.direction ?? Direction.Neutral;
+
+        // 착지 여부부터 확인
+        if (!phys.isGrounded)
+        {
+            Transition("Fall");
+            return;
+        }
+
+        // 앉기 방향 입력 유지 중
+        if (d is Direction.Down or Direction.DownBack or Direction.DownForward)
+        {
+            Transition("Crouch");
+            return;
+        }
+
+        // 그 외엔 서있는 기본 상태
+        Transition("Idle");
     }
 
     // ===== Lifecycle =====
@@ -94,25 +137,8 @@ public abstract class CharacterState
         // 박스 교체가 필요하면 파생 상태의 OnEnter에서 boxApplier/phys 등을 직접 호출
     }
 
-    // ===== (옵션) CollisionResolver 구독 헬퍼 =====
-    protected void SubscribeOnEnter()
-    {
-        if (resolver == null) return;
-        resolver.OnHitResolved += HandleHit;
-        resolver.OnGuardResolved += HandleGuard;
-        resolver.OnThrowResolved += HandleThrow;
-    }
-
-    protected void UnsubscribeOnExit()
-    {
-        if (resolver == null) return;
-        resolver.OnHitResolved -= HandleHit;
-        resolver.OnGuardResolved -= HandleGuard;
-        resolver.OnThrowResolved -= HandleThrow;
-    }
-
     // 필요한 상태만 override
-    protected virtual void HandleHit(HitData hit) { }
-    protected virtual void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
-    protected virtual void HandleThrow(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
+    public virtual void HandleHit(HitData hit) { }
+    public virtual void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
+    public virtual void HandleThrow(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
 }
