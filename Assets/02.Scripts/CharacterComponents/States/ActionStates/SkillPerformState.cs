@@ -16,24 +16,24 @@ public class SkillPerformState : CharacterState
     {
         finished = false;
 
-        // 전이 직전에 TryStartSkill에서 박아둔 스킬 획득
         skill = property.currentSkill;
-        if (skill == null)
-        {
-            Transition("Idle");
-            return;
-        }
+        if (skill == null) { Transition("Idle"); return; }
 
-        // 포즈/물리 모드(지상 기술 기준)
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Skill);
 
-        // 박스/애니 시작
-        boxApplier.ApplySkill(skill);
-        anim.Play(skill.animationClipName, OnAnimComplete);
+        bool ok = TryPlay(skill.animationClipName, OnAnimComplete);
+        if (!ok)
+        {
+            UnityEngine.Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");
+            boxApplier.ClearAllBoxes();
+            ReturnToNeutral();
+            return;
+        }
 
-        // 상태 중 입력 잠금/캔슬 가능 여부 등 필요 플래그
+        boxApplier.ApplySkill(skill);
+
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
     }
@@ -41,7 +41,7 @@ public class SkillPerformState : CharacterState
     protected override void OnTick()
     {
         // 1) 캔슬 타이밍 열기(프레임 기반 샘플)
-        int f = anim.CurrentFrame;
+        int f = anim.CurrentClipFrame;
         property.isSkillCancelable = (f >= cancelStartFrame && f <= cancelEndFrame);
 
         // 2) 히트캔슬 or 일반 캔슬 입력
@@ -60,6 +60,7 @@ public class SkillPerformState : CharacterState
         // 상태 빠져나갈 때 입력 잠금 해제
         property.isInputEnabled = true;
         property.isSkillCancelable = false;
+        property.currentSkill = null;
 
         // FSM이 기본적으로 전이 시 BoxPresetApplier.ClearAll()을 호출하고 있으니
         // 여기서 굳이 박스를 지울 필요는 없음.

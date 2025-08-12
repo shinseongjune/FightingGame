@@ -9,6 +9,7 @@ public class WalkForwardState : CharacterState
 
     protected override void OnEnter()
     {
+        property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Walk_Forward);
         Play(animCfg.GetClipKey(AnimKey.WalkF));
     }
@@ -34,6 +35,7 @@ public class WalkBackwardState : CharacterState
 
     protected override void OnEnter()
     {
+        property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Walk_Backward);
         Play(animCfg.GetClipKey(AnimKey.WalkB));
     }

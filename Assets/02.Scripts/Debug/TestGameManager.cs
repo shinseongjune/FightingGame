@@ -23,6 +23,20 @@ public class TestGameManager : MonoBehaviour
             Debug.LogError(task.Exception);
         // 완료 후 진행
 
-        Instantiate(prefab_TestMan);
+        GameObject testMan = Instantiate(prefab_TestMan);
+
+        var boxes = testMan.GetComponents<BoxComponent>();
+
+        foreach (var box in boxes)
+        {
+            BoxManager.Instance.Register(box);
+        }
+
+        PhysicsManager.Instance.Register(testMan.GetComponent<PhysicsEntity>());
+
+        TickMaster.Instance.Register(BoxManager.Instance);
+        TickMaster.Instance.Register(PhysicsManager.Instance);
+
+        testMan.GetComponent<CharacterProperty>().isFacingRight = true;
     }
 }

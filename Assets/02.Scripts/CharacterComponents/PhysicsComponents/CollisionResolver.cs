@@ -16,9 +16,6 @@ public class CollisionResolver : MonoBehaviour, ITicker
     // 이번 틱에 “나와 관련된” 충돌만 모아두는 큐
     readonly List<CollisionData> frameCollisions = new();
 
-    // 가드 선입력 플래그 (해당 틱 내에서 GuardTrigger 받았는지)
-    bool guardPrimedThisTick = false;
-
     private BoxManager boxManager;
 
     void Awake()
@@ -56,7 +53,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
     public void Tick()
     {
-        if (frameCollisions.Count == 0) { guardPrimedThisTick = false; return; }
+        if (frameCollisions.Count == 0) { return; }
 
         // 1) 먼저 GuardTrigger를 스캔해서 가드 선입력 유발
         for (int i = 0; i < frameCollisions.Count; i++)
@@ -66,7 +63,6 @@ public class CollisionResolver : MonoBehaviour, ITicker
             {
                 if (def == me && IsHoldingGuard(def))
                 {
-                    guardPrimedThisTick = true;
                     EnsureGuarding(def);
                 }
             }
@@ -133,7 +129,6 @@ public class CollisionResolver : MonoBehaviour, ITicker
         }
 
         frameCollisions.Clear();
-        guardPrimedThisTick = false;
     }
 
     // ---------- 유틸 ----------
@@ -190,6 +185,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
         // 수신자 쪽 상태로 알림
         var defFSM = def.GetComponent<CharacterFSM>();
         defFSM?.Current?.HandleGuard(atk, def, cd);
+        defFSM?.TransitionTo("GuardHit");
     }
 
     private void ApplyHitstun(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)

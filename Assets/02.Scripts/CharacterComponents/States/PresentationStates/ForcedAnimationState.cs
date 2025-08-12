@@ -19,7 +19,11 @@ public class ForcedAnimationState : CharacterState
         phys.isGravityOn = false;
 
         var k = string.IsNullOrEmpty(clipKey) ? animCfg.GetClipKey(AnimKey.Forced) : clipKey;
-        Play(k, ReturnToNeutralPose);
+        if (!TryPlay(k, ReturnToNeutralPose))
+        {
+            // 실패 시 바로 복귀
+            ReturnToNeutralPose();
+        }
     }
 
     protected override void OnTick() { }

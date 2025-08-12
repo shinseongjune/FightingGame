@@ -71,7 +71,12 @@ public class WakeUpState : CharacterState
     {
         phys.mode = PhysicsMode.Kinematic; // 짧게 위치 고정하고 연출
         phys.isGravityOn = false;
-        Play(animCfg.GetClipKey(AnimKey.WakeUp), OnWakeFinish);
+
+        if (!TryPlay(animCfg.GetClipKey(AnimKey.WakeUp), OnWakeFinish))
+        {
+            ReturnToNeutralPose();
+            return;
+        }
     }
 
     void OnWakeFinish()

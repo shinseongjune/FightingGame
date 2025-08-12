@@ -9,6 +9,7 @@ public abstract class BaseJumpState : CharacterState
 
     protected override void OnEnter()
     {
+        property.isInputEnabled = true;
         phys.isGrounded = false;
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;

@@ -16,11 +16,28 @@ public class BoxDebugDrawer : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (!visible || BoxManager.Instance == null) return;
-        foreach (var b in BoxManager.Instance.activeBoxes)
+        if (!visible) return;
+
+        var mgr = BoxManager.Instance;
+        if (mgr == null || mgr.activeBoxes == null) return;
+
+        // 혹시 다른 스크립트가 Gizmos.matrix를 바꿨을 수 있으니 초기화
+        Gizmos.matrix = Matrix4x4.identity;
+
+        // 얇은 두께를 줘서 2D에서도 확실히 보이게
+        const float zThickness = 0.02f;
+
+        // foreach 중간 수정 위험 회피: 스냅샷 떠서 순회
+        var list = mgr.activeBoxes;
+        for (int i = 0; i < list.Count; i++)
         {
+            var b = list[i];
             if (b == null || b.owner == null) continue;
+
             Rect r = b.GetAABB();
+            var center = new Vector3(r.center.x, r.center.y, 0f);
+            var size3 = new Vector3(r.size.x, r.size.y, zThickness);
+
             Gizmos.color = b.type switch
             {
                 BoxType.Body => body,
@@ -30,9 +47,13 @@ public class BoxDebugDrawer : MonoBehaviour
                 BoxType.GuardTrigger => guard,
                 _ => Color.white
             };
-            Gizmos.DrawCube(r.center, r.size);
-            Gizmos.color = Color.black;
-            Gizmos.DrawWireCube(r.center, r.size);
+
+            Gizmos.DrawCube(center, size3);
+
+            // 외곽선은 불투명하게
+            var edge = Gizmos.color; edge.a = 1f;
+            Gizmos.color = edge;
+            Gizmos.DrawWireCube(center, size3);
         }
     }
 }

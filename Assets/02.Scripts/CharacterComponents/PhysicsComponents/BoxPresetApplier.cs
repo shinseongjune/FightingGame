@@ -1,139 +1,105 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PhysicsEntity))]
-public class BoxPresetApplier : MonoBehaviour, ITicker
+public class BoxPresetApplier : MonoBehaviour
 {
-    [SerializeField] Transform boxRoot; // 박스 오브젝트를 붙일 부모 (없으면 this.transform)
-    private PhysicsEntity owner;
     private AnimationPlayer anim;
+    private CharacterProperty property;
+    private PhysicsEntity entity;
 
-    private Skill_SO activeSkill;
-    private readonly List<BoxComponent> currentBoxes = new(); // 지금 살아있는 박스들
+    private Skill_SO activeSkill => property.currentSkill;
+    private readonly List<BoxComponent> currentBoxes = new(); // 현재 깔린 박스들
 
-    // 간단 풀: 타입별로 재사용
-    private readonly Dictionary<BoxType, Stack<BoxComponent>> pool = new();
-
-    void Awake()
+    private void Awake()
     {
-        owner = GetComponent<PhysicsEntity>();
-        anim = GetComponent<AnimationPlayer>();
-        if (boxRoot == null) boxRoot = transform;
-        foreach (BoxType t in System.Enum.GetValues(typeof(BoxType)))
-            pool[t] = new Stack<BoxComponent>();
+        if (!anim) anim = GetComponent<AnimationPlayer>();
+        if (!property) property = GetComponent<CharacterProperty>();
+        if (!entity) entity = GetComponent<PhysicsEntity>();
+    }
+
+    private void OnDisable()
+    {
+        ClearAllBoxes(); 
     }
 
     public void ApplySkill(Skill_SO skill)
     {
-        activeSkill = skill;
-        // 스킬 시작 시점엔 일단 깨끗하게
-        ClearAll();
-        // 필요하면 “즉시 생성되는 박스(startFrame == 0)”를 한 번 미리 깔아도 됨 (선택)
-        TrySyncBoxes();
+        ClearAllBoxes();
+    }
+
+    public void ClearAllBoxes()
+    {
+        for (int i = currentBoxes.Count - 1; i >= 0; i--)
+        {
+            var b = currentBoxes[i];
+            if (b != null)
+            {
+                BoxManager.Instance.Unregister(b);
+                Destroy(b.gameObject);
+            }
+        }
+        currentBoxes.Clear();
     }
 
     public void Tick()
     {
-        if (activeSkill == null) return;
         TrySyncBoxes();
-    }
-
-    public void ClearAll()
-    {
-        for (int i = currentBoxes.Count - 1; i >= 0; i--)
-            Despawn(currentBoxes[i]);
-        currentBoxes.Clear();
-        activeSkill = null; // 상태 전이 시 스킬 종료
     }
 
     private void TrySyncBoxes()
     {
-        int f = anim != null ? anim.CurrentFrame : 0;
-        if (activeSkill == null) return;
+        if (activeSkill == null || anim == null || anim.ClipLengthFrames == 0) return;
 
-        // 1) 이번 프레임에 유지되어야 하는 타겟 세트 만들기
-        var wanted = ListStatic<BoxKey>.Rent();
+        // ★ 클립 프레임 기준 사용
+        int cf = anim.CurrentClipFrame;
+
+        // 이번 프레임에 "유효해야 하는" 박스 목록 생성
+        var wanted = ListStatic<int>.Rent();            // 인덱스만 추적
         for (int i = 0; i < activeSkill.boxLifetimes.Count; i++)
         {
             var life = activeSkill.boxLifetimes[i];
-            if (f < life.startFrame || f > life.endFrame) continue;
-
-            wanted.Add(new BoxKey
-            {
-                type = life.type,
-                center = life.box.center,
-                size = life.box.size
-            });
+            // startFrame/endFrame 는 "클립 프레임" 기준
+            if (cf >= life.startFrame && cf <= life.endFrame)
+                wanted.Add(i);
         }
 
-        // 2) 현재 깔린 것 중 필요 없는 건 반납
-        for (int i = currentBoxes.Count - 1; i >= 0; i--)
+        // 현재 박스를 유지/제거/추가
+        // 간단하게: 전부 지우고 필요한 것만 다시 생성 (먼저는 안정성 우선)
+        // 성능 필요시, key(타입/센터/사이즈)로 diff 하여 재사용하도록 개선
+        if (wanted.Count == 0)
         {
-            var b = currentBoxes[i];
-            var k = new BoxKey { type = b.type, center = b.offset, size = b.size };
-            if (!wanted.Contains(k))
-            {
-                Despawn(b);
-                currentBoxes.RemoveAt(i);
-            }
+            ClearAllBoxes();
+            ListStatic<int>.Return(wanted);
+            return;
         }
 
-        // 3) 필요한데 없는 건 생성/재사용
-        foreach (var k in wanted)
+        // 지우고
+        ClearAllBoxes();
+
+        // 다시 생성
+        foreach (var idx in wanted)
         {
-            if (!HasBox(k))
-                currentBoxes.Add(Spawn(k));
+            var life = activeSkill.boxLifetimes[idx];
+            SpawnBox(life);
         }
 
-        ListStatic<BoxKey>.Return(wanted);
+        ListStatic<int>.Return(wanted);
     }
 
-    private bool HasBox(BoxKey k)
+    private void SpawnBox(BoxLifetime life)
     {
-        for (int i = 0; i < currentBoxes.Count; i++)
-        {
-            var b = currentBoxes[i];
-            if (b.type == k.type && b.offset == k.center && b.size == k.size)
-                return true;
-        }
-        return false;
-    }
+        // 박스 생성부: 타입/사이즈/오프셋 등은 프로젝트 규약에 맞춰 작성
+        var go = new GameObject($"Box_{life.type}");
+        go.transform.SetParent(transform, false);
 
-    private BoxComponent Spawn(BoxKey k)
-    {
-        BoxComponent box;
-        if (pool[k.type].Count > 0) box = pool[k.type].Pop();
-        else
-        {
-            var go = new GameObject($"{k.type}Box");
-            go.transform.SetParent(boxRoot, false);
-            box = go.AddComponent<BoxComponent>();
-        }
+        var bc = go.AddComponent<BoxComponent>();
+        bc.size = life.box.size;
+        bc.type = life.type;
+        bc.offset = life.box.center;
+        bc.owner = entity;
 
-        box.type = k.type;
-        box.owner = owner;
-        box.offset = k.center;
-        box.size = k.size;
-        box.gameObject.SetActive(true);
-
-        // BoxManager에 등록
-        BoxManager.Instance.Register(box);
-        return box;
-    }
-
-    private void Despawn(BoxComponent box)
-    {
-        if (box == null) return;
-        BoxManager.Instance.Unregister(box);
-        box.gameObject.SetActive(false);
-        pool[box.type].Push(box);
-    }
-
-    struct BoxKey
-    {
-        public BoxType type;
-        public Vector2 center;
-        public Vector2 size;
+        currentBoxes.Add(bc);
+        BoxManager.Instance.Register(bc);
     }
 }
 

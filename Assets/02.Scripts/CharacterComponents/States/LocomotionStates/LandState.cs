@@ -9,6 +9,7 @@ public class LandState : CharacterState
 
     protected override void OnEnter()
     {
+        property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Idle);
         Play(animCfg.GetClipKey(AnimKey.Land));
     }

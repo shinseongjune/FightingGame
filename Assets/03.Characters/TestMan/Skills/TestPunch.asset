@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: TestPunch
   description: Test Basic Punch
-  condition:
-    currentSkill: {fileID: 0}
+  conditions:
+  - currentSkill: {fileID: 0}
     currentCharacterState: 1
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 6
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 7
   command:
     inputData:
     - direction: 0
@@ -24,18 +28,18 @@ MonoBehaviour:
       backCharge: 0
       downCharge: 0
     isStrict: 0
-    maxFrameGap: 0
+    maxFrameGap: 4
   damageOnHit: 0
   hitstunDuration: 0
   blockstunDuration: 0
   causesLaunch: 0
   causesKnockdown: 0
   hitLevel: 0
-  animationClipName: 
+  animationClipName: TestPunch
   boxLifetimes:
-  - startFrame: 1
-    endFrame: 5
+  - startFrame: 6
+    endFrame: 10
     type: 1
     box:
-      center: {x: 0.5, y: 1.5}
-      size: {x: 0.8, y: 0.2}
+      center: {x: 0.5, y: 1.1}
+      size: {x: 0.8, y: 0.3}

@@ -2795,7 +2795,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterStateTag: 0
-  allSkills: []
+  allSkills:
+  - {fileID: 11400000, guid: 7fb24bdacce2ee3409d18188cf5e0e64, type: 2}
   currentSkill: {fileID: 0}
   isFacingRight: 0
   isStartUp: 0
@@ -2957,8 +2958,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  offset: {x: 0, y: 2}
-  size: {x: 4, y: 4}
+  offset: {x: 0, y: 0.7}
+  size: {x: 0.6, y: 1.4}
   owner: {fileID: 1230523323767490591}
 --- !u!1 &4821643885564524650
 GameObject:

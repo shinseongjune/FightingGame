@@ -27,6 +27,7 @@ public struct BoxData
 [Serializable]
 public struct BoxLifetime
 {
+    [Tooltip("이 값들은 '클립 프레임(clip.frameRate 기준)'입니다. 예: 클립이 20fps면 1초=0..19")]
     public int startFrame;
     public int endFrame;
 
@@ -44,7 +45,7 @@ public class Skill_SO : ScriptableObject
 
     [Space(20)]
 
-    public SkillCondition condition;
+    public SkillCondition[] conditions;
 
     [Space(20)]
 

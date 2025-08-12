@@ -3,104 +3,123 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
 
+[RequireComponent(typeof(Animator))]
 public class AnimationPlayer : MonoBehaviour
 {
-    private PlayableGraph graph;
-    private AnimationPlayableOutput output;
-    private AnimationClipPlayable currentPlayable;
     private Animator animator;
+    private PlayableGraph graph;
+    private AnimationClipPlayable clipPlayable;
+    private AnimationClip currentClip;
 
-    private float currentTime = 0f;
-    private float clipLength = 0f;
-    private bool playing = false;
+    // 시간/프레임
+    private float currentTimeSec;              // 현재 재생 시간(초)
+    private float clipFps = 60f;               // 현재 클립 샘플레이트(fps)
+    public float CurrentTimeSec => currentTimeSec;
+    public int CurrentClipFrame => Mathf.FloorToInt(currentTimeSec * clipFps + 1e-4f);
+    public int CurrentTickFrame => Mathf.FloorToInt(currentTimeSec / TickMaster.TICK_INTERVAL + 1e-4f);
+    public int ClipLengthFrames => currentClip != null ? Mathf.RoundToInt(currentClip.length * clipFps) : 0;
 
-    private string currentKey;
-    private Action onCompleteCallback;
+    public string CurrentClipName => currentClip != null ? currentClip.name : string.Empty;
 
-    private const float TickDuration = TickMaster.TICK_INTERVAL;
-
-    public int CurrentFrame => Mathf.FloorToInt(currentTime / TickMaster.TICK_INTERVAL);
-    public string CurrentClipName => currentKey;
-
-    public void Pause() => playing = false;
-
-    public void StepFrames(int frames)
-    {
-        if (!currentPlayable.IsValid()) return;
-        currentTime = Mathf.Clamp(currentTime + frames * TickDuration, 0f, clipLength);
-        currentPlayable.SetTime(currentTime);
-        graph.Evaluate(0); // 시간만 점프
-    }
+    private Action onComplete;
+    private bool loop;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
-
-        graph = PlayableGraph.Create("AnimationPlayerGraph");
+        graph = PlayableGraph.Create($"{name}_AnimGraph");
+        var output = AnimationPlayableOutput.Create(graph, "AnimOutput", animator);
+        clipPlayable = AnimationClipPlayable.Create(graph, new AnimationClip());
+        output.SetSourcePlayable(clipPlayable);
         graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-
-        output = AnimationPlayableOutput.Create(graph, "AnimationOutput", animator);
     }
 
-    public void Play(string clipKey, Action onComplete = null)
-    {
-        AnimationClip clip = AnimationClipLibrary.Instance.Get(clipKey);
-        if (clip == null)
-        {
-            Debug.LogWarning($"[AnimationPlayer] Clip not found: {clipKey}");
-            return;
-        }
-
-        if (currentPlayable.IsValid())
-        {
-            currentPlayable.Destroy();
-        }
-
-        currentPlayable = AnimationClipPlayable.Create(graph, clip);
-        currentPlayable.SetDuration(clip.length);
-        currentPlayable.SetTime(0);
-        currentPlayable.SetSpeed(0);
-
-        output.SetSourcePlayable(currentPlayable);
-        graph.Play();
-
-        currentTime = 0f;
-        clipLength = clip.length;
-        playing = true;
-
-        currentKey = clipKey;
-        onCompleteCallback = onComplete;
+    private void OnDisable()
+    { 
+        CleanupPlayable(); 
     }
 
-    public void Tick()
-    {
-        var gate = GetComponent<DebugFreeze>();
-        if (gate != null && gate.IsFrozen()) return;
-
-        if (!playing) return;
-
-        currentTime += TickDuration;
-
-        if (currentPlayable.IsValid())
-        {
-            currentPlayable.SetTime(currentTime);
-            graph.Evaluate(TickDuration);
-        }
-
-        if (currentTime >= clipLength)
-        {
-            playing = false;
-
-            onCompleteCallback?.Invoke();
-            onCompleteCallback = null;
-        }
-    }
-
-    private void OnDestroy()
+    private void CleanupPlayable()
     {
         if (graph.IsValid())
         {
             graph.Destroy();
+        }
+    }
+
+    public bool Play(string clipKey, Action onComplete = null, bool loop = false)
+    {
+        var clip = AnimationClipLibrary.Instance.Get(clipKey);
+        if (clip == null)
+        {
+            Debug.LogWarning($"[AnimationPlayer] Clip not found: {clipKey}");
+            return false;
+        }
+
+        currentClip = clip;
+        clipFps = Mathf.Max(1f, clip.frameRate);
+        currentTimeSec = 0f;
+        this.onComplete = onComplete;
+
+        this.loop = loop || clip.isLooping;
+
+        if (!graph.IsValid())
+        {
+            graph = PlayableGraph.Create($"{name}_AnimGraph");
+            var output = AnimationPlayableOutput.Create(graph, "AnimOutput", animator);
+            clipPlayable = AnimationClipPlayable.Create(graph, clip);
+            output.SetSourcePlayable(clipPlayable);
+            graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
+        }
+        else
+        {
+            if (clipPlayable.IsValid()) clipPlayable.Destroy();
+            clipPlayable = AnimationClipPlayable.Create(graph, clip);
+            var output = (AnimationPlayableOutput)graph.GetOutput(0);
+            output.SetSourcePlayable(clipPlayable);
+        }
+
+        clipPlayable.SetTime(0);
+        clipPlayable.SetSpeed(0);
+        if (!graph.IsPlaying()) graph.Play();
+
+        return true;
+    }
+
+    public void Tick()
+    {
+        if (!graph.IsValid() || !clipPlayable.IsValid() || currentClip == null) return;
+
+        currentTimeSec += TickMaster.TICK_INTERVAL;
+
+        if (currentTimeSec >= currentClip.length)
+        {
+            if (loop)
+            {
+                currentTimeSec -= currentClip.length;            // 루프
+                clipPlayable.SetTime(currentTimeSec);
+                graph.Evaluate(0); // 즉시 반영
+            }
+            else
+            {
+                currentTimeSec = currentClip.length;
+                clipPlayable.SetTime(currentTimeSec);
+                graph.Evaluate(0);
+
+                var cb = onComplete;
+                onComplete = null;
+
+                currentClip = null;
+                clipPlayable.SetSpeed(0);
+
+                cb?.Invoke();
+                return;
+            }
+        }
+        else
+        {
+            clipPlayable.SetTime(currentTimeSec);
+            graph.Evaluate(0);
         }
     }
 }

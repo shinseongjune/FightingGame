@@ -7,6 +7,7 @@ public class CrouchState : CharacterState
 
     protected override void OnEnter()
     {
+        property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Crouch);
         Play(animCfg.GetClipKey(AnimKey.Crouch));
     }

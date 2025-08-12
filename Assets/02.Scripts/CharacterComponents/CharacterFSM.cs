@@ -47,7 +47,7 @@ public class CharacterFSM : MonoBehaviour
         if (currentState == nextState) return;
 
         // 상태별 박스 초기화(히트/허트/트리거 등)
-        boxPresetApplier?.ClearAll();
+        boxPresetApplier?.ClearAllBoxes();
 
         // Exit -> 교체 -> Enter
         currentState?.Exit();
@@ -62,7 +62,7 @@ public class CharacterFSM : MonoBehaviour
     {
         if (nextState == null || currentState == nextState) return;
 
-        boxPresetApplier?.ClearAll();
+        boxPresetApplier?.ClearAllBoxes();
 
         currentState?.Exit();
         currentState = nextState;
@@ -77,7 +77,7 @@ public class CharacterFSM : MonoBehaviour
         if (!statePool.TryGetValue(key, out var nextState) || nextState == null)
             return;
 
-        boxPresetApplier?.ClearAll();
+        boxPresetApplier?.ClearAllBoxes();
 
         currentState = nextState;
         currentState.Enter();

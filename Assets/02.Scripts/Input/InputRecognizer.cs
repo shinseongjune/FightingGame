@@ -16,7 +16,6 @@ public static class InputRecognizer
     {
         if (command.inputData.Length == 0 || buffer.Count == 0)
             return false;
-
         InputData[] inputs = buffer.ToArray();
         int bufferIndex = inputs.Length - 1;
         int cmdIndex = command.inputData.Length - 1;
@@ -57,9 +56,12 @@ public static class InputRecognizer
 
     private static bool MatchInput(InputData actual, InputData expected, bool isStrict)
     {
-        bool backOK = expected.backCharge == 0 || actual.backCharge >= expected.backCharge;
-        bool downOK = expected.downCharge == 0 || actual.downCharge >= expected.downCharge;
-        if (backOK && downOK) return true;
+        bool requiresCharge = expected.backCharge > 0 || expected.downCharge > 0;
+        bool chargeOK = actual.backCharge >= expected.backCharge &&
+                        actual.downCharge >= expected.downCharge;
+
+        if (requiresCharge)
+            return chargeOK;
 
         if (isStrict)
         {
@@ -85,6 +87,8 @@ public static class InputRecognizer
 
     private static bool DirectionMatches(Direction actual, Direction expected)
     {
+        UnityEngine.Debug.Log(actual.ToString() + ", " + expected.ToString());
+
         // expected 방향이 포함 관계인지 loose 매칭
         return expected switch
         {

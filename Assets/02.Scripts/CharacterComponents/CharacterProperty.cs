@@ -43,7 +43,7 @@ public class CharacterProperty : MonoBehaviour
 
     public bool isStartUp;
     public bool isRecovery;
-    public bool isInputEnabled;
+    public bool isInputEnabled = true;
     public bool isSkillCancelable;
     public bool isInvincible;
     public bool isAirInvincible;

@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 /// <summary>
@@ -57,22 +58,27 @@ public abstract class CharacterState
         if (property == null || property.allSkills == null || property.allSkills.Count == 0)
             return false;
 
-        var buf = fsm.GetComponent<InputBuffer>()?.inputQueue;
+        var buf = input?.inputQueue;
         if (buf == null) return false;
 
         var matched = InputRecognizer.Recognize(buf, property.allSkills);
         if (matched == null) return false;
 
+        if (!ConditionsPass(property, matched))
+        {
+            return false;
+        }
+
         // 전이용 컨텍스트 저장
         property.characterStateTag = CharacterStateTag.Skill;
-        property.currentSkill = matched;            // ▼ CharacterProperty에 필드 추가(아래 3번)
+        property.currentSkill = matched;
         fsm.TransitionTo("Skill");
         return true;
     }
 
     protected void ReturnToNeutralPose()
     {
-        var d = fsm.GetComponent<InputBuffer>()?.LastInput.direction ?? Direction.Neutral;
+        var d = input?.LastInput.direction ?? Direction.Neutral;
 
         // 착지 여부부터 확인
         if (!phys.isGrounded)
@@ -124,8 +130,19 @@ public abstract class CharacterState
 
     protected void Play(string clipName, System.Action onComplete = null)
     {
-        if (anim != null && !string.IsNullOrEmpty(clipName))
-            anim.Play(clipName, onComplete);
+        if (anim == null || string.IsNullOrEmpty(clipName))
+        {
+            Debug.LogWarning($"[State:{Name}] Invalid clip key");
+            return;
+        }
+        if (!anim.Play(clipName, onComplete))
+            Debug.LogWarning($"[State:{Name}] Failed to play '{clipName}'");
+    }
+
+    protected bool TryPlay(string clipKey, System.Action onComplete = null, bool loop = false)
+    {
+        if (anim == null || string.IsNullOrEmpty(clipKey)) return false;
+        return anim.Play(clipKey, onComplete, loop);
     }
 
     protected bool Reached(int frames) => elapsedFrames >= frames;
@@ -141,4 +158,26 @@ public abstract class CharacterState
     public virtual void HandleHit(HitData hit) { }
     public virtual void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
     public virtual void HandleThrow(PhysicsEntity atk, PhysicsEntity def, CollisionData cd) { }
+
+    static bool ConditionsPass(CharacterProperty prop, Skill_SO skill)
+    {
+        var conds = skill.conditions;
+        if (conds == null || conds.Length == 0) return true;
+
+        for (int i = 0; i < conds.Length; i++)
+        {
+            bool ok = true;
+            // currentSkill 일치 요구
+            if (conds[i].currentSkill != null && prop.currentSkill != conds[i].currentSkill)
+                ok = false;
+
+            // 상태 태그 일치 요구
+            if (conds[i].currentCharacterState != CharacterStateTag.None &&
+                prop.characterStateTag != conds[i].currentCharacterState)
+                ok = false;
+
+            if (ok) return true; // 하나라도 맞으면 통과
+        }
+        return false;
+    }
 }

@@ -1,3 +1,4 @@
+using NUnit;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,7 +34,20 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
                     if (e.isGravityOn && !e.isGrounded)
                         e.Velocity += Vector2.down * gravity * TickMaster.TICK_INTERVAL;
                     e.Position += e.Velocity * TickMaster.TICK_INTERVAL;
-                    // (착지 판정 유지)
+
+                    if (e.Position.y <= 0f)
+                    {
+                        if (!e.isGrounded)
+                        {
+                            e.isGrounded = true;
+                            e.Position = new Vector2(e.Position.x, 0f);
+                            e.Velocity = new Vector2(e.Velocity.x, 0f);
+                        }
+                    }
+                    else
+                    {
+                        e.isGrounded = false;
+                    }
                     break;
 
                 case PhysicsMode.Kinematic:

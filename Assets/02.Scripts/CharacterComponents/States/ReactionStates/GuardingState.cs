@@ -34,7 +34,7 @@ public class GuardingState : CharacterState
     // 가드 중 맞으면 Blockstun으로
     public override void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)
     {
-        fsm.TransitionTo("Blockstun");
+        fsm.TransitionTo("GuardHit");
     }
 
     protected override void OnExit() { }

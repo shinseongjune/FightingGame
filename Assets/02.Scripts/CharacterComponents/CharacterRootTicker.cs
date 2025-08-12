@@ -51,11 +51,11 @@ public class CharacterRootTicker : MonoBehaviour, ITicker
         // 2) FSM(상태.OnTick) : 커맨드 인식/상태 전이/플래그 업데이트
         fsm?.Tick();
 
-        // 3) 스킬/박스 스케줄 처리 (현재 프레임의 생성/소멸)
-        boxApplier?.Tick();
-
-        // 4) 애니메이션 프레임 전진(Playables 기반)
+        // 3) 애니메이션 프레임 전진(Playables 기반)
         anim?.Tick();
+
+        // 4) 스킬/박스 스케줄 처리 (현재 프레임의 생성/소멸)
+        boxApplier?.Tick();
 
         // 5) 충돌 처리(본인 관점 우선순위 필터링 등)
         resolver?.Tick();
