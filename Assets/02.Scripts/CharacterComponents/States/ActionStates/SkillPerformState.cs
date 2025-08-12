@@ -32,8 +32,6 @@ public class SkillPerformState : CharacterState
             return;
         }
 
-        boxApplier.ApplySkill(skill);
-
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
     }

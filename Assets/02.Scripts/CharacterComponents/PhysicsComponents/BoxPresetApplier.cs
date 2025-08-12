@@ -22,11 +22,6 @@ public class BoxPresetApplier : MonoBehaviour
         ClearAllBoxes(); 
     }
 
-    public void ApplySkill(Skill_SO skill)
-    {
-        ClearAllBoxes();
-    }
-
     public void ClearAllBoxes()
     {
         for (int i = currentBoxes.Count - 1; i >= 0; i--)
