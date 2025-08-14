@@ -14,7 +14,8 @@ public class TestGameManager : MonoBehaviour
     IEnumerator LoadAnimClips()
     {
         var keys = new List<string> { "TestIdle", "TestPunch", "TestFall",
-        "TestJumpUp", "TestLand", "TestWalkB", "TestWalkF" };
+        "TestJumpUp", "TestLand", "TestWalkB", "TestWalkF", "TestCrouch", "TestCrouchHit", "TestCrouchGuard",
+        };
         var task = AnimationClipLibrary.Instance.LoadAssetsAsync(keys);
 
         while (!task.IsCompleted)

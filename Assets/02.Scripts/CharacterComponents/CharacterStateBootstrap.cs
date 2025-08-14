@@ -12,7 +12,7 @@ public class CharacterStateBootstrap : MonoBehaviour
         fsm.RegisterState("WalkF", new WalkForwardState(fsm));
         fsm.RegisterState("WalkB", new WalkBackwardState(fsm));
 
-        fsm.RegisterState("JumpU", new JumpUpState(fsm));
+        fsm.RegisterState("JumpUp", new JumpUpState(fsm));
         fsm.RegisterState("JumpF", new JumpForwardState(fsm));
         fsm.RegisterState("JumpB", new JumpBackwardState(fsm));
         fsm.RegisterState("Fall", new FallState(fsm));

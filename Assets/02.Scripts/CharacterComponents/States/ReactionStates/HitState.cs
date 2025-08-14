@@ -3,6 +3,7 @@ using UnityEngine;
 public class HitGroundState : CharacterState
 {
     private int remain;
+    private bool crouchHit;
 
     public HitGroundState(CharacterFSM f) : base(f) { }
 
@@ -17,11 +18,19 @@ public class HitGroundState : CharacterState
         // 자세/물리
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
-        phys.SetPose(CharacterStateTag.Hit);
 
-        // 애니
-        Play(animCfg.GetClipKey(AnimKey.HitGround));
-        
+        var d = input?.LastInput.direction ?? Direction.Neutral;
+        crouchHit = phys.isGrounded && (d == Direction.Down || d == Direction.DownBack || d == Direction.DownForward);
+
+        phys.SetPose(crouchHit ? CharacterStateTag.Crouch : CharacterStateTag.Hit);
+
+        string clip = animCfg.animSet != null
+            ? animCfg.animSet.GetOrDefault(
+                crouchHit ? AnimKey.HitCrouch : AnimKey.HitGround,
+                animCfg.GetClipKey(AnimKey.HitGround))
+            : animCfg.GetClipKey(AnimKey.HitGround);
+        Play(clip);
+
         // 경직/넉백 적용
         remain = Mathf.Max(1, property.pendingHitstunFrames);
         if (property.pendingKnockback != Vector2.zero)
@@ -93,6 +102,7 @@ public class HitAirState : CharacterState
 public class BlockstunState : CharacterState
 {
     private int remain;
+    private bool crouchGuard;
 
     public BlockstunState(CharacterFSM f) : base(f) { }
     public override CharacterStateTag? StateTag => CharacterStateTag.Hit_Guard;
@@ -104,14 +114,23 @@ public class BlockstunState : CharacterState
 
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true; // 공중 가드라면 공중 포즈를 따로 쓸 수도 있음
-        phys.SetPose(CharacterStateTag.Guarding);
 
-        Play(animCfg.GetClipKey(AnimKey.GuardHit));
+        var d = input?.LastInput.direction ?? Direction.Neutral;
+        crouchGuard = phys.isGrounded && (d == Direction.Down || d == Direction.DownBack || d == Direction.DownForward);
+
+        phys.SetPose(crouchGuard ? CharacterStateTag.Crouch : CharacterStateTag.Idle);
+
+        string clip = animCfg.animSet != null
+            ? animCfg.animSet.GetOrDefault(
+                crouchGuard ? AnimKey.GuardHitCrouch : AnimKey.GuardHit,
+                animCfg.GetClipKey(AnimKey.GuardHit))
+            : animCfg.GetClipKey(AnimKey.GuardHit);
+        Play(clip);
 
         remain = Mathf.Max(1, property.pendingBlockstunFrames);
         property.pendingBlockstunFrames = 0;
 
-        // 가드시 살짝 미끄러짐(선택)
+        // 가드시 살짝 미끄러짐
         float slideDir = property.isFacingRight ? -1f : +1f;
         phys.Velocity = new Vector2(2.0f * slideDir, 0f);
     }

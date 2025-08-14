@@ -210,6 +210,12 @@ public class CollisionResolver : MonoBehaviour, ITicker
             var defFSM = def.GetComponent<CharacterFSM>();
             defFSM?.TransitionTo("Knockdown"); // 혹은 HardKnockdown 규칙
         }
+        else
+        {
+            var defFSM = def.GetComponent<CharacterFSM>();
+            if (def.isGrounded) defFSM?.TransitionTo("HitGround");
+            else defFSM?.TransitionTo("HitAir");
+        }
 
         // 수신자 현재 상태에도 훅
         var defState = def.GetComponent<CharacterFSM>()?.Current;

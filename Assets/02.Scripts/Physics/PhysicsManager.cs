@@ -28,6 +28,14 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
             g?.OnFreeze(e); // 상태 동기화
             if (g != null && g.frozen && g.freezePhysics) { e.transform.position = e.Position; continue; }
 
+            // 만약을 위한 속도 제한
+            float maxFall = -20f;
+            float maxAirSpeed = 4.0f;
+            e.Velocity = new Vector2(
+                Mathf.Clamp(e.Velocity.x, -maxAirSpeed, maxAirSpeed),
+                Mathf.Max(e.Velocity.y, maxFall)
+            );
+
             switch (e.mode)
             {
                 case PhysicsMode.Normal:
@@ -41,12 +49,21 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
                         {
                             e.isGrounded = true;
                             e.Position = new Vector2(e.Position.x, 0f);
-                            e.Velocity = new Vector2(e.Velocity.x, 0f);
+                            e.Velocity = Vector2.zero;
                         }
                     }
                     else
                     {
                         e.isGrounded = false;
+                    }
+
+                    if (e.isGrounded)
+                    {
+                        // 만약을 위한 마찰 처리
+                        e.Velocity = new Vector2(
+                            Mathf.MoveTowards(e.Velocity.x, 0f, /*groundFriction*/ 30f * TickMaster.TICK_INTERVAL),
+                            0f
+                        );
                     }
                     break;
 

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class BaseJumpState : CharacterState
 {
-    protected float jumpSpeed = 12f;
-    protected float horizSpeed = 4.5f;
+    protected float jumpSpeed = 7.5f;
+    protected float horizSpeed = 2.8f;
 
     protected BaseJumpState(CharacterFSM f) : base(f) { }
 

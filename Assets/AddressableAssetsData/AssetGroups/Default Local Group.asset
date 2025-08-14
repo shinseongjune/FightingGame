@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 0d609dc872291d44a9eed5b7094cd319
   m_SerializeEntries:
+  - m_GUID: 0a5e3ad55dc517f4391603f14380c30f
+    m_Address: TestCrouchGuard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34f6d56a3b405854db8fe800d3b7a028
     m_Address: TestPunch
     m_ReadOnly: 0
@@ -22,6 +27,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b2c5e6af22c938448163c4118851fc6
     m_Address: TestLand
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f4c2fe1d6f5db84db554f8c7b1813fd
+    m_Address: TestCrouchHit
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -37,6 +47,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 96c7e1f8733f45b4ca981c43f15800d6
     m_Address: TestWalkB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f17709ec8e0a814287c836f28552f18
+    m_Address: TestCrouch
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
