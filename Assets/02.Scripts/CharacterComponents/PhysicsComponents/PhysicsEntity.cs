@@ -17,17 +17,23 @@ public class PhysicsEntity : MonoBehaviour
 
     // 현재 활성 bodybox
     public BoxComponent currentBodyBox;
+    // 현재 활성 hurtbox
+    public List<BoxComponent> currentHurtBoxes;
     // 현재 활성 wiffbox
     public List<BoxComponent> currentWhiffBoxes;
 
+
     // 자세별 바디박스 프리셋
     public BoxComponent idleBodyBox;
+    public List<BoxComponent> idleHurtBoxes;
     public List<BoxComponent> idleWhiffBoxes;
 
     public BoxComponent crouchBodyBox;
+    public List<BoxComponent> crouchHurtBoxes;
     public List<BoxComponent> crouchWhiffBoxes;
 
     public BoxComponent jumpBodyBox;
+    public List<BoxComponent> jumpHurtBoxes;
     public List<BoxComponent> jumpWhiffBoxes;
 
     public BoxComponent downBodyBox;
@@ -44,6 +50,30 @@ public class PhysicsEntity : MonoBehaviour
     public PhysicsEntity followTarget;
     public Vector2 followOffset;
 
+    // 내부: 이전에 등록했던 기본 허트박스 추적용
+    private readonly List<BoxComponent> _registeredDefaultHurt = new();
+
+    void Awake()
+    {
+        // 캐릭터 프리팹에 미리 박스들을 붙여뒀다면 owner를 보정
+        AssignOwnerIfMissing(idleBodyBox);
+        AssignOwnerIfMissing(crouchBodyBox);
+        AssignOwnerIfMissing(jumpBodyBox);
+        AssignOwnerIfMissing(downBodyBox);
+        AssignOwnerIfMissing(idleWhiffBoxes);
+        AssignOwnerIfMissing(crouchWhiffBoxes);
+        AssignOwnerIfMissing(jumpWhiffBoxes);
+        AssignOwnerIfMissing(idleHurtBoxes);
+        AssignOwnerIfMissing(crouchHurtBoxes);
+        AssignOwnerIfMissing(jumpHurtBoxes);
+    }
+
+    void OnDisable()
+    {
+        // 기본 허트박스 등록 해제(안전)
+        UnregisterDefaultHurt();
+    }
+
     public void SetPose(CharacterStateTag state)
     {
         switch (state)
@@ -51,23 +81,33 @@ public class PhysicsEntity : MonoBehaviour
             case CharacterStateTag.Idle:
                 currentBodyBox = idleBodyBox;
                 currentWhiffBoxes = idleWhiffBoxes;
+                currentHurtBoxes = idleHurtBoxes;
                 break;
+
             case CharacterStateTag.Crouch:
                 currentBodyBox = crouchBodyBox;
                 currentWhiffBoxes = crouchWhiffBoxes;
+                currentHurtBoxes = crouchHurtBoxes;
                 break;
+
             case CharacterStateTag.Jump_Up:
             case CharacterStateTag.Jump_Forward:
             case CharacterStateTag.Jump_Backward:
                 currentBodyBox = jumpBodyBox;
                 currentWhiffBoxes = jumpWhiffBoxes;
+                currentHurtBoxes = jumpHurtBoxes;
                 break;
+
             case CharacterStateTag.Knockdown:
             case CharacterStateTag.HardKnockdown:
                 currentBodyBox = downBodyBox;
                 currentWhiffBoxes = null;
+                currentHurtBoxes = null;
                 break;
         }
+
+        // 자세가 바뀔 때마다 기본 허트박스 세트를 새로 적용
+        ApplyDefaultBoxes();
     }
 
     // 편의 API
@@ -99,5 +139,63 @@ public class PhysicsEntity : MonoBehaviour
         Velocity = launchVelocity;
         collisionsEnabled = reenableCollisions;
         receiveHits = true;
+    }
+
+    // --------- 내부 도우미 ---------
+
+    void ApplyDefaultBoxes()
+    {
+        // 1) 이전 허트박스 해제
+        UnregisterDefaultHurt();
+
+        // 2) 새 허트박스 세트 등록
+        if (currentHurtBoxes != null)
+        {
+            foreach (var hb in currentHurtBoxes)
+            {
+                if (hb == null) continue;
+
+                // 타입 보정(프리팹에서 틀렸을 수 있으니 안전빵)
+                hb.type = BoxType.Hurt;
+
+                // owner 보정
+                if (hb.owner == null) hb.owner = this;
+
+                // BoxManager에 등록
+                BoxManager.Instance?.Register(hb);
+                _registeredDefaultHurt.Add(hb);
+            }
+        }
+
+        // 3) 바디박스는 기본적으로 충돌 밀치기용이거나 디버그용이라
+        //    필요 시 여기서 등록/관리 가능. (현재 시스템에선 AABB 충돌엔 Body 미사용)
+        if (currentBodyBox != null)
+        {
+            if (currentBodyBox.owner == null) currentBodyBox.owner = this;
+        }
+    }
+
+    void UnregisterDefaultHurt()
+    {
+        if (_registeredDefaultHurt.Count == 0) return;
+        for (int i = _registeredDefaultHurt.Count - 1; i >= 0; i--)
+        {
+            var hb = _registeredDefaultHurt[i];
+            if (hb != null)
+                BoxManager.Instance?.Unregister(hb);
+        }
+        _registeredDefaultHurt.Clear();
+    }
+
+    void AssignOwnerIfMissing(BoxComponent box)
+    {
+        if (box != null && box.owner == null) box.owner = this;
+    }
+
+    void AssignOwnerIfMissing(List<BoxComponent> list)
+    {
+        if (list == null) return;
+        foreach (var b in list)
+            if (b != null && b.owner == null) b.owner = this;
     }
 }

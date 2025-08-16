@@ -2686,6 +2686,9 @@ GameObject:
   - component: {fileID: 9137086289718870255}
   - component: {fileID: 8666513642202559834}
   - component: {fileID: 1822777667858561823}
+  - component: {fileID: 1182574216671460440}
+  - component: {fileID: 8918563089989525190}
+  - component: {fileID: 8018762718284128696}
   m_Layer: 0
   m_Name: TestMan
   m_TagString: Untagged
@@ -2898,12 +2901,19 @@ MonoBehaviour:
   isGrounded: 0
   groundY: 0
   currentBodyBox: {fileID: 0}
+  currentHurtBoxes: []
   currentWhiffBoxes: []
   idleBodyBox: {fileID: 1822777667858561823}
+  idleHurtBoxes:
+  - {fileID: 1182574216671460440}
   idleWhiffBoxes: []
   crouchBodyBox: {fileID: 1822777667858561823}
+  crouchHurtBoxes:
+  - {fileID: 8918563089989525190}
   crouchWhiffBoxes: []
   jumpBodyBox: {fileID: 1822777667858561823}
+  jumpHurtBoxes:
+  - {fileID: 8018762718284128696}
   jumpWhiffBoxes: []
   downBodyBox: {fileID: 1822777667858561823}
   mode: 0
@@ -2960,6 +2970,54 @@ MonoBehaviour:
   offset: {x: 0, y: 0.7}
   size: {x: 0.6, y: 1.4}
   owner: {fileID: 1230523323767490591}
+--- !u!114 &1182574216671460440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  offset: {x: 0, y: 0.7}
+  size: {x: 0.6, y: 1.4}
+  owner: {fileID: 0}
+--- !u!114 &8918563089989525190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  offset: {x: 0, y: 0.7}
+  size: {x: 0.6, y: 1.4}
+  owner: {fileID: 0}
+--- !u!114 &8018762718284128696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  offset: {x: 0, y: 0.7}
+  size: {x: 0.6, y: 1.4}
+  owner: {fileID: 0}
 --- !u!1 &4821643885564524650
 GameObject:
   m_ObjectHideFlags: 0

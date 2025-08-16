@@ -40,5 +40,8 @@ public class TestGameManager : MonoBehaviour
         TickMaster.Instance.Register(PhysicsManager.Instance);
 
         testMan.GetComponent<CharacterProperty>().isFacingRight = true;
+
+        GameObject testEnemy = Instantiate(prefab_TestMan);
+        testEnemy.transform.position = new Vector3(1, 0, 0);
     }
 }
