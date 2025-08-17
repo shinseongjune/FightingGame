@@ -85,4 +85,19 @@ public class CharacterProperty : MonoBehaviour
     {
         driveGauge = Mathf.Min(driveGauge + amount, maxDriveGauge);
     }
+
+    public void SetFacing(bool facingRight)
+    {
+        if (isFacingRight == facingRight) return;
+        isFacingRight = facingRight;
+
+        if (facingRight)
+        {
+            transform.eulerAngles = new Vector3(0, 90, 0);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, -90, 0);
+        }
+    }
 }

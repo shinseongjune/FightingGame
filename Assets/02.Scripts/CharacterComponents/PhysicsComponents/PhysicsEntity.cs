@@ -9,6 +9,8 @@ public enum PhysicsMode
 
 public class PhysicsEntity : MonoBehaviour
 {
+    public CharacterProperty property;
+
     public Vector2 Position;
     public Vector2 Velocity;
     public bool isGravityOn = true;
@@ -55,6 +57,8 @@ public class PhysicsEntity : MonoBehaviour
 
     void Awake()
     {
+        property = GetComponent<CharacterProperty>();
+
         // 캐릭터 프리팹에 미리 박스들을 붙여뒀다면 owner를 보정
         AssignOwnerIfMissing(idleBodyBox);
         AssignOwnerIfMissing(crouchBodyBox);

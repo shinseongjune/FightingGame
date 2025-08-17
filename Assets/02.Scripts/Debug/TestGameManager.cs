@@ -26,6 +26,7 @@ public class TestGameManager : MonoBehaviour
         // 완료 후 진행
 
         GameObject testMan = Instantiate(prefab_TestMan);
+        GameObject testEnemy = Instantiate(prefab_TestMan);
 
         var boxes = testMan.GetComponents<BoxComponent>();
 
@@ -34,14 +35,23 @@ public class TestGameManager : MonoBehaviour
             BoxManager.Instance.Register(box);
         }
 
+        var enemyBoxes = testEnemy.GetComponents<BoxComponent>();
+
+        foreach (var box in enemyBoxes)
+        {
+            BoxManager.Instance.Register(box);
+        }
+
         PhysicsManager.Instance.Register(testMan.GetComponent<PhysicsEntity>());
+        PhysicsManager.Instance.Register(testEnemy.GetComponent<PhysicsEntity>());
 
         TickMaster.Instance.Register(BoxManager.Instance);
         TickMaster.Instance.Register(PhysicsManager.Instance);
 
-        testMan.GetComponent<CharacterProperty>().isFacingRight = true;
+        testMan.transform.position = new Vector3(-1, 0, 0);
+        testMan.GetComponent<CharacterProperty>().SetFacing(true);
 
-        GameObject testEnemy = Instantiate(prefab_TestMan);
         testEnemy.transform.position = new Vector3(1, 0, 0);
+        testEnemy.GetComponent<CharacterProperty>().SetFacing(false);
     }
 }

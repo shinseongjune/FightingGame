@@ -11,8 +11,11 @@ public class BoxComponent : MonoBehaviour
 
     public Rect GetAABB()
     {
-        Vector2 pos = (Vector2)owner.Position + offset;
-        return new Rect(pos - size * 0.5f, size);
+        var pos = owner.Position;
+        int sign = owner.property.isFacingRight ? 1 : -1;
+        Vector2 center = new Vector2(pos.x + sign * offset.x, pos.y + offset.y);
+        Vector2 half = size * 0.5f;
+        return new Rect(center - half, size);
     }
 
     public Vector2 GetHitPoint(BoxComponent other)
