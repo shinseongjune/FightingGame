@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 public enum PhysicsMode
 {
     Normal,     // 중력+이동 처리 O
@@ -7,8 +8,16 @@ public enum PhysicsMode
     Carried     // 특정 타겟을 따라감(공격자 손 위치 등)
 }
 
+
 public class PhysicsEntity : MonoBehaviour
 {
+    [System.Serializable] public struct BoxNum { public Vector2 center; public Vector2 size; }
+
+    [Header("Default Box Numbers")]
+    public BoxNum idleBody, crouchBody, jumpBody, downBody;
+    public List<BoxNum> idleHurts, crouchHurts, jumpHurts;
+    public List<BoxNum> idleWhiffs, crouchWhiffs, jumpWhiffs;
+
     public CharacterProperty property;
 
     public Vector2 Position;
@@ -59,23 +68,55 @@ public class PhysicsEntity : MonoBehaviour
     {
         property = GetComponent<CharacterProperty>();
 
-        // 캐릭터 프리팹에 미리 박스들을 붙여뒀다면 owner를 보정
-        AssignOwnerIfMissing(idleBodyBox);
-        AssignOwnerIfMissing(crouchBodyBox);
-        AssignOwnerIfMissing(jumpBodyBox);
-        AssignOwnerIfMissing(downBodyBox);
-        AssignOwnerIfMissing(idleWhiffBoxes);
-        AssignOwnerIfMissing(crouchWhiffBoxes);
-        AssignOwnerIfMissing(jumpWhiffBoxes);
-        AssignOwnerIfMissing(idleHurtBoxes);
-        AssignOwnerIfMissing(crouchHurtBoxes);
-        AssignOwnerIfMissing(jumpHurtBoxes);
+        BuildDefaultBoxesFromNumbers();
+    }
+    void OnEnable()
+    {
+        Position = (Vector2)transform.position;
+        isGrounded = Position.y <= groundY + 1e-3f;
+        PhysicsManager.Instance?.Register(this);
     }
 
     void OnDisable()
     {
+        PhysicsManager.Instance?.Unregister(this);
         // 기본 허트박스 등록 해제(안전)
         UnregisterDefaultHurt();
+    }
+
+    void BuildDefaultBoxesFromNumbers()
+    {
+        // Body들
+        if (idleBody.size != Vector2.zero) idleBodyBox = MakeBox("Body_Idle", BoxType.Body, idleBody);
+        if (crouchBody.size != Vector2.zero) crouchBodyBox = MakeBox("Body_Crouch", BoxType.Body, crouchBody);
+        if (jumpBody.size != Vector2.zero) jumpBodyBox = MakeBox("Body_Jump", BoxType.Body, jumpBody);
+        if (downBody.size != Vector2.zero) downBodyBox = MakeBox("Body_Down", BoxType.Body, downBody);
+
+        // Hurt/Whiff 목록
+        idleHurtBoxes = MakeList("Hurt_Idle", BoxType.Hurt, idleHurts);
+        crouchHurtBoxes = MakeList("Hurt_Crouch", BoxType.Hurt, crouchHurts);
+        jumpHurtBoxes = MakeList("Hurt_Jump", BoxType.Hurt, jumpHurts);
+
+        idleWhiffBoxes = MakeList("Whiff_Idle", BoxType.Hit, idleWhiffs);
+        crouchWhiffBoxes = MakeList("Whiff_Crouch", BoxType.Hit, crouchWhiffs);
+        jumpWhiffBoxes = MakeList("Whiff_Jump", BoxType.Hit, jumpWhiffs);
+    }
+
+    BoxComponent MakeBox(string name, BoxType type, BoxNum num)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(transform, false);
+        var bc = go.AddComponent<BoxComponent>();
+        bc.owner = this; bc.type = type; bc.offset = num.center; bc.size = num.size;
+        return bc;
+    }
+
+    List<BoxComponent> MakeList(string prefix, BoxType type, List<BoxNum> nums)
+    {
+        var list = new List<BoxComponent>();
+        if (nums == null) return list;
+        for (int i = 0; i < nums.Count; i++) list.Add(MakeBox($"{prefix}_{i}", type, nums[i]));
+        return list;
     }
 
     public void SetPose(CharacterStateTag state)
@@ -113,6 +154,8 @@ public class PhysicsEntity : MonoBehaviour
         // 자세가 바뀔 때마다 기본 허트박스 세트를 새로 적용
         ApplyDefaultBoxes();
     }
+
+    public void SyncTransform() => transform.position = Position;
 
     // 편의 API
     public void EnterKinematic()

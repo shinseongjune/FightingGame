@@ -32,4 +32,6 @@ public struct InputData
     public AttackKey attack;
     public int backCharge;
     public int downCharge;
+
+    public bool isUsed;
 }

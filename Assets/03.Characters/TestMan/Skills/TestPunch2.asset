@@ -10,37 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a035117b5aaf5640817826b316697f1, type: 3}
-  m_Name: TestPunch
+  m_Name: TestPunch2
   m_EditorClassIdentifier: 
-  skillName: TestPunch
-  description: Test Basic Punch
+  skillName: 
+  description: 
   conditions:
   - currentSkill: {fileID: 0}
-    currentCharacterState: 1
-  - currentSkill: {fileID: 0}
-    currentCharacterState: 6
-  - currentSkill: {fileID: 0}
-    currentCharacterState: 7
+    currentCharacterState: 0
   command:
     inputData:
-    - direction: 0
+    - direction: 2
+      attack: 0
+      backCharge: 0
+      downCharge: 0
+      isUsed: 0
+    - direction: 7
+      attack: 0
+      backCharge: 0
+      downCharge: 0
+      isUsed: 0
+    - direction: 3
       attack: 1
       backCharge: 0
       downCharge: 0
       isUsed: 0
     isStrict: 0
-    maxFrameGap: 4
-  damageOnHit: 400
+    maxFrameGap: 15
+  damageOnHit: 500
   hitstunDuration: 4
   blockstunDuration: 4
   causesLaunch: 0
   causesKnockdown: 0
   hitLevel: 0
-  animationClipName: TestPunch
-  boxLifetimes:
-  - startFrame: 6
-    endFrame: 10
-    type: 1
-    box:
-      center: {x: 0.5, y: 1.1}
-      size: {x: 0.8, y: 0.3}
+  animationClipName: TestPunch2
+  boxLifetimes: []

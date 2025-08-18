@@ -31,6 +31,8 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour
 {
+    PhysicsEntity phys;
+
     public CharacterStateTag characterStateTag;
 
     [Header("Skill Settings")]
@@ -66,6 +68,14 @@ public class CharacterProperty : MonoBehaviour
     public int pendingBlockstunFrames;
     public Vector2 pendingKnockback;
 
+    // 공격 중복 충돌 문제 해결용
+    public int attackInstanceId;
+
+    private void Awake()
+    {
+        phys = GetComponent<PhysicsEntity>();
+    }
+
     public void SetHitstun(int frames, Vector2 kb)
     {
         pendingHitstunFrames = frames;
@@ -91,13 +101,18 @@ public class CharacterProperty : MonoBehaviour
         if (isFacingRight == facingRight) return;
         isFacingRight = facingRight;
 
-        if (facingRight)
-        {
-            transform.eulerAngles = new Vector3(0, 90, 0);
-        }
-        else
-        {
-            transform.eulerAngles = new Vector3(0, -90, 0);
-        }
+        var e = transform.localEulerAngles;
+        e.y = facingRight ? 90 : -90;
+
+        transform.localEulerAngles = e;
+
+        phys.SetPose(characterStateTag);
+    }
+
+    public void SpawnAt(Vector2 worldPos, bool initialFacing)
+    {
+        phys.Position = worldPos;
+        phys.SyncTransform();
+        SetFacing(initialFacing);
     }
 }

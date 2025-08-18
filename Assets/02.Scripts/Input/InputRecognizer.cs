@@ -1,94 +1,123 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class InputRecognizer
 {
+    private const int SAME_FRAME_DIRS_ALLOWED_DEFAULT = 1;
+
     public static Skill_SO Recognize(Queue<InputData> buffer, List<Skill_SO> skills)
     {
-        foreach (Skill_SO skill in skills)
+        // 스냅샷(복사본)
+        var inputs = buffer.ToArray();
+        RecognizerTrace.BeginFrame(inputs);
+
+        foreach (var skill in skills)
         {
-            if (Match(buffer, skill.command))
+            var attempt = RecognizerTrace.BeginAttempt(
+                skillName: skill.name,
+                maxGap: skill.command.maxFrameGap,
+                sameFrameDirsAllowed: SAME_FRAME_DIRS_ALLOWED_DEFAULT
+            );
+
+            if (TryMatchAndMark(inputs, skill.command, out var usedMask, attempt))
+            {
+                RecognizerTrace.Success(attempt);
+
+                // ★원본 Queue 갱신: usedMask가 true인 인덱스에 isUsed=true 설정
+                buffer.Clear();
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    if (usedMask[i])
+                    {
+                        var t = inputs[i];
+                        t.isUsed = true;
+                        inputs[i] = t; // 값형(struct)이라 재대입 필요
+                    }
+                    buffer.Enqueue(inputs[i]);
+                }
                 return skill;
+            }
         }
         return null;
     }
 
-    private static bool Match(Queue<InputData> buffer, SkillInputData command)
+    // 매칭 + 어떤 인덱스를 소비했는지 마스크로 리턴
+    private static bool TryMatchAndMark(InputData[] inputs, SkillInputData cmd, out bool[] used, RecognizerTrace.Attempt trace)
     {
-        if (command.inputData.Length == 0 || buffer.Count == 0)
-            return false;
-        InputData[] inputs = buffer.ToArray();
-        int bufferIndex = inputs.Length - 1;
-        int cmdIndex = command.inputData.Length - 1;
-        int gapCount = 0;
+        used = null;
+        if (cmd.inputData.Length == 0) { RecognizerTrace.Fail(trace, "Empty cmd"); return false; }
+        if (inputs.Length == 0) { RecognizerTrace.Fail(trace, "Empty buffer"); return false; }
 
-        // 공격 입력 먼저 검사
-        InputData? attackCmd = null;
+        // 1) 공격 앵커 찾기 (가장 나중 프레임)
+        var attackCmd = cmd.inputData[^1];
+        int attackIdx = FindAttackIndex(inputs, attackCmd);
+        if (attackIdx < 0) { RecognizerTrace.Fail(trace, "No attack"); return false; }
+        RecognizerTrace.MarkAttack(trace, attackIdx);
 
-        attackCmd = command.inputData[cmdIndex];
-        if (!MatchAttack(inputs, attackCmd.Value))
-            return false;
+        // (선택) 공격이 너무 오래되면 컷
+        const int ATTACK_WINDOW = 8;
+        if (inputs.Length - 1 - attackIdx > ATTACK_WINDOW) { RecognizerTrace.Fail(trace, "Attack too old"); return false; }
 
-        cmdIndex--; // 나머지는 방향 매칭용
+        int cmdIndex = cmd.inputData.Length - 2;
+        int bufferIndex = attackIdx;
+        int gap = 0;
+        int sameFrameDirsLeft = trace.sameFrameDirsAllowed;
+        var matched = new List<int> { attackIdx }; // 공격 프레임 소비
 
-        // 방향 입력 역순으로 검사
         while (cmdIndex >= 0 && bufferIndex >= 0)
         {
-            InputData input = inputs[bufferIndex];
-            InputData expected = command.inputData[cmdIndex];
+            var actual = inputs[bufferIndex];
+            var expected = cmd.inputData[cmdIndex];
+            bool isSameFrame = (bufferIndex == attackIdx);
 
-            if (MatchInput(input, expected, command.isStrict))
+            if (!actual.isUsed && MatchInput(actual, expected, cmd.isStrict))
             {
+                if (isSameFrame && sameFrameDirsLeft <= 0)
+                {
+                    bufferIndex--; // 같은 프레임은 다 썼으니 이전 프레임으로 이동
+                    continue;
+                }
+                matched.Add(bufferIndex);
+                RecognizerTrace.MarkMatch(trace, bufferIndex);
                 cmdIndex--;
-                gapCount = 0;
+                         if (isSameFrame) sameFrameDirsLeft--;
+                gap = 0; // ★ 매칭했으면 gap 리셋
             }
-            else
-            {
-                gapCount++;
-                if (gapCount > command.maxFrameGap)
-                    return false;
-            }
+            else if (++gap > cmd.maxFrameGap) { RecognizerTrace.Fail(trace, "Gap limit"); return false; }
+            else RecognizerTrace.MarkGap(trace, gap);
 
             bufferIndex--;
         }
+        if (cmdIndex >= 0) { RecognizerTrace.Fail(trace, "Ran out"); return false; }
 
-        return cmdIndex < 0;
+        // 3) 소비 마스크 구성
+        used = new bool[inputs.Length];
+        for (int i = 0; i < matched.Count; i++)
+            used[matched[i]] = true;
+
+        return true;
     }
 
-    private static bool MatchInput(InputData actual, InputData expected, bool isStrict)
+    private static int FindAttackIndex(InputData[] inputs, InputData attackCmd)
     {
-        bool requiresCharge = expected.backCharge > 0 || expected.downCharge > 0;
-        bool chargeOK = actual.backCharge >= expected.backCharge &&
-                        actual.downCharge >= expected.downCharge;
-
-        if (requiresCharge)
-            return chargeOK;
-
-        if (isStrict)
-        {
-            return actual.direction == expected.direction;
-        }
-        else
-        {
-            return DirectionMatches(actual.direction, expected.direction);
-        }
+        for (int i = inputs.Length - 1; i >= 0; --i)
+            if (!inputs[i].isUsed && (inputs[i].attack & attackCmd.attack) != 0) return i;
+        return -1;
     }
 
-    private static bool MatchAttack(InputData[] inputs, InputData attackCmd)
+    private static bool MatchInput(InputData actual, InputData expected, bool strict)
     {
-        for (int i = inputs.Length - 1; i >= 0; i--)
-        {
-            if ((inputs[i].attack & attackCmd.attack) != 0)
-            {
-                return true; // 공격 키만 확인
-            }
-        }
-        return false;
+        // 차지 먼저
+        if (expected.backCharge > 0 || expected.downCharge > 0)
+            return actual.backCharge >= expected.backCharge && actual.downCharge >= expected.downCharge;
+
+        return strict
+            ? actual.direction == expected.direction
+            : DirectionMatches(actual.direction, expected.direction);
     }
 
     private static bool DirectionMatches(Direction actual, Direction expected)
     {
-        UnityEngine.Debug.Log(actual.ToString() + ", " + expected.ToString());
-
         // expected 방향이 포함 관계인지 loose 매칭
         return expected switch
         {

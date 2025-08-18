@@ -55,6 +55,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4d87e2fb6276164882f6c3a0af039d3
+    m_Address: TestPunch2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f49b2f0f808c39a4c9c7eee557f9cd86
+    m_Address: TestHitGround
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc11c2e1f2244194f9029ebfc881ba6c
     m_Address: TestFall
     m_ReadOnly: 0

@@ -15,7 +15,7 @@ public class TestGameManager : MonoBehaviour
     {
         var keys = new List<string> { "TestIdle", "TestPunch", "TestFall",
         "TestJumpUp", "TestLand", "TestWalkB", "TestWalkF", "TestCrouch", "TestCrouchHit", "TestCrouchGuard",
-        };
+        "TestHitGround", "TestPunch2"};
         var task = AnimationClipLibrary.Instance.LoadAssetsAsync(keys);
 
         while (!task.IsCompleted)
@@ -48,10 +48,8 @@ public class TestGameManager : MonoBehaviour
         TickMaster.Instance.Register(BoxManager.Instance);
         TickMaster.Instance.Register(PhysicsManager.Instance);
 
-        testMan.transform.position = new Vector3(-1, 0, 0);
-        testMan.GetComponent<CharacterProperty>().SetFacing(true);
+        testMan.GetComponent<CharacterProperty>().SpawnAt(new Vector3(-1, 0, 0), true);
 
-        testEnemy.transform.position = new Vector3(1, 0, 0);
-        testEnemy.GetComponent<CharacterProperty>().SetFacing(false);
+        testEnemy.GetComponent<CharacterProperty>().SpawnAt(new Vector3(1, 0, 0), false);
     }
 }

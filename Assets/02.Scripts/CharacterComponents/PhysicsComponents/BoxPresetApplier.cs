@@ -29,7 +29,7 @@ public class BoxPresetApplier : MonoBehaviour
             var b = currentBoxes[i];
             if (b != null)
             {
-                BoxManager.Instance.Unregister(b);
+                if (BoxManager.Instance != null) BoxManager.Instance.Unregister(b);
                 Destroy(b.gameObject);
             }
         }

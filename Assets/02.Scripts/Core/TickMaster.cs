@@ -24,6 +24,8 @@ public class TickMaster : Singleton<TickMaster>
 
     void Update()
     {
+        if (GamePause.IsPaused) return;
+
         tickTimer += Time.deltaTime;
 
         int ticksThisFrame = 0;
@@ -45,5 +47,7 @@ public class TickMaster : Singleton<TickMaster>
             tickers.Remove(t);
         }
         pendingRemove.Clear();
+
+        RecognizerTrace.EndFrame();
     }
 }

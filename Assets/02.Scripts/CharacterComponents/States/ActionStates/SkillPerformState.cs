@@ -14,6 +14,8 @@ public class SkillPerformState : CharacterState
 
     protected override void OnEnter()
     {
+        property.attackInstanceId++;
+
         finished = false;
 
         skill = property.currentSkill;

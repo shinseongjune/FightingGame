@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 enum GuardPosture { Standing, Crouching, Airborne }
@@ -8,22 +9,19 @@ enum GuardPosture { Standing, Crouching, Airborne }
 [RequireComponent(typeof(PhysicsEntity))]
 public class CollisionResolver : MonoBehaviour, ITicker
 {
-    CharacterFSM fsm;
-    CharacterProperty prop;
     PhysicsEntity me;
-    InputBuffer input;
 
     // 이번 틱에 “나와 관련된” 충돌만 모아두는 큐
     readonly List<CollisionData> frameCollisions = new();
 
     private BoxManager boxManager;
 
+    // 중복 충돌 방지용
+    readonly HashSet<(PhysicsEntity atk, PhysicsEntity def, int inst)> hitOnce = new();
+
     void Awake()
     {
-        fsm = GetComponent<CharacterFSM>();
-        prop = GetComponent<CharacterProperty>();
         me = GetComponent<PhysicsEntity>();
-        input = GetComponent<InputBuffer>();
     }
 
     void OnEnable()
@@ -75,6 +73,11 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
             if (IsPair(cd, BoxType.Throw, BoxType.Hurt, out var atk, out var def))
             {
+                int inst = atk.GetComponentInParent<CharacterProperty>()?.attackInstanceId ?? 0;
+                var key = (atk, def, inst);
+                if (hitOnce.Contains(key)) continue;
+                hitOnce.Add(key);
+
                 if (def == me)
                 {
                     // 피격자 쪽 처리
@@ -101,6 +104,11 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
             if (IsPair(cd, BoxType.Hit, BoxType.Hurt, out var attacker, out var defender))
             {
+                int inst = attacker.GetComponentInParent<CharacterProperty>()?.attackInstanceId ?? 0;
+                var key = (attacker, defender, inst);
+                if (hitOnce.Contains(key)) continue;
+                hitOnce.Add(key);
+
                 var atkProp = attacker.GetComponent<CharacterProperty>();
                 var skill = atkProp?.currentSkill;
                 var level = skill != null ? skill.hitLevel : HitLevel.Mid;
