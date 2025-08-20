@@ -92,6 +92,7 @@ public class BoxPresetApplier : MonoBehaviour
         bc.type = life.type;
         bc.offset = life.box.center;
         bc.owner = entity;
+        bc.sourceSkill = activeSkill;
 
         currentBoxes.Add(bc);
         BoxManager.Instance.Register(bc);

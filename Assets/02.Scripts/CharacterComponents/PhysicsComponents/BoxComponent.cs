@@ -8,6 +8,7 @@ public class BoxComponent : MonoBehaviour
     public Vector2 offset;
     public Vector2 size;
     public PhysicsEntity owner;
+    public Skill_SO sourceSkill;
 
     public Rect GetAABB()
     {
