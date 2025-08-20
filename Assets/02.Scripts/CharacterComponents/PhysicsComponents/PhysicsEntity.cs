@@ -233,16 +233,4 @@ public class PhysicsEntity : MonoBehaviour
         }
         _registeredDefaultHurt.Clear();
     }
-
-    void AssignOwnerIfMissing(BoxComponent box)
-    {
-        if (box != null && box.owner == null) box.owner = this;
-    }
-
-    void AssignOwnerIfMissing(List<BoxComponent> list)
-    {
-        if (list == null) return;
-        foreach (var b in list)
-            if (b != null && b.owner == null) b.owner = this;
-    }
 }

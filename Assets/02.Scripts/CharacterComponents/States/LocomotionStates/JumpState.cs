@@ -32,16 +32,19 @@ public abstract class BaseJumpState : CharacterState
 public class JumpUpState : BaseJumpState
 {
     public JumpUpState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Jump_Up;
 }
 
 public class JumpForwardState : BaseJumpState
 {
     public JumpForwardState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Jump_Forward;
     protected override float Horizontal() => +horizSpeed;
 }
 
 public class JumpBackwardState : BaseJumpState
 {
     public JumpBackwardState(CharacterFSM f) : base(f) { }
+    public override CharacterStateTag? StateTag => CharacterStateTag.Jump_Backward;
     protected override float Horizontal() => -horizSpeed;
 }

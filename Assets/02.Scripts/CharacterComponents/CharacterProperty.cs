@@ -22,6 +22,7 @@ public enum CharacterStateTag
     HardKnockdown,
     DriveImpact,
     DriveRush,
+    DriveRushSkill,
     DriveParry,
     DriveReversal,
     Throw,
@@ -98,7 +99,7 @@ public class CharacterProperty : MonoBehaviour
 
     public void SetFacing(bool facingRight)
     {
-        if (isFacingRight == facingRight) return;
+        //if (isFacingRight == facingRight) return;
         isFacingRight = facingRight;
 
         var e = transform.localEulerAngles;

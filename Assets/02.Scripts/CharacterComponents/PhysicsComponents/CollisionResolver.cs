@@ -201,6 +201,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
         var defProp = def.GetComponent<CharacterProperty>();
         var atkProp = atk.GetComponent<CharacterProperty>();
         var skill = atkProp?.currentSkill;
+        var defFSM = def.GetComponent<CharacterFSM>();
 
         int hitstun = skill != null ? skill.hitstunDuration : 12;
 
@@ -215,12 +216,10 @@ public class CollisionResolver : MonoBehaviour, ITicker
         // 다운 유발이면 상태 전이까지 처리(공중/지상 분기)
         if (skill != null && skill.causesKnockdown)
         {
-            var defFSM = def.GetComponent<CharacterFSM>();
             defFSM?.TransitionTo("Knockdown"); // 혹은 HardKnockdown 규칙
         }
         else
         {
-            var defFSM = def.GetComponent<CharacterFSM>();
             if (def.isGrounded) defFSM?.TransitionTo("HitGround");
             else defFSM?.TransitionTo("HitAir");
         }

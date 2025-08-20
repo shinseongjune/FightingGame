@@ -21,7 +21,9 @@ public class WalkForwardState : CharacterState
 
         var d = input != null ? input.LastInput.direction : Direction.Neutral;
         if (d != Direction.Forward) { Transition("Idle"); return; }
-        phys.Position += new Vector2(moveSpeed * TickMaster.TICK_INTERVAL, 0f);
+
+        int sx = property.isFacingRight ? 1 : -1; // 방향 보정
+        phys.Position += new Vector2(sx * moveSpeed * TickMaster.TICK_INTERVAL, 0f);
     }
     protected override void OnExit() { }
 }
@@ -47,7 +49,9 @@ public class WalkBackwardState : CharacterState
 
         var d = input != null ? input.LastInput.direction : Direction.Neutral;
         if (d != Direction.Back) { Transition("Idle"); return; }
-        phys.Position += new Vector2(-moveSpeed * TickMaster.TICK_INTERVAL, 0f);
+
+        int sx = property.isFacingRight ? 1 : -1; // 방향 보정
+        phys.Position += new Vector2(sx * -moveSpeed * TickMaster.TICK_INTERVAL, 0f);
     }
     protected override void OnExit() { }
 }

@@ -42,5 +42,5 @@ MonoBehaviour:
     endFrame: 10
     type: 1
     box:
-      center: {x: 0.5, y: 1.1}
-      size: {x: 0.8, y: 0.3}
+      center: {x: 0.4, y: 1.1}
+      size: {x: 1, y: 0.3}
