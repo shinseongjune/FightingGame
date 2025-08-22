@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 
 public static class InputRecognizer
 {
@@ -126,11 +125,11 @@ public static class InputRecognizer
             Direction.Up => actual is Direction.Up or Direction.UpForward or Direction.UpBack,
             Direction.Down => actual is Direction.Down or Direction.DownForward or Direction.DownBack,
 
-            // 대각선: 구성 요소를 포함하면 허용
-            Direction.UpForward => actual is Direction.Up or Direction.Forward or Direction.UpForward,
-            Direction.UpBack => actual is Direction.Up or Direction.Back or Direction.UpBack,
-            Direction.DownForward => actual is Direction.Down or Direction.Forward or Direction.DownForward,
-            Direction.DownBack => actual is Direction.Down or Direction.Back or Direction.DownBack,
+            // 대각선은 철저하게 매칭함 (216 등 잘못된 커맨드 입력 방지)
+            Direction.UpForward => actual is Direction.UpForward,
+            Direction.UpBack => actual is Direction.UpBack,
+            Direction.DownForward => actual is Direction.DownForward,
+            Direction.DownBack => actual is Direction.DownBack,
 
             Direction.Neutral => actual is Direction.Neutral,
 

@@ -16,7 +16,11 @@ MonoBehaviour:
   description: 
   conditions:
   - currentSkill: {fileID: 0}
-    currentCharacterState: 0
+    currentCharacterState: 1
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 6
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 7
   command:
     inputData:
     - direction: 2
@@ -30,6 +34,11 @@ MonoBehaviour:
       downCharge: 0
       isUsed: 0
     - direction: 3
+      attack: 0
+      backCharge: 0
+      downCharge: 0
+      isUsed: 0
+    - direction: 0
       attack: 1
       backCharge: 0
       downCharge: 0
@@ -37,10 +46,16 @@ MonoBehaviour:
     isStrict: 0
     maxFrameGap: 15
   damageOnHit: 500
-  hitstunDuration: 4
-  blockstunDuration: 4
+  hitstunDuration: 24
+  blockstunDuration: 5
   causesLaunch: 0
   causesKnockdown: 0
   hitLevel: 0
   animationClipName: TestPunch2
-  boxLifetimes: []
+  boxLifetimes:
+  - startFrame: 18
+    endFrame: 28
+    type: 1
+    box:
+      center: {x: 0.4, y: 1.1}
+      size: {x: 1, y: 1}

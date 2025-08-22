@@ -31,7 +31,7 @@ MonoBehaviour:
     isStrict: 0
     maxFrameGap: 4
   damageOnHit: 400
-  hitstunDuration: 4
+  hitstunDuration: 12
   blockstunDuration: 4
   causesLaunch: 0
   causesKnockdown: 0
