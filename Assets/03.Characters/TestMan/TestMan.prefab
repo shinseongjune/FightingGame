@@ -2683,12 +2683,6 @@ GameObject:
   - component: {fileID: 2128112782071567512}
   - component: {fileID: 2214678341692705477}
   - component: {fileID: 1230523323767490591}
-  - component: {fileID: 9137086289718870255}
-  - component: {fileID: 8666513642202559834}
-  - component: {fileID: 1822777667858561823}
-  - component: {fileID: 1182574216671460440}
-  - component: {fileID: 8918563089989525190}
-  - component: {fileID: 8018762718284128696}
   m_Layer: 0
   m_Name: TestMan
   m_TagString: Untagged
@@ -2861,6 +2855,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxBufferSize: 30
+  captureFromDevice: 1
+  respectCharacterInputLock: 1
+  enqueueNeutralWhenLocked: 1
 --- !u!114 &2128112782071567512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2898,23 +2895,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleBody:
-    center: {x: 0, y: 0.6}
-    size: {x: 0.6, y: 1.4}
+    center: {x: 0, y: 0.4}
+    size: {x: 0.4, y: 0.8}
   crouchBody:
-    center: {x: 0, y: 0.3}
-    size: {x: 0.3, y: 1.4}
+    center: {x: 0, y: 0.25}
+    size: {x: 0.4, y: 0.5}
   jumpBody:
-    center: {x: 0, y: 1.2}
-    size: {x: 0.6, y: 1.4}
+    center: {x: 0, y: 1.4}
+    size: {x: 0.4, y: 1}
   downBody:
     center: {x: 0, y: 0.2}
-    size: {x: 1.4, y: 0.2}
+    size: {x: 1, y: 0.2}
   idleHurts:
   - center: {x: 0, y: 0.6}
     size: {x: 0.6, y: 1.4}
   crouchHurts:
   - center: {x: 0, y: 0.3}
-    size: {x: 0.3, y: 1.4}
+    size: {x: 0.6, y: 0.7}
   jumpHurts:
   - center: {x: 0, y: 1.2}
     size: {x: 0.6, y: 1.4}
@@ -2946,102 +2943,6 @@ MonoBehaviour:
   pushboxEnabled: 1
   followTarget: {fileID: 0}
   followOffset: {x: 0, y: 0}
---- !u!114 &9137086289718870255
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58d15ba50897c5247a0f8219d9ec3e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visible: 1
-  body: {r: 0, g: 0.8, b: 1, a: 0.25}
-  hit: {r: 1, g: 0, b: 0, a: 0.25}
-  hurt: {r: 0, g: 1, b: 0, a: 0.25}
-  thrw: {r: 1, g: 0.5, b: 0, a: 0.25}
-  guard: {r: 1, g: 1, b: 0, a: 0.25}
---- !u!114 &8666513642202559834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67742c9cef5653e4ebf79bd95308ae7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frozen: 0
-  freezePhysics: 1
---- !u!114 &1822777667858561823
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 0
-  offset: {x: 0, y: 0.7}
-  size: {x: 0.6, y: 1.4}
-  owner: {fileID: 1230523323767490591}
---- !u!114 &1182574216671460440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  offset: {x: 0, y: 0.7}
-  size: {x: 0.6, y: 1.4}
-  owner: {fileID: 0}
---- !u!114 &8918563089989525190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  offset: {x: 0, y: 0.7}
-  size: {x: 0.6, y: 1.4}
-  owner: {fileID: 0}
---- !u!114 &8018762718284128696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4757513319682869059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49656943c0f126747a3e004e2cfa0718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 2
-  offset: {x: 0, y: 0.7}
-  size: {x: 0.6, y: 1.4}
-  owner: {fileID: 0}
 --- !u!1 &4821643885564524650
 GameObject:
   m_ObjectHideFlags: 0

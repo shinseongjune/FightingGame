@@ -8,20 +8,11 @@ public static class InputRecognizer
     {
         // 스냅샷(복사본)
         var inputs = buffer.ToArray();
-        RecognizerTrace.BeginFrame(inputs);
 
         foreach (var skill in skills)
         {
-            var attempt = RecognizerTrace.BeginAttempt(
-                skillName: skill.name,
-                maxGap: skill.command.maxFrameGap,
-                sameFrameDirsAllowed: SAME_FRAME_DIRS_ALLOWED_DEFAULT
-            );
-
-            if (TryMatchAndMark(inputs, skill.command, out var usedMask, attempt))
+            if (TryMatchAndMark(inputs, skill.command, out var usedMask))
             {
-                RecognizerTrace.Success(attempt);
-
                 // ★원본 Queue 갱신: usedMask가 true인 인덱스에 isUsed=true 설정
                 buffer.Clear();
                 for (int i = 0; i < inputs.Length; i++)
@@ -41,26 +32,24 @@ public static class InputRecognizer
     }
 
     // 매칭 + 어떤 인덱스를 소비했는지 마스크로 리턴
-    private static bool TryMatchAndMark(InputData[] inputs, SkillInputData cmd, out bool[] used, RecognizerTrace.Attempt trace)
+    private static bool TryMatchAndMark(InputData[] inputs, SkillInputData cmd, out bool[] used)
     {
         used = null;
-        if (cmd.inputData.Length == 0) { RecognizerTrace.Fail(trace, "Empty cmd"); return false; }
-        if (inputs.Length == 0) { RecognizerTrace.Fail(trace, "Empty buffer"); return false; }
+        if (cmd.inputData.Length == 0) { return false; }
+        if (inputs.Length == 0) { return false; }
 
         // 1) 공격 앵커 찾기 (가장 나중 프레임)
         var attackCmd = cmd.inputData[^1];
         int attackIdx = FindAttackIndex(inputs, attackCmd);
-        if (attackIdx < 0) { RecognizerTrace.Fail(trace, "No attack"); return false; }
-        RecognizerTrace.MarkAttack(trace, attackIdx);
+        if (attackIdx < 0) { return false; }
 
         // (선택) 공격이 너무 오래되면 컷
         const int ATTACK_WINDOW = 8;
-        if (inputs.Length - 1 - attackIdx > ATTACK_WINDOW) { RecognizerTrace.Fail(trace, "Attack too old"); return false; }
+        if (inputs.Length - 1 - attackIdx > ATTACK_WINDOW) { return false; }
 
         int cmdIndex = cmd.inputData.Length - 2;
         int bufferIndex = attackIdx;
         int gap = 0;
-        int sameFrameDirsLeft = trace.sameFrameDirsAllowed;
         var matched = new List<int> { attackIdx }; // 공격 프레임 소비
 
         while (cmdIndex >= 0 && bufferIndex >= 0)
@@ -71,23 +60,20 @@ public static class InputRecognizer
 
             if (!actual.isUsed && MatchInput(actual, expected, cmd.isStrict))
             {
-                if (isSameFrame && sameFrameDirsLeft <= 0)
+                if (isSameFrame)
                 {
                     bufferIndex--; // 같은 프레임은 다 썼으니 이전 프레임으로 이동
                     continue;
                 }
                 matched.Add(bufferIndex);
-                RecognizerTrace.MarkMatch(trace, bufferIndex);
                 cmdIndex--;
-                         if (isSameFrame) sameFrameDirsLeft--;
-                gap = 0; // ★ 매칭했으면 gap 리셋
+                gap = 0; // 매칭했으면 gap 리셋
             }
-            else if (++gap > cmd.maxFrameGap) { RecognizerTrace.Fail(trace, "Gap limit"); return false; }
-            else RecognizerTrace.MarkGap(trace, gap);
+            else if (++gap > cmd.maxFrameGap) { return false; }
 
             bufferIndex--;
         }
-        if (cmdIndex >= 0) { RecognizerTrace.Fail(trace, "Ran out"); return false; }
+        if (cmdIndex >= 0) { return false; }
 
         // 3) 소비 마스크 구성
         used = new bool[inputs.Length];

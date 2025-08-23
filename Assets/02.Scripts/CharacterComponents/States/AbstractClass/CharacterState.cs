@@ -176,7 +176,7 @@ public abstract class CharacterState
                 prop.characterStateTag != conds[i].currentCharacterState)
                 ok = false;
 
-            if (ok) return true; // 하나라도 맞으면 통과
+            if (ok) return true;
         }
         return false;
     }

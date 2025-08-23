@@ -100,6 +100,12 @@ public class CollisionResolver : MonoBehaviour, ITicker
             var hitBox = cd.boxA.type == BoxType.Hit ? cd.boxA : cd.boxB;
             var skill = (hitBox is not null ? hitBox.sourceSkill : null) ?? atkProp?.currentSkill;
 
+            // ★ 중복히트 1회: 공격 인스턴스ID 기준 (스킬 진입마다 증가)
+            int inst = atkProp != null ? atkProp.attackInstanceId : 0;
+            var key = (atk: atk, def: def, inst: inst);
+            if (hitOnce.Contains(key)) return;   // 이미 같은 인스턴스로 이 상대를 맞췄으면 무시
+            hitOnce.Add(key);
+
             int hitstun = skill != null ? skill.hitstunDuration : 12;
             int blockstun = skill != null ? skill.blockstunDuration : 10;
 
@@ -202,6 +208,8 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
                     // 수신자 상태 훅
                     defFSM?.Current?.HandleHit(MakeHitData(ev.attacker, ev.defender, ev.cd));
+
+                    if (ev.skill != null) defProp.hp = Mathf.Max(0, defProp.hp - ev.skill.damageOnHit);
                 }
             }
 

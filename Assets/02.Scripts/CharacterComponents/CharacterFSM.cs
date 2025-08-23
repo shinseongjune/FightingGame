@@ -29,9 +29,6 @@ public class CharacterFSM : MonoBehaviour
 
     public void Tick()
     {
-        var gate = GetComponent<DebugFreeze>();
-        if (gate != null && gate.IsFrozen()) return;
-
         // 상태 틱(프레임 수 증가 포함)
         currentState?.Tick();
     }

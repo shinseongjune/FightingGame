@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 public enum PhysicsMode
 {
     Normal,     // 중력+이동 처리 O
     Kinematic,  // 중력/가속 무시, 외부가 위치를 정함(잡힌 상태 등)
     Carried     // 특정 타겟을 따라감(공격자 손 위치 등)
 }
-
 
 public class PhysicsEntity : MonoBehaviour
 {

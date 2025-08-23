@@ -17,6 +17,10 @@ public class InputBuffer : MonoBehaviour
 
     public InputData LastInput { get; private set; }
 
+    public bool captureFromDevice = true;          // 하드웨어 입력 캡처 on/off
+    public bool respectCharacterInputLock = true;  // isInputEnabled=false면 강제로 중립 노출
+    public bool enqueueNeutralWhenLocked = true;   // 잠금 시에도 중립을 큐에 넣어 타임라인 전진
+
     private void Awake()
     {
         inputActions = new InputSystem_Actions();
@@ -26,18 +30,40 @@ public class InputBuffer : MonoBehaviour
 
     public void Tick()
     {
+        // 0) 입력 캡처 off면: 외부 주입만 사용(아무 것도 하지 않음)
+        if (!captureFromDevice)
+            return;
+
         Vector2 move = inputActions.Player.Move.ReadValue<Vector2>();
         Direction dir = ToDirection(move);
         AttackKey attack = ReadAttackKey();
 
-        // 방향별 차지 지속 시간 계산
-        if (ContainsBack(dir) && ContainsBack(previousInput.direction)) backHold++;
-        else backHold = 0;
+        // 1) 캐릭터 입력 잠금 존중 → 강제로 중립/무공격
+        bool locked = respectCharacterInputLock && character != null && !character.isInputEnabled;
+        if (locked)
+        {
+            dir = Direction.Neutral;
+            attack = AttackKey.None;
+            backHold = 0; downHold = 0;
 
-        if (ContainsDown(dir) && ContainsDown(previousInput.direction)) downHold++;
-        else downHold = 0;
+            if (!enqueueNeutralWhenLocked)
+            {
+                // 버퍼를 전진시키지 않음 → 완전 정지
+                LastInput = new InputData { direction = dir, attack = attack, backCharge = 0, downCharge = 0 };
+                previousInput = LastInput;
+                return;
+            }
+        }
+        else
+        {
+            // 차지 누적
+            if (ContainsBack(dir) && ContainsBack(previousInput.direction)) backHold++;
+            else backHold = 0;
+            if (ContainsDown(dir) && ContainsDown(previousInput.direction)) downHold++;
+            else downHold = 0;
+        }
 
-        InputData input = new()
+        var input = new InputData
         {
             direction = dir,
             attack = attack,
@@ -49,8 +75,7 @@ public class InputBuffer : MonoBehaviour
         LastInput = input;
 
         inputQueue.Enqueue(input);
-        while (inputQueue.Count > maxBufferSize)
-            inputQueue.Dequeue();
+        while (inputQueue.Count > maxBufferSize) inputQueue.Dequeue();
     }
 
     private bool ContainsBack(Direction dir) =>
@@ -96,5 +121,24 @@ public class InputBuffer : MonoBehaviour
         if (inputActions.Player.MK.WasPressedThisFrame()) key |= AttackKey.MK;
         if (inputActions.Player.HK.WasPressedThisFrame()) key |= AttackKey.HK;
         return key;
+    }
+
+    // 외부 주입(네트워크/AI용)
+    public void PushExternal(InputData input, bool enqueue = true)
+    {
+        LastInput = input;
+        previousInput = input;
+        if (enqueue)
+        {
+            inputQueue.Enqueue(input);
+            while (inputQueue.Count > maxBufferSize) inputQueue.Dequeue();
+        }
+    }
+
+    public void ClearBuffer()
+    {
+        inputQueue.Clear();
+        previousInput = default;
+        LastInput = default;
     }
 }

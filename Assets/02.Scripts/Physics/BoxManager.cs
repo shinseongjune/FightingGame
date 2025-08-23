@@ -12,6 +12,16 @@ public class BoxManager : Singleton<BoxManager>, ITicker
     public void Register(BoxComponent box) => activeBoxes.Add(box);
     public void Unregister(BoxComponent box) => activeBoxes.Remove(box);
 
+    private void OnEnable()
+    {
+        TickMaster.Instance.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        if (TickMaster.Instance != null) TickMaster.Instance.Unregister(this);
+    }
+
     public void Tick()
     {
         // 1) 유효 충돌 수집
@@ -166,5 +176,12 @@ public class BoxManager : Singleton<BoxManager>, ITicker
             return new Vector2((minX + maxX) * 0.5f, (minY + maxY) * 0.5f);
         // 이론상 도달 X(Overlaps 확인 후). 안전망
         return (r1.center + r2.center) * 0.5f;
+    }
+
+    public void NotifyOwnerMoved(GameObject owner)
+    {
+        // 예: owner가 가진 BoxComponent들의 셀 인덱스를 dirty로 표기
+        // 현재 단순 리스트라면 비워두어도 무해
+        // 추후 공간분할 도입시 한 곳만 수정하면 전체 동작이 보장됨
     }
 }

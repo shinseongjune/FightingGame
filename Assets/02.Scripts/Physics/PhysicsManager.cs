@@ -20,14 +20,20 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
         entities.Remove(entity);
     }
 
+    private void OnEnable()
+    {
+        TickMaster.Instance.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        if (TickMaster.Instance != null) TickMaster.Instance.Unregister(this);
+    }
+
     public void Tick()
     {
         foreach (var e in entities)
         {
-            var g = e.GetComponent<DebugFreeze>();
-            g?.OnFreeze(e); // 상태 동기화
-            if (g != null && g.frozen && g.freezePhysics) { e.transform.position = e.Position; continue; }
-
             // 만약을 위한 속도 제한
             float maxFall = -20f;
             float maxAirSpeed = 4.0f;
