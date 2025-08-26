@@ -33,6 +33,9 @@ public struct BoxLifetime
 
     public BoxType type;
     public BoxData box;
+
+    [Tooltip("이 박스가 생성될 때 새로운 히트 인스턴스로 취급할지 여부")]
+    public bool incrementAttackInstance;
 }
 
 public enum HitLevel { High, Mid, Low, Overhead }
@@ -67,4 +70,7 @@ public class Skill_SO : ScriptableObject
 
     [Header("박스 정보")]
     public List<BoxLifetime> boxLifetimes = new();
+
+    [Tooltip("연쇄히트 쿨다운 프레임 수")]
+    public int rehitCooldownFrames;
 }

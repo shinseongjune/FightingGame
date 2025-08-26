@@ -33,6 +33,12 @@ public class CollisionResolver : MonoBehaviour, ITicker
     // 중복 충돌 방지용
     readonly HashSet<(PhysicsEntity atk, PhysicsEntity def, int inst)> hitOnce = new();
 
+    // 프레임 카운터(내부용; Tick마다++)
+    int _frame;
+
+    // (공격자, 피격자, 박스UID) -> nextAllowedFrame
+    readonly Dictionary<(int atkId, int defId, int boxUid), int> _rehitUntil = new();
+
     void Awake()
     {
         me = GetComponent<PhysicsEntity>();
@@ -99,7 +105,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
             // ★ 충돌 '당시' 스킬을 박스에서 스냅샷
             var hitBox = cd.boxA.type == BoxType.Hit ? cd.boxA : cd.boxB;
             var skill = (hitBox is not null ? hitBox.sourceSkill : null) ?? atkProp?.currentSkill;
-
+            
             // ★ 중복히트 1회: 공격 인스턴스ID 기준 (스킬 진입마다 증가)
             int inst = atkProp != null ? atkProp.attackInstanceId : 0;
             var key = (atk: atk, def: def, inst: inst);
@@ -123,6 +129,8 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
     public void Tick()
     {
+        _frame++;
+
         if (frameEvents.Count == 0) return;
 
         // 1) 선가드 유발(GuardTrigger) 먼저 처리
@@ -148,7 +156,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
             {
                 if (ev.defender == me)
                 {
-                    // 피잡은 쪽
+                    // 잡힌 쪽
                     var defFSM = ev.defender.GetComponent<CharacterFSM>();
                     defFSM?.TransitionTo("BeingThrown");
                 }
@@ -161,6 +169,22 @@ public class CollisionResolver : MonoBehaviour, ITicker
                 }
                 continue;
             }
+
+            var hitBox = ev.cd.boxA.type == BoxType.Hit ? ev.cd.boxA : ev.cd.boxB;
+            int cd = ev.skill.rehitCooldownFrames;
+
+            int atkId = ev.attacker.GetInstanceID();
+            int defId = ev.defender.GetInstanceID();
+            int uid = hitBox.uid;
+
+            // 쿨다운 중이면 스킵
+            if (_rehitUntil.TryGetValue((atkId, defId, uid), out int next) && _frame < next)
+            {
+                continue;
+            }
+
+            // 다음 허용 프레임 갱신
+            _rehitUntil[(atkId, defId, uid)] = _frame + cd;
 
             // ---- Hit / Guard ----
             // 가드 가능 여부 계산(당시 스킬의 hitLevel 사용)
@@ -266,54 +290,6 @@ public class CollisionResolver : MonoBehaviour, ITicker
         var f = def.GetComponent<CharacterFSM>();
         if (!IsCurrentlyGuarding(def))
             f?.TransitionTo("Guarding");
-    }
-
-    private void ApplyBlockstun(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)
-    {
-        var defProp = def.GetComponent<CharacterProperty>();
-        var atkProp = atk.GetComponent<CharacterProperty>();
-        var skill = atkProp?.currentSkill;
-
-        int blockstun = skill != null ? skill.blockstunDuration : 10;
-        defProp?.SetBlockstun(blockstun);
-
-        // 수신자 쪽 상태로 알림
-        var defFSM = def.GetComponent<CharacterFSM>();
-        defFSM?.Current?.HandleGuard(atk, def, cd);
-        defFSM?.TransitionTo("GuardHit");
-    }
-
-    private void ApplyHitstun(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)
-    {
-        var defProp = def.GetComponent<CharacterProperty>();
-        var atkProp = atk.GetComponent<CharacterProperty>();
-        var skill = atkProp?.currentSkill;
-        var defFSM = def.GetComponent<CharacterFSM>();
-
-        int hitstun = skill != null ? skill.hitstunDuration : 12;
-
-        // 넉백 간단 규칙: 발동자 바라보는 방향 기준
-        float dir = atkProp != null && atkProp.isFacingRight ? +1f : -1f;
-        Vector2 kb = skill != null && skill.causesLaunch
-            ? new Vector2(4f * dir, 8f)        // 공중 띄우기
-            : new Vector2(6f * dir, 0f);       // 지상 밀기
-
-        defProp?.SetHitstun(hitstun, kb);
-
-        // 다운 유발이면 상태 전이까지 처리(공중/지상 분기)
-        if (skill != null && skill.causesKnockdown)
-        {
-            defFSM?.TransitionTo("Knockdown"); // 혹은 HardKnockdown 규칙
-        }
-        else
-        {
-            if (def.isGrounded) defFSM?.TransitionTo("HitGround");
-            else defFSM?.TransitionTo("HitAir");
-        }
-
-        // 수신자 현재 상태에도 훅
-        var defState = def.GetComponent<CharacterFSM>()?.Current;
-        defState?.HandleHit(MakeHitData(atk, def, cd));
     }
 
     private HitData MakeHitData(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)

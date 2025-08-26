@@ -75,14 +75,28 @@ public class BoxPresetApplier : MonoBehaviour
         foreach (var idx in wanted)
         {
             var life = activeSkill.boxLifetimes[idx];
-            SpawnBox(life);
+            SpawnBox(life, idx);
         }
 
         ListStatic<int>.Return(wanted);
     }
 
-    private void SpawnBox(BoxLifetime life)
+    private int ComputeStableUid(int lifeIndex)
     {
+        unchecked
+        {
+            int h = entity != null ? entity.GetInstanceID() : 0;
+            h = (h * 397) ^ (activeSkill != null ? activeSkill.GetInstanceID() : 0);
+            h = (h * 397) ^ lifeIndex;
+            return h;
+        }
+    }
+
+    private void SpawnBox(BoxLifetime life, int lifeIndex)
+    {
+        if (life.incrementAttackInstance)
+            property.attackInstanceId++;
+
         // 박스 생성부: 타입/사이즈/오프셋 등은 프로젝트 규약에 맞춰 작성
         var go = new GameObject($"Box_{life.type}");
         go.transform.SetParent(transform, false);
@@ -93,6 +107,8 @@ public class BoxPresetApplier : MonoBehaviour
         bc.offset = life.box.center;
         bc.owner = entity;
         bc.sourceSkill = activeSkill;
+
+        bc.uid = ComputeStableUid(lifeIndex);
 
         currentBoxes.Add(bc);
         BoxManager.Instance.Register(bc);
