@@ -9,6 +9,8 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
 
     private int pushIterations = 3;
 
+    protected override bool ShouldPersistAcrossScenes() => false;
+
     public void Register(PhysicsEntity entity)
     {
         if (!entities.Contains(entity))

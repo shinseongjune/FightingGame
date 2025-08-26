@@ -11,6 +11,8 @@ public class TickMaster : Singleton<TickMaster>
 
     private readonly HashSet<ITicker> pendingRemove = new();
 
+    protected override bool ShouldPersistAcrossScenes() => false;
+
     public void Register(ITicker t)
     {
         if (t == null || tickers.Contains(t)) return;

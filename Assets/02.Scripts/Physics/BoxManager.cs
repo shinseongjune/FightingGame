@@ -9,6 +9,8 @@ public class BoxManager : Singleton<BoxManager>, ITicker
     // 전역 해석 후에만 발행되는 이벤트(한 프레임 우승자들)
     public event Action<CollisionData> OnCollision;
 
+    protected override bool ShouldPersistAcrossScenes() => false;
+
     public void Register(BoxComponent box) => activeBoxes.Add(box);
     public void Unregister(BoxComponent box) => activeBoxes.Remove(box);
 

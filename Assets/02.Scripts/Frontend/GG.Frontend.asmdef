@@ -1,0 +1,16 @@
+{
+    "name": "GG.Frontend",
+    "rootNamespace": "",
+    "references": [
+        "GUID:265b2ea72253ea34fa2ff03ccd4c6bac"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
