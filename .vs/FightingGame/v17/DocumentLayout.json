@@ -3,15 +3,15 @@
   "WorkspaceRootPath": "D:\\Unity\\FightingGame\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\selectscene\\uguiselectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\uguiselectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|d:\\unity\\fightinggame\\assets\\02.scripts\\scenescripts\\selectscene\\selectscenebootstrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\selectscenebootstrap.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|d:\\unity\\fightinggame\\assets\\02.scripts\\scenescripts\\selectscene\\uguiselectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\uguiselectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|d:\\unity\\fightinggame\\assets\\02.scripts\\scenescripts\\selectscene\\selectscenecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\selectscene\\selectscenecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\selectscenecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,7 +34,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "UGUISelectSceneView.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\UGUISelectSceneView.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\UGUISelectSceneView.cs",
@@ -55,12 +55,11 @@
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneController.cs",
               "ViewState": "AgIAAC0AAAAAAAAAAAAIwDMAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T08:47:06.269Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-30T08:47:06.269Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "SelectSceneBootstrap.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneBootstrap.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneBootstrap.cs",
