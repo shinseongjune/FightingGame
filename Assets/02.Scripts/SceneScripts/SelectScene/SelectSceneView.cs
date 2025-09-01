@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public struct CharacterData
 {
-    public string addressableId;
+    public int id;
+    public string addressableName;
     public string headerImgName;
     public string illustName;
     public string characterName;
@@ -14,7 +15,8 @@ public struct CharacterData
 
 public struct StageData
 {
-    public string addressableId;
+    public int id;
+    public string addressableName;
     public string headerImgName;
     public string illustName;
     public string stageName;
