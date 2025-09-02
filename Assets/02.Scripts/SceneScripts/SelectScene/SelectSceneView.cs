@@ -33,6 +33,10 @@ public enum SelectSceneSFXTag
 
 public class SelectSceneView : MonoBehaviour
 {
+    [Tooltip("Grid Roots (UI Containers)")]
+    public RectTransform characterGridRoot;
+    public RectTransform stageGridRoot;
+
     [Header("Grid Cell Prefabs")]
     [SerializeField] private GameObject prefab_CharacterCell;
     [SerializeField] private GameObject prefab_StageCell;
@@ -57,17 +61,32 @@ public class SelectSceneView : MonoBehaviour
     public event Action<int, int> OnHoverIndexChanged;
     public event Action OnViewReady;
 
-    // ------------- Render 명령 --------------
+    // ------------- 그리드 생성 ------------
     public void MakeCharacterGrid()
     {
+        foreach (var character in characters)
+        {
+            GameObject go = Instantiate(prefab_CharacterCell, characterGridRoot);
+            go.GetComponent<RectTransform>().anchoredPosition = character.gridPos;
+            CharacterCell cell = go.GetComponent<CharacterCell>();
 
+            //TODO: cell.background, cell.headerImg에 addressable에서 로드한 이미지 넣고 데이터 넣기.
+        }
     }
 
     public void MakeStageGrid()
     {
+        foreach (var stage in stages)
+        {
+            GameObject go = Instantiate(prefab_StageCell, stageGridRoot);
+            go.GetComponent<RectTransform>().anchoredPosition= stage.gridPos;
+            StageCell cell = go.GetComponent<StageCell>();
 
+            //TODO: background, headerImg에 addressable에서 로드한 이미지 넣고 데이터 넣기.
+        }
     }
 
+    // ------------- Render 명령 --------------
     public void SetFocus(int playerId, int idx)
     {
 
