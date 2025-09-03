@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,10 +47,14 @@ public class SelectSceneView : MonoBehaviour
     [SerializeField] private StageData[] stages;
 
     [Tooltip("Grid")]
-    private GameObject[] _characterGrid;
-    private GameObject[] _stageGrid;
+    private List<GameObject> _characterGrid = new List<GameObject>();
+    private List<GameObject> _stageGrid = new List<GameObject>();
+    private List<GameObject> _currentGrid = null;
 
-    [SerializeField] private Image img_Focus;
+    [SerializeField] private Image img_Focus_p1;
+    [SerializeField] private Image img_Focus_p2;
+
+    private int currentIdx;
 
     //TODO: vfx, sfx
 
@@ -61,9 +66,16 @@ public class SelectSceneView : MonoBehaviour
     public event Action<int, int> OnHoverIndexChanged;
     public event Action OnViewReady;
 
-    // ------------- 그리드 생성 ------------
+    // ------------- 그리드 처리 ------------
     public void MakeCharacterGrid()
     {
+        for (int i = 0; i < _characterGrid.Count; i++)
+        {
+            GameObject cell = _characterGrid[i];
+            Destroy(cell);
+        }
+        _characterGrid.Clear();
+
         foreach (var character in characters)
         {
             GameObject go = Instantiate(prefab_CharacterCell, characterGridRoot);
@@ -76,6 +88,13 @@ public class SelectSceneView : MonoBehaviour
 
     public void MakeStageGrid()
     {
+        for (int i = 0; i < _stageGrid.Count; i++)
+        {
+            GameObject cell = _stageGrid[i];
+            Destroy(cell);
+        }
+        _stageGrid.Clear();
+
         foreach (var stage in stages)
         {
             GameObject go = Instantiate(prefab_StageCell, stageGridRoot);
@@ -86,10 +105,64 @@ public class SelectSceneView : MonoBehaviour
         }
     }
 
+    public void SetCharacterGridOn()
+    {
+        for (int i = 0; i < _stageGrid.Count; i++)
+        {
+            _stageGrid[i].SetActive(false);
+        }
+
+        for (int i = 0; i < _characterGrid.Count; i++)
+        {
+            _characterGrid[i].SetActive(true);
+        }
+
+        _currentGrid = _characterGrid;
+
+        // setfocus, 일러스트, 디테일
+    }
+
+    public void SetStageGridOn()
+    {
+        for (int i = 0; i < _characterGrid.Count; i++)
+        {
+            _characterGrid[i].SetActive(false);
+        }
+
+        for (int i = 0; i < _stageGrid.Count; i++)
+        {
+            _stageGrid[i].SetActive(true);
+        }
+
+        _currentGrid = _stageGrid;
+
+        // setfocus, 일러스트, 디테일
+    }
+
     // ------------- Render 명령 --------------
+    public void Init()
+    {
+        MakeCharacterGrid();
+        MakeStageGrid();
+        SetCharacterGridOn();
+
+
+    }
+
     public void SetFocus(int playerId, int idx)
     {
+        Image focus = playerId switch
+        {
+            0 => img_Focus_p1,
+            1 => img_Focus_p2,
+            _ => img_Focus_p1,
+        };
+        focus.rectTransform.anchoredPosition = _currentGrid[idx].GetComponent<RectTransform>().anchoredPosition;
 
+        currentIdx = idx;
+
+        //TODO: 소리 재생
+        //TODO: 캐릭터 일러스트, 디테일, 스테이지 프리뷰 등 표시
     }
 
     //public void ShowDetails()
@@ -102,23 +175,18 @@ public class SelectSceneView : MonoBehaviour
     //
     //}
 
-    public void ShowTimer()
-    {
-
-    }
+    //public void ShowTimer()
+    //{
+    //
+    //}
 
     //public void PlaySfx(SelectSceneSFXTag tag)
     //{
     //
     //}
 
-    public void Blink(int idx)
-    {
-
-    }
-
-    public void SetStagePreview()
-    {
-
-    }
+    //public void SetStagePreview()
+    //{
+    //
+    //}
 }
