@@ -3,28 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public struct CharacterData
-{
-    public int id;
-    public string addressableName;
-    public string headerImgName;
-    public string illustName;
-    public string characterName;
-    public Vector2 gridPos;
-    public bool isLocked;
-}
-
-public struct StageData
-{
-    public int id;
-    public string addressableName;
-    public string headerImgName;
-    public string illustName;
-    public string stageName;
-    public Vector2 gridPos;
-    public bool isLocked;
-}
-
 public enum SelectSceneSFXTag
 {
     Submit,
@@ -34,7 +12,7 @@ public enum SelectSceneSFXTag
 
 public class SelectSceneView : MonoBehaviour
 {
-    [Tooltip("Grid Roots (UI Containers)")]
+    [Header("Grid Roots (UI Containers)")]
     public RectTransform characterGridRoot;
     public RectTransform stageGridRoot;
 
@@ -42,15 +20,12 @@ public class SelectSceneView : MonoBehaviour
     [SerializeField] private GameObject prefab_CharacterCell;
     [SerializeField] private GameObject prefab_StageCell;
 
-    [Header("Grid Datas")]
-    [SerializeField] private CharacterData[] characters;
-    [SerializeField] private StageData[] stages;
-
     [Tooltip("Grid")]
     private List<GameObject> _characterGrid = new List<GameObject>();
     private List<GameObject> _stageGrid = new List<GameObject>();
-    private List<GameObject> _currentGrid = null;
+    private List<GameObject> _currentGrid;
 
+    [Header("Focus Images")]
     [SerializeField] private Image img_Focus_p1;
     [SerializeField] private Image img_Focus_p2;
 
@@ -67,90 +42,77 @@ public class SelectSceneView : MonoBehaviour
     public event Action OnViewReady;
 
     // ------------- 그리드 처리 ------------
-    public void MakeCharacterGrid()
+    public void BuildCharacterGrid(IReadOnlyList<CharacterData> data)
     {
-        for (int i = 0; i < _characterGrid.Count; i++)
+        ClearGrid(_characterGrid);
+        for (int i = 0; i < data.Count; i++)
         {
-            GameObject cell = _characterGrid[i];
-            Destroy(cell);
-        }
-        _characterGrid.Clear();
+            var c = data[i];
+            var go = Instantiate(prefab_CharacterCell, characterGridRoot);
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchoredPosition = c.gridPos;
 
-        foreach (var character in characters)
-        {
-            GameObject go = Instantiate(prefab_CharacterCell, characterGridRoot);
-            go.GetComponent<RectTransform>().anchoredPosition = character.gridPos;
-            CharacterCell cell = go.GetComponent<CharacterCell>();
+            // TODO: Addressables로 이미지 로드해서 셀 UI 바인딩
+            // var cell = go.GetComponent<CharacterCell>();
+            // cell.SetData(c);
 
-            //TODO: cell.background, cell.headerImg에 addressable에서 로드한 이미지 넣고 데이터 넣기.
+            _characterGrid.Add(go);
         }
     }
 
-    public void MakeStageGrid()
+    public void BuildStageGrid(IReadOnlyList<StageData> data)
     {
-        for (int i = 0; i < _stageGrid.Count; i++)
+        ClearGrid(_stageGrid);
+        for (int i = 0; i < data.Count; i++)
         {
-            GameObject cell = _stageGrid[i];
-            Destroy(cell);
-        }
-        _stageGrid.Clear();
+            var s = data[i];
+            var go = Instantiate(prefab_StageCell, stageGridRoot);
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchoredPosition = s.gridPos;
 
-        foreach (var stage in stages)
-        {
-            GameObject go = Instantiate(prefab_StageCell, stageGridRoot);
-            go.GetComponent<RectTransform>().anchoredPosition= stage.gridPos;
-            StageCell cell = go.GetComponent<StageCell>();
+            // TODO: Addressables로 이미지 로드해서 셀 UI 바인딩
+            // var cell = go.GetComponent<StageCell>();
+            // cell.SetData(s);
 
-            //TODO: background, headerImg에 addressable에서 로드한 이미지 넣고 데이터 넣기.
+            _stageGrid.Add(go);
         }
+    }
+
+    void ClearGrid(List<GameObject> list)
+    {
+        for (int i = 0; i < list.Count; i++) Destroy(list[i]);
+        list.Clear();
     }
 
     public void SetCharacterGridOn()
     {
-        for (int i = 0; i < _stageGrid.Count; i++)
-        {
-            _stageGrid[i].SetActive(false);
-        }
-
-        for (int i = 0; i < _characterGrid.Count; i++)
-        {
-            _characterGrid[i].SetActive(true);
-        }
-
+        SetActive(_stageGrid, false);
+        SetActive(_characterGrid, true);
         _currentGrid = _characterGrid;
-
-        // setfocus, 일러스트, 디테일
+        // TODO: 일러스트/디테일 갱신
     }
 
     public void SetStageGridOn()
     {
-        for (int i = 0; i < _characterGrid.Count; i++)
-        {
-            _characterGrid[i].SetActive(false);
-        }
-
-        for (int i = 0; i < _stageGrid.Count; i++)
-        {
-            _stageGrid[i].SetActive(true);
-        }
-
+        SetActive(_characterGrid, false);
+        SetActive(_stageGrid, true);
         _currentGrid = _stageGrid;
+        // TODO: 프리뷰/디테일 갱신
+    }
 
-        // setfocus, 일러스트, 디테일
+    void SetActive(List<GameObject> list, bool active)
+    {
+        for (int i = 0; i < list.Count; i++) list[i].SetActive(active);
     }
 
     // ------------- Render 명령 --------------
-    public void Init()
-    {
-        MakeCharacterGrid();
-        MakeStageGrid();
-        SetCharacterGridOn();
-
-
-    }
+    public void InitDone() => OnViewReady?.Invoke();
 
     public void SetFocus(int playerId, int idx)
     {
+        if (_currentGrid == null || _currentGrid.Count == 0) return;
+        idx = Mathf.Clamp(idx, 0, _currentGrid.Count - 1);
+
         Image focus = playerId switch
         {
             0 => img_Focus_p1,
@@ -163,6 +125,7 @@ public class SelectSceneView : MonoBehaviour
 
         //TODO: 소리 재생
         //TODO: 캐릭터 일러스트, 디테일, 스테이지 프리뷰 등 표시
+        OnHoverIndexChanged?.Invoke(playerId, idx);
     }
 
     //public void ShowDetails()

@@ -92,7 +92,7 @@
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
               "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
-              "ViewState": "AgIAAI0AAAAAAAAAAAAiwKUAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAJ0AAAAAAAAAAAAqwLYAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-01T12:13:40.206Z",
               "EditorCaption": ""
@@ -130,7 +130,8 @@
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneBootstrap.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-30T08:44:15.005Z"
+              "WhenOpened": "2025-08-30T08:44:15.005Z",
+              "EditorCaption": ""
             }
           ]
         }
