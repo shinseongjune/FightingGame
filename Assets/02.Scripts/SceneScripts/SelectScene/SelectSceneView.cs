@@ -152,4 +152,16 @@ public class SelectSceneView : MonoBehaviour
     //{
     //
     //}
+
+    public void SetFocusVisible(int playerId, bool visible)
+    {
+        var img = (playerId == 0) ? img_Focus_p1 : img_Focus_p2;
+        if (img != null) img.gameObject.SetActive(visible);
+    }
+
+    public void SetFocusVisible(bool p1Visible, bool p2Visible)
+    {
+        SetFocusVisible(0, p1Visible);
+        SetFocusVisible(1, p2Visible);
+    }
 }
