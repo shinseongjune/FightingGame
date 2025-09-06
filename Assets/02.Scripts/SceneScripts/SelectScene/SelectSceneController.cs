@@ -71,6 +71,8 @@ public class SelectSceneController : MonoBehaviour
 
     void Start()
     {
+        if (model.Characters.Count <= 0 || model.Stages.Count <= 0) SceneLoader.Instance.LoadScene("TitleScene");
+
         // ÃÖÃÊ ºôµå: Model ¡æ View
         view.BuildCharacterGrid(model.Characters);
         view.BuildStageGrid(model.Stages);
@@ -212,7 +214,7 @@ public class SelectSceneController : MonoBehaviour
     void FinishAndStartBattle()
     {
         if (!GameManager.Instance.IsReadyToStart()) return;
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Battle");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("BattleScene");
     }
 
     int ComputeNextIndex(Vector2 dir, int curIdx, int count)

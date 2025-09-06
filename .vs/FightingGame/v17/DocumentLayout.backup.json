@@ -7,12 +7,12 @@
       "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\selectscenecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\selectscene\\selectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\selectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\selectscene\\selectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|solutionrelative:assets\\02.scripts\\scenescripts\\selectscene\\selectsceneview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{712DC2B5-4221-B24C-F18B-400B3B4E155F}|GG.SceneScripts.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\scenescripts\\selectscene\\selectscenemodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,15 +62,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "GameManager.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
               "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAHsAAAAAAAAAAAAqwIwAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T12:09:55.307Z"
+              "WhenOpened": "2025-09-05T12:09:55.307Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -82,19 +83,21 @@
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneModel.cs",
               "ViewState": "AgIAAB4AAAAAAAAAAAAowCUAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T08:53:56.641Z"
+              "WhenOpened": "2025-09-04T08:53:56.641Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "SelectSceneView.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
               "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneView.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAQwH8AAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAWwKAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-01T12:13:40.206Z"
+              "WhenOpened": "2025-09-01T12:13:40.206Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -104,7 +107,7 @@
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneController.cs",
               "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneController.cs",
               "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\SelectScene\\SelectSceneController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKYAAAAAAAAAAAAYwL0AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-30T08:47:06.269Z",
               "EditorCaption": ""
