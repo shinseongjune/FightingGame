@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RoundHUD : MonoBehaviour
 {
-    public GameManager gm;
+    public BattleManager gm;
     public RoundController rc;
     public CharacterProperty p1, p2;
 

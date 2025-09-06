@@ -7,7 +7,7 @@ using UnityEngine;
 public class DebugAutoDriver : MonoBehaviour, ITicker
 {
     [Header("Wiring")]
-    public GameManager gm;                 // 비워두면 자동 찾음
+    public BattleManager gm;                 // 비워두면 자동 찾음
     public Skill_SO skillToUse;            // 주기적으로 쓸 스킬(옵션)
 
     [Header("Move Pattern")]
@@ -31,7 +31,7 @@ public class DebugAutoDriver : MonoBehaviour, ITicker
         fsm = GetComponent<CharacterFSM>();
         phys = GetComponent<PhysicsEntity>();
         prop = GetComponent<CharacterProperty>();
-        if (gm == null) gm = FindFirstObjectByType<GameManager>();
+        if (gm == null) gm = FindFirstObjectByType<BattleManager>();
     }
 
     void OnEnable() => TickMaster.Instance?.Register(this);

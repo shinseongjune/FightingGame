@@ -54,7 +54,7 @@ public class SelectSceneController : MonoBehaviour
     private InputSystem_Actions actions => GameManager.Instance.actions;
 
     private enum GridMode { Character, Stage }
-    [SerializeField] private GridMode gridMode = GridMode.Character;
+    private GridMode gridMode = GridMode.Character;
     
     private SelectCursor p1, p2;
 

@@ -232,9 +232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f93ad9a1b00b93442a7708a97279f27d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 0}
-  view: {fileID: 0}
-  gridMode: 0
+  model: {fileID: 1200193113}
+  view: {fileID: 1366472635}
 --- !u!1 &725674246
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,7 +535,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0035758018, g: 0, b: 1, a: 0.34117648}
+  m_Color: {r: 0.0035758018, g: 0, b: 1, a: 0.7529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -608,15 +607,15 @@ MonoBehaviour:
   characters:
   - addressableName: TestMan
     characterName: TestMan
-    gridPos: {x: -50, y: 0}
+    gridPos: {x: -100, y: 0}
     isLocked: 0
   - addressableName: TestMan2
     characterName: TestMan2
-    gridPos: {x: 50, y: 0}
+    gridPos: {x: 100, y: 0}
     isLocked: 0
   stages:
-  - addressableName: 
-    stageName: 
+  - addressableName: TestMap
+    stageName: TestMap
     gridPos: {x: 0, y: 0}
     isLocked: 0
 --- !u!1 &1366472633
@@ -719,7 +718,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 0.34117648}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.7529412}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

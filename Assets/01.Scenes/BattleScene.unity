@@ -714,7 +714,7 @@ GameObject:
   - component: {fileID: 1557814030}
   - component: {fileID: 1557814029}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: BattleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -729,10 +729,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1557814028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64c02e9730411814fb1f42236df62b74, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ff1d49d5180fc24d87a25a7521a2ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  preset: {fileID: 0}
+  preset: {fileID: 11400000, guid: ada2eb440558a2245ab6bead646ea0a4, type: 2}
   usePresetOnStart: 1
   activeRules:
     roundTimerSeconds: 99
@@ -746,7 +746,7 @@ MonoBehaviour:
   round: {fileID: 1687032638}
   p1: {fileID: 0}
   p2: {fileID: 0}
-  debugAuto: 1
+  debugAuto: 0
   autoStartMatch: 1
   pauseKey: 103
   stepKey: 104
@@ -757,34 +757,10 @@ MonoBehaviour:
   characterParent: {fileID: 1299293387}
   preloadAnims: 1
   preloadAnimKeysText: 
-  preloadAnimKeys:
-  - TestCrouch
-  - TestCrouchGuard
-  - TestCrouchHit
-  - TestFall
-  - TestHitGround
-  - TestIdle
-  - TestJumpUp
-  - TestLand
-  - TestPunch
-  - TestPunch2
-  - TestWalkB
-  - TestWalkF
+  preloadAnimKeys: []
   includeCatalogClipsForP1P2: 0
   includeAllCatalogClips: 0
-  preloadAnimClips:
-  - {fileID: 7400000, guid: 9f17709ec8e0a814287c836f28552f18, type: 2}
-  - {fileID: 7400000, guid: 0a5e3ad55dc517f4391603f14380c30f, type: 2}
-  - {fileID: 7400000, guid: 4f4c2fe1d6f5db84db554f8c7b1813fd, type: 2}
-  - {fileID: 7400000, guid: fc11c2e1f2244194f9029ebfc881ba6c, type: 2}
-  - {fileID: 7400000, guid: f49b2f0f808c39a4c9c7eee557f9cd86, type: 2}
-  - {fileID: 7400000, guid: fd836c6f3f457a7499fcaac4f836aa9f, type: 2}
-  - {fileID: 7400000, guid: 8995b07e4b7457a48817d570c1ced220, type: 2}
-  - {fileID: 7400000, guid: 4b2c5e6af22c938448163c4118851fc6, type: 2}
-  - {fileID: 7400000, guid: 34f6d56a3b405854db8fe800d3b7a028, type: 2}
-  - {fileID: 7400000, guid: a4d87e2fb6276164882f6c3a0af039d3, type: 2}
-  - {fileID: 7400000, guid: 96c7e1f8733f45b4ca981c43f15800d6, type: 2}
-  - {fileID: 7400000, guid: 92577c2e5ee30e8498152de58ced88a5, type: 2}
+  preloadAnimClips: []
 --- !u!4 &1557814030
 Transform:
   m_ObjectHideFlags: 0
