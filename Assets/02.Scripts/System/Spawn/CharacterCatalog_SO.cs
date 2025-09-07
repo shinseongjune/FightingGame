@@ -8,15 +8,15 @@ public class CharacterCatalog_SO : ScriptableObject
     [Serializable]
     public class Entry
     {
-        public string id;                 // 예: "TestMan"
-        public string prefabKey;          // Addressables 키
-        public List<string> clipKeys;     // 필요한 애니 키들(Idle/Walk/LP 등)
+        public string id;                       // 예: "TestMan"
+        public string prefabKey;                // Addressables 키
+        public CharacterAnimSet_SO animSet;
     }
     public List<Entry> entries = new();
 
-    public bool TryGet(string id, out Entry e)
+    public string ResolvePrefabKey(string id)
     {
-        e = entries.Find(x => x.id == id);
-        return e != null;
+        var e = entries.Find(x => x.id == id);
+        return e != null ? e.prefabKey : null;
     }
 }

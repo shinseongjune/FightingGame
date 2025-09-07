@@ -15,7 +15,7 @@ MonoBehaviour:
   entries:
   - id: TestMan
     prefabKey: Characters/TestMan/Prefab
-    clipKeys: []
+    animSet: {fileID: 11400000, guid: 2f51c4972b09e7d468d650fd0524c0e7, type: 2}
   - id: TestMan2
     prefabKey: Characters/TestMan2/Prefab
-    clipKeys: []
+    animSet: {fileID: 11400000, guid: eb40ba13dc586e54b83f09e6b3b6cbae, type: 2}

@@ -50,7 +50,7 @@ public class SelectSceneController : MonoBehaviour
     [SerializeField] private SelectSceneModel model;
     [SerializeField] private SelectSceneView view;
 
-    private GameMode gameMode => GameManager.Instance.gameMode;
+    private GameMode gameMode => GameManager.Instance.currentMode;
     private InputSystem_Actions actions => GameManager.Instance.actions;
 
     private enum GridMode { Character, Stage }
