@@ -23,7 +23,7 @@ public enum PlayerType
 public class GameManager : Singleton<GameManager>
 {
     // 현재 게임 모드
-    public GameMode currentMode;
+    public GameMode currentMode = GameMode.PvCPU;
 
     // ★ 기존 SessionSnapshot 대신 이것만 사용
     public MatchConfig matchConfig;
