@@ -1,118 +1,50 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.ResourceManagement.ResourceProviders;
-using UnityEngine.SceneManagement;
 
 public class StageLibrary : Singleton<StageLibrary>
 {
-    private GameObject _currentStagePrefabInstance;
-    private SceneInstance? _loadedScene; // ¾À ·Îµå½Ã
+    private readonly Dictionary<string, GameObject> prefabCache = new();
 
-    // ÇÁ¸®ÆÕ Ä³½Ã(¼±ÅÃ)
-    private readonly Dictionary<string, GameObject> _prefabCache = new();
+    public bool IsLoading { get; private set; }
+    public float LoadProgress { get; private set; }
 
-    public bool IsSceneKey(string stageId, out string sceneKey)
+    public async Task PreloadAsync(List<string> stageKeys)
     {
-        sceneKey = null;
-        if (string.IsNullOrEmpty(stageId)) return false;
-        if (stageId.StartsWith("scene:"))
-        {
-            sceneKey = stageId.Substring("scene:".Length);
-            return true;
-        }
-        return false;
-    }
+        if (stageKeys == null || stageKeys.Count == 0) { IsLoading = false; LoadProgress = 1f; return; }
+        IsLoading = true; LoadProgress = 0f;
+        int done = 0; int total = stageKeys.Count;
 
-    public bool IsPrefabKey(string stageId, out string prefabKey)
-    {
-        prefabKey = null;
-        if (string.IsNullOrEmpty(stageId)) return false;
-        if (stageId.StartsWith("prefab:"))
+        foreach (var key in stageKeys)
         {
-            prefabKey = stageId.Substring("prefab:".Length);
-            return true;
-        }
-        return false;
-    }
-
-    public async Task<bool> LoadAsync(string stageId, Transform parent = null)
-    {
-        await UnloadAsync();
-
-        if (IsSceneKey(stageId, out var sceneKey))
-        {
-            var handle = Addressables.LoadSceneAsync(sceneKey, LoadSceneMode.Additive, true);
-            await handle.Task;
-            if (handle.Status == AsyncOperationStatus.Succeeded)
+            if (!prefabCache.ContainsKey(key))
             {
-                _loadedScene = handle.Result;
-                SceneManager.SetActiveScene(handle.Result.Scene);
-                return true;
+                var h = Addressables.LoadAssetAsync<GameObject>(key);
+                while (!h.IsDone) { LoadProgress = (done + h.PercentComplete) / total; await Task.Yield(); }
+                if (h.Status == AsyncOperationStatus.Succeeded) prefabCache[key] = h.Result;
+                else Debug.LogWarning($"[StageLibrary] Load failed: {key}");
             }
-            Debug.LogError($"[StageLibrary] Scene load failed: {sceneKey}");
-            return false;
+            done++; LoadProgress = (float)done / total;
         }
-        else if (IsPrefabKey(stageId, out var prefabKey))
-        {
-            GameObject prefab;
-            if (!_prefabCache.TryGetValue(prefabKey, out prefab))
-            {
-                var h = Addressables.LoadAssetAsync<GameObject>(prefabKey);
-                await h.Task;
-                if (h.Status != AsyncOperationStatus.Succeeded)
-                {
-                    Debug.LogError($"[StageLibrary] Prefab load failed: {prefabKey}");
-                    return false;
-                }
-                prefab = h.Result;
-                _prefabCache[prefabKey] = prefab;
-            }
-
-            _currentStagePrefabInstance = Instantiate(prefab, parent);
-            return true;
-        }
-        else
-        {
-            // ±âº»: ¾À Å°·Î °£ÁÖ
-            var handle = Addressables.LoadSceneAsync(stageId, LoadSceneMode.Additive, true);
-            await handle.Task;
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                _loadedScene = handle.Result;
-                SceneManager.SetActiveScene(handle.Result.Scene);
-                return true;
-            }
-            Debug.LogError($"[StageLibrary] Unknown stageId format: {stageId}");
-            return false;
-        }
+        IsLoading = false; LoadProgress = 1f;
     }
 
-    public async Task UnloadAsync()
+    public GameObject Instantiate(string key, Transform parent = null)
     {
-        // ÇÁ¸®ÆÕ ½ºÅ×ÀÌÁö ÇØÁ¦
-        if (_currentStagePrefabInstance != null)
+        if (!prefabCache.TryGetValue(key, out var prefab))
         {
-            Destroy(_currentStagePrefabInstance);
-            _currentStagePrefabInstance = null;
+            Debug.LogError($"[StageLibrary] Not preloaded: {key}");
+            return null;
         }
-
-        // ¾À ½ºÅ×ÀÌÁö ÇØÁ¦
-        if (_loadedScene.HasValue)
-        {
-            var inst = _loadedScene.Value;
-            var h = Addressables.UnloadSceneAsync(inst);
-            await h.Task;
-            _loadedScene = null;
-        }
+        return Object.Instantiate(prefab, parent);
     }
 
-    public void ReleaseAllPrefabs()
+    public void UnloadAll()
     {
-        foreach (var kv in _prefabCache)
-            Addressables.Release(kv.Value);
-        _prefabCache.Clear();
+        foreach (var kv in prefabCache) Addressables.Release(kv.Value);
+        prefabCache.Clear();
+        IsLoading = false; LoadProgress = 0f;
     }
 }

@@ -226,7 +226,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterCatalog: {fileID: 11400000, guid: ea3e3d7ce65980042a0354722b276b6b, type: 2}
   stageCatalog: {fileID: 11400000, guid: a63d23bc976dbad45a601000c9dfa4aa, type: 2}
-  nextSceneAddress: SelectScene
+  progressBar: {fileID: 0}
+  onPreloadCompleted:
+    m_PersistentCalls:
+      m_Calls: []
   loadingPanel: {fileID: 1850748198}
 --- !u!4 &721911313
 Transform:
@@ -849,7 +852,7 @@ GameObject:
   - component: {fileID: 1850748201}
   - component: {fileID: 1850748200}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Panel_Loading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

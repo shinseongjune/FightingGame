@@ -11,7 +11,7 @@ public class WalkForwardState : CharacterState
     {
         property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Walk_Forward);
-        Play(animCfg.GetClipKey(AnimKey.WalkF));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.WalkF));
     }
 
     protected override void OnTick()
@@ -39,7 +39,7 @@ public class WalkBackwardState : CharacterState
     {
         property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Walk_Backward);
-        Play(animCfg.GetClipKey(AnimKey.WalkB));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.WalkB));
     }
 
     protected override void OnTick()

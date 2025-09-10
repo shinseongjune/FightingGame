@@ -14,7 +14,7 @@ public abstract class BaseJumpState : CharacterState
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Jump_Up);
-        Play(animCfg.GetClipKey(AnimKey.JumpUp));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.JumpUp));
         phys.Velocity = new Vector2(Horizontal(), jumpSpeed);
     }
 

@@ -19,7 +19,7 @@ public class ForcedAnimationState : CharacterState
         phys.isGravityOn = false;
 
         var k = string.IsNullOrEmpty(clipKey) ? animCfg.GetClipKey(AnimKey.Forced) : clipKey;
-        if (!TryPlay(k, ReturnToNeutralPose))
+        if (!TryPlay(property.characterName + "/" + k, ReturnToNeutralPose))
         {
             // 실패 시 바로 복귀
             ReturnToNeutralPose();

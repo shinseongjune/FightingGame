@@ -8,7 +8,7 @@ public class FallState : CharacterState
     protected override void OnEnter()
     {
         property.isInputEnabled = true;
-        Play(animCfg.GetClipKey(AnimKey.Fall));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Fall));
     }
 
     protected override void OnTick()

@@ -158,7 +158,8 @@ public class SelectSceneController : MonoBehaviour
                 GameManager.Instance.SetPlayer(
                     c.playerId == 0 ? PlayerSlotId.P1 : PlayerSlotId.P2,
                     data.addressableName,
-                    (gameMode == GameMode.PvCPU && c.playerId == 1) ? PlayerType.CPU : PlayerType.Human
+                    (gameMode == GameMode.PvCPU && c.playerId == 1) ? PlayerType.CPU : PlayerType.Human,
+                    "0" // costume Id //TODO: 추후 누른 버튼에 따라, 동일캐릭터 선택 시 바뀌도록
                 );
             }
             else

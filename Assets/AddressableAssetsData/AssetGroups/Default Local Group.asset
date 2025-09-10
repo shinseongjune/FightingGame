@@ -15,73 +15,158 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 0d609dc872291d44a9eed5b7094cd319
   m_SerializeEntries:
+  - m_GUID: 043306c38864a2f449f6fef4972ddf6d
+    m_Address: TestMan2/TestJumpF
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0a5e3ad55dc517f4391603f14380c30f
-    m_Address: TestCrouchGuard
+    m_Address: TestMan/TestCrouchGuard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29de4f58ac7649b4fb97563b0c112c6b
+    m_Address: TestMan2/TestCrouchHit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d3bf8f5e1efbfd40b985a9c02d19365
+    m_Address: TestMan2/TestPunch
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fdc2595572d788449526a8c76300d0a
-    m_Address: Characters/TestMan2/Prefab
+    m_Address: Character/TestMan2/0
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34f6d56a3b405854db8fe800d3b7a028
-    m_Address: TestPunch
+    m_Address: TestMan/TestPunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c6a23778f92a364eb7c24019e982eff
+    m_Address: TestMan2/TestWalkF
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a794a594a2305841aac72d4e79181f8
+    m_Address: TestMan2/TestJumpUp
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4b2c5e6af22c938448163c4118851fc6
-    m_Address: TestLand
+    m_Address: TestMan/TestLand
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4c2fe1d6f5db84db554f8c7b1813fd
-    m_Address: TestCrouchHit
+    m_Address: TestMan/TestCrouchHit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c9c488a04338ef4caa74480f21a69f1
+    m_Address: TestMan/TestJumpB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88ea18e4b44c3ea4db1b97c29297f5ca
+    m_Address: TestMan2/TestPunch2
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8995b07e4b7457a48817d570c1ced220
-    m_Address: TestJumpUp
+    m_Address: TestMan/TestJumpUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a7ecb790a352d54c95cdca846f9a410
+    m_Address: TestMan2/TestIdle
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 92577c2e5ee30e8498152de58ced88a5
-    m_Address: TestWalkF
+    m_Address: TestMan/TestWalkF
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95525fddf55d8d24895d3579744ce87a
+    m_Address: TestMan2/TestCrouch
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 96c7e1f8733f45b4ca981c43f15800d6
-    m_Address: TestWalkB
+    m_Address: TestMan/TestWalkB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9f17709ec8e0a814287c836f28552f18
-    m_Address: TestCrouch
+    m_Address: TestMan/TestCrouch
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4d87e2fb6276164882f6c3a0af039d3
-    m_Address: TestPunch2
+    m_Address: TestMan/TestPunch2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7921d7bea73fea4b8c49744dff8d8ae
+    m_Address: TestMan2/TestHitGround
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8195ca873700cb42a273c735d7d22f2
-    m_Address: Characters/TestMan/Prefab
+    m_Address: Character/TestMan/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0cf92931d6c64b469b6bf78f200006c
+    m_Address: TestMan2/TestWalkB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b43335080e4dc7f41972cb48bd623077
+    m_Address: TestMan2/TestLand
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8fcfcbc7a07daf4e9b002ad2a33d0f7
+    m_Address: TestMan2/TestJumpB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb19c0500c0fd4042a426c13b268bdb5
+    m_Address: Stage/TestMap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cde2e82c6e3e3604a8b450033f3501d0
+    m_Address: TestMan2/TestCrouchGuard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6be38ea000e0904ca598951b0ae36b1
+    m_Address: TestMan/TestJumpF
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f49b2f0f808c39a4c9c7eee557f9cd86
-    m_Address: TestHitGround
+    m_Address: TestMan/TestHitGround
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9cfab29ff042384481ac67084967704
+    m_Address: TestMan2/TestFall
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fc11c2e1f2244194f9029ebfc881ba6c
-    m_Address: TestFall
+    m_Address: TestMan/TestFall
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fd836c6f3f457a7499fcaac4f836aa9f
-    m_Address: TestIdle
+    m_Address: TestMan/TestIdle
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

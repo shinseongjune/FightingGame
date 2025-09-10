@@ -11,7 +11,7 @@ public class LandState : CharacterState
     {
         property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Idle);
-        Play(animCfg.GetClipKey(AnimKey.Land));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Land));
     }
 
     protected override void OnTick()

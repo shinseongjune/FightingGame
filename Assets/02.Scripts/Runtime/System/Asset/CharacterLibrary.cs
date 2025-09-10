@@ -6,57 +6,45 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class CharacterLibrary : Singleton<CharacterLibrary>
 {
-    // 캐시: key → 프리팹
-    private readonly Dictionary<string, GameObject> _prefabCache = new();
-    // 로딩 중 태스크 캐싱(중복 로드 방지)
-    private readonly Dictionary<string, Task<GameObject>> _loading = new();
+    private readonly Dictionary<string, GameObject> prefabCache = new();
 
-    public async Task<GameObject> LoadPrefabAsync(string key)
+    public bool IsLoading { get; private set; }
+    public float LoadProgress { get; private set; }
+
+    public async Task PreloadAsync(List<string> characterKeys)
     {
-        if (string.IsNullOrEmpty(key)) return null;
+        if (characterKeys == null || characterKeys.Count == 0) { IsLoading = false; LoadProgress = 1f; return; }
+        IsLoading = true; LoadProgress = 0f;
+        int done = 0; int total = characterKeys.Count;
 
-        if (_prefabCache.TryGetValue(key, out var cached))
-            return cached;
-
-        if (_loading.TryGetValue(key, out var pending))
-            return await pending;
-
-        var tcs = new TaskCompletionSource<GameObject>();
-        _loading[key] = tcs.Task;
-
-        AsyncOperationHandle<GameObject> handle = Addressables.LoadAssetAsync<GameObject>(key);
-        await handle.Task;
-
-        _loading.Remove(key);
-
-        if (handle.Status == AsyncOperationStatus.Succeeded)
+        foreach (var key in characterKeys)
         {
-            var prefab = handle.Result;
-            _prefabCache[key] = prefab;
-            tcs.SetResult(prefab);
-            return prefab;
+            if (!prefabCache.ContainsKey(key))
+            {
+                var h = Addressables.LoadAssetAsync<GameObject>(key);
+                while (!h.IsDone) { LoadProgress = (done + h.PercentComplete) / total; await Task.Yield(); }
+                if (h.Status == AsyncOperationStatus.Succeeded) prefabCache[key] = h.Result;
+                else Debug.LogWarning($"[CharacterLibrary] Load failed: {key}");
+            }
+            done++; LoadProgress = (float)done / total;
         }
-        else
+        IsLoading = false; LoadProgress = 1f;
+    }
+
+    public GameObject Instantiate(string key, Vector3 pos, Quaternion rot, Transform parent = null)
+    {
+        if (!prefabCache.TryGetValue(key, out var prefab))
         {
-            Debug.LogError($"[CharacterLibrary] Load failed: {key}");
-            tcs.SetResult(null);
+            Debug.LogError($"[CharacterLibrary] Not preloaded: {key}");
             return null;
         }
+        return Object.Instantiate(prefab, pos, rot, parent);
     }
 
-    public void Release(string key)
+    public void UnloadAll()
     {
-        if (string.IsNullOrEmpty(key)) return;
-        if (_prefabCache.Remove(key, out var prefab))
-        {
-            Addressables.Release(prefab);
-        }
-    }
-
-    public void ReleaseAll()
-    {
-        foreach (var kv in _prefabCache)
-            Addressables.Release(kv.Value);
-        _prefabCache.Clear();
+        foreach (var kv in prefabCache) Addressables.Release(kv.Value);
+        prefabCache.Clear();
+        IsLoading = false; LoadProgress = 0f;
     }
 }

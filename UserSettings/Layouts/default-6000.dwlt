@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 120
+  controlID: 48
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -1116,9 +1116,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -4.889762, y: 4.5217113, z: -9.202588}
+    m_Target: {x: 1.2799965, y: 1.1451087, z: -2.5162458}
     speed: 2
-    m_Value: {x: -4.889762, y: 4.5217113, z: -9.202588}
+    m_Value: {x: 1.2799965, y: 1.1451087, z: -2.5162458}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1164,13 +1164,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.16158275, y: 0.013911278, z: -0.0022806996, w: -0.98676777}
+    m_Target: {x: -0.18228544, y: 0.002061688, z: -0.0003851232, w: -0.9832529}
     speed: 2
-    m_Value: {x: -0.16306123, y: 0.013907714, z: -0.0023015435, w: -0.9865152}
+    m_Value: {x: -0.18228374, y: 0.002061669, z: -0.0003851196, w: -0.98324376}
   m_Size:
     m_Target: 0.8660254
     speed: 2
-    m_Value: 0.86606103
+    m_Value: 0.8660254
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1282,9 +1282,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: d2eeffff
-      m_LastClickedID: -4398
-      m_ExpandedIDs: 2af6ffff0efbffff
+      m_SelectedIDs: f8b50000
+      m_LastClickedID: 0
+      m_ExpandedIDs: e01effff1422ffff1824ffff7a83ffff1c84ffffbc84ffffd289ffffe88effff4e9affff5cefffff0efbffff18d80000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1356,7 +1356,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/01.Scenes
+    - Assets/03.Characters/TestMan2/AnimSet
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1366,16 +1366,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/01.Scenes
+  - Assets/03.Characters/TestMan2/AnimSet
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 143}
-    m_SelectedIDs: 40b80000
-    m_LastClickedID: 47168
-    m_ExpandedIDs: 00000000b2b60000b4b60000b6b60000b8b60000bab60000bcb60000beb60000c0b60000c2b60000c4b60000c6b60000c8b60000cab60000ccb60000ceb60000d0b60000d2b6000000ca9a3b
+    scrollPos: {x: 0, y: 540}
+    m_SelectedIDs: a8b80000
+    m_LastClickedID: 47272
+    m_ExpandedIDs: 00000000deb60000e0b60000e2b60000e4b60000e6b60000e8b60000eab60000ecb60000eeb60000f0b60000f2b60000f4b60000f6b60000f8b60000fab60000fcb60000feb60000b0b8000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1404,7 +1404,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000b2b60000b4b60000b6b60000b8b60000bab60000bcb60000beb60000c0b60000c2b60000c4b60000c6b60000c8b60000cab60000ccb60000ceb60000d0b60000d2b60000
+    m_ExpandedIDs: 00000000deb60000e0b60000e2b60000e4b60000e6b60000e8b60000eab60000ecb60000eeb60000f0b60000f2b60000f4b60000f6b60000f8b60000fab60000fcb60000feb60000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1432,7 +1432,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: 2c800000d48100009e6900001e7300003a850000548500006a0a0100b28f0000b88f0000568000007280000054800000f6130100ea130100221301009a130100be130100523601003a130100f47b0000047c0000f87b0000ee74000078bc0000588eecff607c0000387e00003c8800005488000050880000f68a0000fa8a0000b88900007a8900007e89000092890000ae89000086890000a28900005c8900006e89000072890000768900009a890000b6890000b2890000a68900003a88000078890000748900008c8900000e9500000000000024fc000088cb00004cc200003cc2000038c2000040c2000056c2000050c2000044c2000056cc00004ecc000052cc000096bd00007ef5000064f400004ce2000032e1000018e00000d6b900001ec000001ac00000
     m_RenameOverlay:
       m_UserAcceptedRename: 0

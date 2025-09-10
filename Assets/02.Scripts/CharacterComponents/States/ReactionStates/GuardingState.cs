@@ -52,13 +52,13 @@ public class GuardingState : CharacterState
         if (crouch)
         {
             phys.SetPose(CharacterStateTag.Crouch);
-            Play(animCfg.GetClipKey(AnimKey.GuardCrouch)); // AnimSet에 매핑 필요
+            Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.GuardCrouch));
         }
         else
         {
             // '서가드'는 Idle 포즈를 사용 (Guarding 포즈는 SetPose에 없음)
             phys.SetPose(CharacterStateTag.Idle);
-            Play(animCfg.GetClipKey(AnimKey.GuardIdle));
+            Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.GuardIdle));
         }
     }
 

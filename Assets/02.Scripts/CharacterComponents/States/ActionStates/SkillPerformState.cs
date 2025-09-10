@@ -25,7 +25,7 @@ public class SkillPerformState : CharacterState
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Skill);
 
-        bool ok = TryPlay(skill.animationClipName, OnAnimComplete);
+        bool ok = TryPlay(property.characterName + "/" + skill.animationClipName, OnAnimComplete);
         if (!ok)
         {
             UnityEngine.Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");

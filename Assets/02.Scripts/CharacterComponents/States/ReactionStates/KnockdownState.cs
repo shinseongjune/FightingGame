@@ -14,7 +14,7 @@ public class KnockdownState : CharacterState
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Knockdown);
-        Play(animCfg.GetClipKey(AnimKey.Knockdown));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Knockdown));
 
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
@@ -45,7 +45,7 @@ public class HardKnockdownState : CharacterState
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.HardKnockdown);
-        Play(animCfg.GetClipKey(AnimKey.HardKnockdown));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.HardKnockdown));
 
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
@@ -72,7 +72,7 @@ public class WakeUpState : CharacterState
         phys.mode = PhysicsMode.Kinematic; // 짧게 위치 고정하고 연출
         phys.isGravityOn = false;
 
-        if (!TryPlay(animCfg.GetClipKey(AnimKey.WakeUp), OnWakeFinish))
+        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.WakeUp), OnWakeFinish))
         {
             ReturnToNeutralPose();
             return;

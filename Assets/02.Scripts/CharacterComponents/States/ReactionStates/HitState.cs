@@ -29,6 +29,7 @@ public class HitGroundState : CharacterState
                 crouchHit ? AnimKey.HitCrouch : AnimKey.HitGround,
                 animCfg.GetClipKey(AnimKey.HitGround))
             : animCfg.GetClipKey(AnimKey.HitGround);
+        clip = property.characterName + "/" + clip;
         Play(clip);
 
         // 경직/넉백 적용
@@ -74,7 +75,7 @@ public class HitAirState : CharacterState
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Hit_Air);
 
-        Play(animCfg.GetClipKey(AnimKey.HitAir));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.HitAir));
 
         remain = Mathf.Max(1, property.pendingHitstunFrames);
         if (property.pendingKnockback != Vector2.zero)
@@ -125,6 +126,7 @@ public class BlockstunState : CharacterState
                 crouchGuard ? AnimKey.GuardHitCrouch : AnimKey.GuardHit,
                 animCfg.GetClipKey(AnimKey.GuardHit))
             : animCfg.GetClipKey(AnimKey.GuardHit);
+        clip = property.characterName + "/" + clip;
         Play(clip);
 
         remain = Mathf.Max(1, property.pendingBlockstunFrames);

@@ -18,7 +18,7 @@ public class ThrowState : CharacterState
         phys.mode = PhysicsMode.Kinematic;   // 연출 동안 루트 제어
         phys.isGravityOn = false;
 
-        if (!TryPlay(animCfg.GetClipKey(AnimKey.ThrowStart), OnCatchMoment))
+        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ThrowStart), OnCatchMoment))
         {
             // 연출 시작조차 못하면 깨끗하게 복귀
             ReturnToNeutralPose();
@@ -39,7 +39,7 @@ public class ThrowState : CharacterState
         }
 
         // 이어서 던지기 모션
-        if (!TryPlay(animCfg.GetClipKey(AnimKey.ThrowEnd), OnThrowRelease))
+        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ThrowEnd), OnThrowRelease))
         {
             if (target != null)
             {
@@ -95,7 +95,7 @@ public class BeingThrownState : CharacterState
         phys.mode = PhysicsMode.Carried; // ThrowState에서 followTarget 세팅
         phys.isGravityOn = false;
 
-        if (!TryPlay(animCfg.GetClipKey(AnimKey.BeingThrown)))
+        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.BeingThrown)))
         {
             // 클립이 없어도 최소한 상태가 굳지 않도록
             phys.mode = PhysicsMode.Normal;

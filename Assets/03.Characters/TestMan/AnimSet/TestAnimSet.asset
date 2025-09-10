@@ -15,8 +15,6 @@ MonoBehaviour:
   entries:
   - key: 0
     clipKey: TestIdle
-  - key: 1
-    clipKey: TestCrouch
   - key: 2
     clipKey: TestWalkF
   - key: 3
@@ -31,33 +29,7 @@ MonoBehaviour:
     clipKey: TestFall
   - key: 8
     clipKey: TestLand
-  - key: 9
-    clipKey: TestGuardIdle
-  - key: 10
-    clipKey: TestGuardCrouch
-  - key: 11
-    clipKey: TestGuardHit
-  - key: 12
-    clipKey: TestGuardHitCrouch
+  - key: 1
+    clipKey: TestCrouch
   - key: 13
     clipKey: TestHitGround
-  - key: 14
-    clipKey: TestHitCrouch
-  - key: 15
-    clipKey: TestHitAir
-  - key: 16
-    clipKey: TestKnockdown
-  - key: 17
-    clipKey: TestHardKnockdown
-  - key: 18
-    clipKey: TestWakeUp
-  - key: 19
-    clipKey: TestThrowStart
-  - key: 20
-    clipKey: TestThrowLoop
-  - key: 21
-    clipKey: TestThrowEnd
-  - key: 20
-    clipKey: TestForced
-  - key: 20
-    clipKey: TestForced

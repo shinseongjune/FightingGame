@@ -9,7 +9,7 @@ public class CrouchState : CharacterState
     {
         property.isInputEnabled = true;
         phys.SetPose(CharacterStateTag.Crouch);
-        Play(animCfg.GetClipKey(AnimKey.Crouch));
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Crouch));
     }
 
     protected override void OnTick()

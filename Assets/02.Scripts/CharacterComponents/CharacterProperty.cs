@@ -32,6 +32,8 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour
 {
+    public string characterName;
+
     PhysicsEntity phys;
 
     public CharacterStateTag characterStateTag;

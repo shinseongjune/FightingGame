@@ -61,12 +61,13 @@ public class GameManager : Singleton<GameManager>
     // ====== 레거시 호환 API (SelectSceneController가 호출) ======
 
     // 캐릭터/플레이어 설정
-    public void SetPlayer(PlayerSlotId slot, string characterAddressableName, PlayerType type)
+    public void SetPlayer(PlayerSlotId slot, string characterAddressableName, PlayerType type, string costumeId)
     {
         EnsureMatchConfig();
 
         var loadout = slot == PlayerSlotId.P1 ? matchConfig.p1 : matchConfig.p2;
         loadout.characterId = characterAddressableName;
+        loadout.costumeId = costumeId;
         loadout.isCpu = (type == PlayerType.CPU);
         // 선택: 네트워크/입력 스킴 매핑
         loadout.controlSchemeId =
