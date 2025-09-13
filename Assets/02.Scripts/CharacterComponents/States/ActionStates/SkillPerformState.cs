@@ -3,6 +3,8 @@ public class SkillPerformState : CharacterState
     private Skill_SO skill;
     private bool finished;
 
+    private bool wasGrounded;
+
     // 간단한 예: 특정 프레임부터 캔슬 허용
     // 필요하면 Skill_SO에 창(window) 데이터를 넣어와도 됨.
     private int cancelStartFrame = 0;   // 예: 0이면 즉시 불가
@@ -40,6 +42,13 @@ public class SkillPerformState : CharacterState
 
     protected override void OnTick()
     {
+        if (!wasGrounded && phys.isGrounded)
+        {
+            fsm.TransitionTo("Land");
+        }
+
+        wasGrounded = phys.isGrounded;
+
         // 1) 캔슬 타이밍 열기(프레임 기반 샘플)
         int f = anim.CurrentClipFrame;
         property.isSkillCancelable = (f >= cancelStartFrame && f <= cancelEndFrame);
