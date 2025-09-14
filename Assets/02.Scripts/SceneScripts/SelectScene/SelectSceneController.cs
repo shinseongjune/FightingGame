@@ -103,7 +103,7 @@ public class SelectSceneController : MonoBehaviour
         }
 
         view.SetFocus(0, p1.index);
-        view.SetFocus(1, p2.index);
+        //view.SetFocus(1, p2.index);
         view.InitDone();
 
         RefreshFocusVisibility();

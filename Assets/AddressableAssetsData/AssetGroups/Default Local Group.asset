@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 0d609dc872291d44a9eed5b7094cd319
   m_SerializeEntries:
+  - m_GUID: 03ce7e14c802fe44884ee2716b5c1158
+    m_Address: Portrait/TestMan2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 043306c38864a2f449f6fef4972ddf6d
     m_Address: TestMan2/TestJumpF
     m_ReadOnly: 0
@@ -42,6 +47,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34f6d56a3b405854db8fe800d3b7a028
     m_Address: TestMan/TestPunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3520f139a782919459e68f3e80fe73ff
+    m_Address: Portrait/TestMap
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -150,6 +160,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da87f57b09bdd01448e3e51e0032292e
+    m_Address: Illust/TestMan
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6aaba266da5a7f4e8acca9d363d7952
+    m_Address: StageIllust/TestMap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef6bb366b200d3249bb9f84f68950954
+    m_Address: Illust/TestMan2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f49b2f0f808c39a4c9c7eee557f9cd86
     m_Address: TestMan/TestHitGround
     m_ReadOnly: 0
@@ -157,6 +182,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f9cfab29ff042384481ac67084967704
     m_Address: TestMan2/TestFall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc0675b17e920094984d0ebb6377dc3b
+    m_Address: Portrait/TestMan
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -12,7 +12,7 @@ public sealed class PortraitLibrary : Singleton<PortraitLibrary>
     public float LoadProgress { get; private set; }
 
     /// <summary>여러 개의 스프라이트를 일괄 프리로드</summary>
-    public async Task LoadAssetsAsync(List<string> keys)
+    public async Task PreloadAsync(List<string> keys)
     {
         if (keys == null || keys.Count == 0) return;
 

@@ -38,33 +38,76 @@ public sealed class TitlePreloader : MonoBehaviour
         UpdateUI();
 
         // 1) 키 수집
-        var stageKeys = CollectStageKeys(stageCatalog);                    // "Stage/<이름>"
-        var charKeys = CollectCharacterKeys(characterCatalog);            // "Character/<이름>/<색상>"
-        var animKeys = CollectAnimationClipKeys(characterCatalog);        // clipKey
+        var stageKeys = CollectStageKeys(stageCatalog);               // "Stage/<이름>"
+        var charKeys = CollectCharacterKeys(characterCatalog);       // "Character/<이름>/<색상>"
+        var animKeys = CollectAnimationClipKeys(characterCatalog);   // "<캐릭터>/<클립키>"
+        var charPortraitKeys = CollectCharacterPortraitKeys(characterCatalog);// "Portrait/<캐릭터>"
+        var stagePortraitKeys = CollectStagePortraitKeys(stageCatalog);        // "Portrait/<스테이지>"
+        var illustKeys = CollectCharacterIllustKeys(characterCatalog); // "Illust/<캐릭터>"
+        var stageIllustKeys = CollectStageIllustKeys(stageCatalog);         // "StageIllust/<스테이지>"
+
+        // Portrait는 캐릭터/스테이지를 통합해서 프리로드
+        var allPortraitKeys = new HashSet<string>(charPortraitKeys);
+        foreach (var k in stagePortraitKeys) allPortraitKeys.Add(k);
+
+        // Illustration도 캐릭터/스테이지를 통합
+        var allIllustKeys = new HashSet<string>(illustKeys);
+        foreach (var k in stageIllustKeys) allIllustKeys.Add(k);
 
         // 2) 병렬 프리로드
-        var tAnim = AnimationClipLibrary.Instance.LoadAssetsAsync(animKeys);
-        var tStage = StageLibrary.Instance.PreloadAsync(stageKeys);
-        var tChar = CharacterLibrary.Instance.PreloadAsync(charKeys);
+        var tasks = new List<Task>(5);
 
-        // 3) 진행 바 업데이트
-        while (!tAnim.IsCompleted || !tStage.IsCompleted || !tChar.IsCompleted)
+        // 애니메이션 클립
+        if (animKeys.Count > 0)
+            tasks.Add(AnimationClipLibrary.Instance.LoadAssetsAsync(animKeys));
+        else
+            _ = AnimationClipLibrary.Instance.LoadAssetsAsync(new List<string>()); // no-op 보장용
+
+        // 캐릭터/스테이지 본체
+        tasks.Add(StageLibrary.Instance.PreloadAsync(stageKeys));
+        tasks.Add(CharacterLibrary.Instance.PreloadAsync(charKeys));
+
+        // 초상 & 일러스트
+        tasks.Add(PortraitLibrary.Instance.PreloadAsync(allPortraitKeys.ToList()));
+        tasks.Add(IllustrationLibrary.Instance.PreloadAsync(allIllustKeys.ToList()));
+
+        // 각 라이브러리 진행률 수집자
+        var progressReaders = new System.Func<float>[]
         {
-            Progress = (AnimationClipLibrary.Instance.LoadProgress +
-                        StageLibrary.Instance.LoadProgress +
-                        CharacterLibrary.Instance.LoadProgress) / 3f;
+            () => AnimationClipLibrary.Instance.LoadProgress,
+            () => StageLibrary.Instance.LoadProgress,
+            () => CharacterLibrary.Instance.LoadProgress,
+            () => PortraitLibrary.Instance.LoadProgress,
+            () => IllustrationLibrary.Instance.LoadProgress,
+        };
+
+        // 3) 진행 바 업데이트 루프
+        while (tasks.Any(t => !t.IsCompleted))
+        {
+            // 평균 진행률
+            float sum = 0f;
+            int count = 0;
+            for (int i = 0; i < progressReaders.Length; i++)
+            {
+                sum += Mathf.Clamp01(progressReaders[i]());
+                count++;
+            }
+            Progress = (count > 0) ? (sum / count) : 0f;
             UpdateUI();
             await Task.Yield();
         }
 
-        // 4) 완료 플래그/이벤트만
+        // 혹시 예외 발생했으면 throw (디버그 시 원인 파악)
+        await Task.WhenAll(tasks);
+
+        // 4) 완료 처리
         Progress = 1f;
         UpdateUI();
         IsPreloading = false;
         IsReady = true;
         onPreloadCompleted?.Invoke();
 
-        loadingPanel.SetActive(false);
+        if (loadingPanel) loadingPanel.SetActive(false);
     }
 
     void UpdateUI()
@@ -72,7 +115,8 @@ public sealed class TitlePreloader : MonoBehaviour
         if (progressBar) progressBar.value = Progress;
     }
 
-    // --- Collectors (SO 필드명에 맞춰 필요시 이름만 바꿔주세요) ---
+    // --- Collectors ---
+
     static List<string> CollectStageKeys(StageCatalog_SO sc)
         => sc?.entries?.Select(e => $"Stage/{e.stageName}")?.Distinct().ToList() ?? new();
 
@@ -116,6 +160,46 @@ public sealed class TitlePreloader : MonoBehaviour
                 }
             }
         }
+        return set.ToList();
+    }
+
+    static List<string> CollectCharacterPortraitKeys(CharacterCatalog_SO cc)
+    {
+        var set = new HashSet<string>();
+        if (cc?.entries == null) return set.ToList();
+        foreach (var e in cc.entries)
+            if (!string.IsNullOrEmpty(e.characterName))
+                set.Add($"Portrait/{e.characterName}");
+        return set.ToList();
+    }
+
+    static List<string> CollectStagePortraitKeys(StageCatalog_SO sc)
+    {
+        var set = new HashSet<string>();
+        if (sc?.entries == null) return set.ToList();
+        foreach (var e in sc.entries)
+            if (!string.IsNullOrEmpty(e.stageName))
+                set.Add($"Portrait/{e.stageName}");
+        return set.ToList();
+    }
+
+    static List<string> CollectCharacterIllustKeys(CharacterCatalog_SO cc)
+    {
+        var set = new HashSet<string>();
+        if (cc?.entries == null) return set.ToList();
+        foreach (var e in cc.entries)
+            if (!string.IsNullOrEmpty(e.characterName))
+                set.Add($"Illust/{e.characterName}");
+        return set.ToList();
+    }
+
+    static List<string> CollectStageIllustKeys(StageCatalog_SO sc)
+    {
+        var set = new HashSet<string>();
+        if (sc?.entries == null) return set.ToList();
+        foreach (var e in sc.entries)
+            if (!string.IsNullOrEmpty(e.stageName))
+                set.Add($"StageIllust/{e.stageName}");
         return set.ToList();
     }
 }

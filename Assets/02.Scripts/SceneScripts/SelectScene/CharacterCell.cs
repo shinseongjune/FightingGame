@@ -3,14 +3,23 @@ using UnityEngine.UI;
 
 public class CharacterCell : MonoBehaviour
 {
-    [HideInInspector] public Image background;
-    [HideInInspector] public Image headerImg;
+    [SerializeField] private Image headerImage;
+    [SerializeField] private GameObject lockBadge;
 
-    //TODO: 일러스트 등 이미지 로드해서 등록.
+    private CharacterData data;
 
-    private void Awake()
+    public void SetData(CharacterData d)
     {
-        background = GetComponent<Image>();
-        headerImg = transform.GetChild(0).GetComponent<Image>();
+        data = d;
+        lockBadge?.SetActive(d.isLocked);
+
+        // PortraitLibrary에서 가져오기
+        var sprite = PortraitLibrary.Instance.Get($"Portrait/{d.characterName}");
+        if (sprite != null)
+            headerImage.sprite = sprite;
+        else
+            Debug.LogWarning($"[Cell] Portrait not found: {d.characterName}");
     }
+
+    public CharacterData GetData() => data;
 }

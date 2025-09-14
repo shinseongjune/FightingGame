@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 
 public enum SelectSceneSFXTag
@@ -12,6 +15,15 @@ public enum SelectSceneSFXTag
 
 public class SelectSceneView : MonoBehaviour
 {
+    [Header("Illust UI")]
+    [SerializeField] private Image characterIllust; // Image_Character Illust
+    [SerializeField] private Image stageIllust;     // Image_Stage Illust
+
+    [SerializeField] private Sprite placeholder;    // 기본 표시(없으면 null)
+
+    private string lastCharacterKey;
+    private string lastStageKey;
+
     [Header("Grid Roots (UI Containers)")]
     public RectTransform characterGridRoot;
     public RectTransform stageGridRoot;
@@ -41,6 +53,52 @@ public class SelectSceneView : MonoBehaviour
     public event Action<int, int> OnHoverIndexChanged;
     public event Action OnViewReady;
 
+    private void Awake()
+    {
+        if (characterIllust) characterIllust.preserveAspect = true;
+        if (stageIllust) stageIllust.preserveAspect = true;
+
+        if (placeholder)
+        {
+            if (characterIllust && characterIllust.sprite == null)
+                characterIllust.sprite = placeholder;
+            if (stageIllust && stageIllust.sprite == null)
+                stageIllust.sprite = placeholder;
+        }
+    }
+
+    // --- 캐릭터 셀 포커스/선택 시 호출 ---
+    public void ShowCharacterIllust(CharacterData d)
+    {
+        string key = $"Illust/{d.characterName}";
+        if (key == lastCharacterKey) return;
+        lastCharacterKey = key;
+
+        var sprite = IllustrationLibrary.Instance.Get(key);
+        if (sprite != null) characterIllust.sprite = sprite;
+        else
+        {
+            if (placeholder) characterIllust.sprite = placeholder;
+            Debug.LogWarning($"[View] Character illust not found: {key}");
+        }
+    }
+
+    // --- 스테이지 셀 포커스/선택 시 호출 ---
+    public void ShowStageIllust(StageData d)
+    {
+        string key = $"StageIllust/{d.stageName}";
+        if (key == lastStageKey) return;
+        lastStageKey = key;
+
+        var sprite = IllustrationLibrary.Instance.Get(key);
+        if (sprite != null) stageIllust.sprite = sprite;
+        else
+        {
+            if (placeholder) stageIllust.sprite = placeholder;
+            Debug.LogWarning($"[View] Stage illust not found: {key}");
+        }
+    }
+
     // ------------- 그리드 처리 ------------
     public void BuildCharacterGrid(IReadOnlyList<CharacterData> data)
     {
@@ -52,9 +110,8 @@ public class SelectSceneView : MonoBehaviour
             var rt = go.GetComponent<RectTransform>();
             rt.anchoredPosition = c.gridPos;
 
-            // TODO: Addressables로 이미지 로드해서 셀 UI 바인딩
-            // var cell = go.GetComponent<CharacterCell>();
-            // cell.SetData(c);
+            var cell = go.GetComponent<CharacterCell>();
+            cell.SetData(c);
 
             _characterGrid.Add(go);
         }
@@ -70,9 +127,8 @@ public class SelectSceneView : MonoBehaviour
             var rt = go.GetComponent<RectTransform>();
             rt.anchoredPosition = s.gridPos;
 
-            // TODO: Addressables로 이미지 로드해서 셀 UI 바인딩
-            // var cell = go.GetComponent<StageCell>();
-            // cell.SetData(s);
+            var cell = go.GetComponent<StageCell>();
+            cell.SetData(s);
 
             _stageGrid.Add(go);
         }
@@ -89,7 +145,16 @@ public class SelectSceneView : MonoBehaviour
         SetActive(_stageGrid, false);
         SetActive(_characterGrid, true);
         _currentGrid = _characterGrid;
-        // TODO: 일러스트/디테일 갱신
+
+        // --- 일러스트 전환 처리 ---
+        if (characterIllust) characterIllust.gameObject.SetActive(true);
+        if (stageIllust) stageIllust.gameObject.SetActive(false);
+
+        // 같은 키로 스킵되는 걸 방지(강제 갱신)
+        lastCharacterKey = null;
+
+        // 전환 직후에는 SetFocus만 호출해서 일러스트도 같은 경로로 그리게 한다
+        if (_currentGrid.Count > 0) SetFocus(0, 0);
     }
 
     public void SetStageGridOn()
@@ -97,7 +162,14 @@ public class SelectSceneView : MonoBehaviour
         SetActive(_characterGrid, false);
         SetActive(_stageGrid, true);
         _currentGrid = _stageGrid;
-        // TODO: 프리뷰/디테일 갱신
+
+        // --- 일러스트 전환 처리 ---
+        if (characterIllust) characterIllust.gameObject.SetActive(false);
+        if (stageIllust) stageIllust.gameObject.SetActive(true);
+
+        lastStageKey = null;
+
+        if (_currentGrid.Count > 0) SetFocus(0, 0);
     }
 
     void SetActive(List<GameObject> list, bool active)
@@ -123,35 +195,22 @@ public class SelectSceneView : MonoBehaviour
 
         currentIdx = idx;
 
-        //TODO: 소리 재생
-        //TODO: 캐릭터 일러스트, 디테일, 스테이지 프리뷰 등 표시
+        // --- 일러스트 갱신 ---
+        if (ReferenceEquals(_currentGrid, _characterGrid))
+        {
+            var cell = _currentGrid[idx].GetComponent<CharacterCell>();
+            if (cell != null) ShowCharacterIllust(cell.GetData());
+        }
+        else if (ReferenceEquals(_currentGrid, _stageGrid))
+        {
+            var cell = _currentGrid[idx].GetComponent<StageCell>();
+            if (cell != null) ShowStageIllust(cell.GetData());
+        }
+
+        // TODO: 소리 재생
+
         OnHoverIndexChanged?.Invoke(playerId, idx);
     }
-
-    //public void ShowDetails()
-    //{
-    //
-    //}
-    //
-    //public void ShowFooter()
-    //{
-    //
-    //}
-
-    //public void ShowTimer()
-    //{
-    //
-    //}
-
-    //public void PlaySfx(SelectSceneSFXTag tag)
-    //{
-    //
-    //}
-
-    //public void SetStagePreview()
-    //{
-    //
-    //}
 
     public void SetFocusVisible(int playerId, bool visible)
     {

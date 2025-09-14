@@ -12,7 +12,7 @@ public sealed class IllustrationLibrary : Singleton<IllustrationLibrary>
     public bool IsLoading { get; private set; }
     public float LoadProgress { get; private set; }
 
-    public async Task LoadAssetsAsync(List<string> keys)
+    public async Task PreloadAsync(List<string> keys)
     {
         if (keys == null || keys.Count == 0) return;
 

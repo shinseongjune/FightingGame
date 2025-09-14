@@ -59,9 +59,6 @@ public class SkillPerformState : CharacterState
             if (TryStartSkill())     // 입력 인식되면 다음 스킬로 캔슬
                 return;
         }
-
-        // 3) 공중 중 기술 중간에 착지해도 강제로 대기하지 않고,
-        //    애니 끝에서 ReturnToNeutral을 태움. 필요하면 여기서 착지 시점 처리를 추가.
     }
 
     protected override void OnExit()
