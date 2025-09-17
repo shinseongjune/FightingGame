@@ -55,6 +55,7 @@ public class PhysicsEntity : MonoBehaviour
     public bool collisionsEnabled = true; // (BoxManager에서 owner 단위 필터)
     public bool receiveHits = true;       // (Hurt만 꺼야 할 때)
     public bool pushboxEnabled = true;    // (몸통 밀치기/겹침해소에 쓸 경우)
+    public bool immovablePushbox = false; // 벽용
 
     // Carried 모드용
     public PhysicsEntity followTarget;
@@ -83,7 +84,7 @@ public class PhysicsEntity : MonoBehaviour
         UnregisterDefaultHurt();
     }
 
-    void BuildDefaultBoxesFromNumbers()
+    public void BuildDefaultBoxesFromNumbers()
     {
         // Body들
         if (idleBody.size != Vector2.zero) idleBodyBox = MakeBox("Body_Idle", BoxType.Body, idleBody);

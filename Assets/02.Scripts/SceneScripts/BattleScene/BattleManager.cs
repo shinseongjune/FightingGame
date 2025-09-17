@@ -23,5 +23,11 @@ public class BattleManager : MonoBehaviour
         var p2Prop = p2GO.GetComponent<CharacterProperty>();
         p1Prop?.SpawnAt(p1Spawn.position, true);
         p2Prop?.SpawnAt(p2Spawn.position, false);
+
+        var walls = stageGO.GetComponents<BoxComponent>();
+        foreach (var wall in walls)
+        {
+
+        }
     }
 }

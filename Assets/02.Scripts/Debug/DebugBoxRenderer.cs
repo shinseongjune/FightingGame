@@ -19,8 +19,16 @@ public class BoxDebugRendererGL : MonoBehaviour
     InputAction toggleAction;
     static Material lineMat;
 
+    static bool s_Registered;
+
     void OnEnable()
     {
+        if (!s_Registered)
+        {
+            RenderPipelineManager.endCameraRendering += OnEndCameraRendering;
+            s_Registered = true;
+        }
+
 #if UNITY_EDITOR
         if (!Application.isPlaying)
             UnityEditor.EditorApplication.update += EditorUpdate;
@@ -36,6 +44,11 @@ public class BoxDebugRendererGL : MonoBehaviour
     }
     void OnDisable()
     {
+        if (s_Registered)
+        {
+            RenderPipelineManager.endCameraRendering -= OnEndCameraRendering;
+            s_Registered = false;
+        }
 #if UNITY_EDITOR
         if (!Application.isPlaying)
             UnityEditor.EditorApplication.update -= EditorUpdate;

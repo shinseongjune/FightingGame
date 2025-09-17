@@ -14,7 +14,11 @@ public class BoxComponent : MonoBehaviour
     public Rect GetAABB()
     {
         var pos = owner.Position;
-        int sign = owner.property.isFacingRight ? 1 : -1;
+        int sign = 1;
+        if (owner.property)
+        {
+            sign = owner.property.isFacingRight ? 1 : -1;
+        }
         Vector2 center = new Vector2(pos.x + sign * offset.x, pos.y + offset.y);
         Vector2 half = size * 0.5f;
         return new Rect(center - half, size);
