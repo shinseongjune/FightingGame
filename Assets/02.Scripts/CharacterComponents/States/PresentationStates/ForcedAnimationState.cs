@@ -15,10 +15,20 @@ public class ForcedAnimationState : CharacterState
 
     protected override void OnEnter()
     {
+        // 홀더에서 clipKey 읽어오기
+        var holder = fsm.GetComponent<ForcedAnimParamHolder>();
+        if (holder != null && !string.IsNullOrEmpty(holder.clipKey))
+        {
+            // 상태 시작 전에 SetClip 보장
+            SetClip(holder.clipKey);
+            // 소모성 파라미터라면 즉시 비워주기(선택)
+            holder.clipKey = null;
+        }
+
         phys.mode = PhysicsMode.Kinematic;
         phys.isGravityOn = false;
 
-        var k = string.IsNullOrEmpty(clipKey) ? animCfg.GetClipKey(AnimKey.Forced) : clipKey;
+        var k = string.IsNullOrEmpty(clipKey) ? animCfg.GetClipKey(AnimKey.PreBattle) : clipKey;
         if (!TryPlay(property.characterName + "/" + k, ReturnToNeutralPose))
         {
             // 실패 시 바로 복귀

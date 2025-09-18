@@ -5,6 +5,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform stageRoot;
     [SerializeField] private Transform p1Spawn;
     [SerializeField] private Transform p2Spawn;
+    [SerializeField] private RoundController roundController;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -24,10 +25,7 @@ public class BattleManager : MonoBehaviour
         p1Prop?.SpawnAt(p1Spawn.position, true);
         p2Prop?.SpawnAt(p2Spawn.position, false);
 
-        var walls = stageGO.GetComponents<BoxComponent>();
-        foreach (var wall in walls)
-        {
-
-        }
+        roundController.BindFighters(p1Prop, p2Prop);
+        roundController.BeginMatch();
     }
 }
