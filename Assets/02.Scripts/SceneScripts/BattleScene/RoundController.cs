@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class RoundController : MonoBehaviour, ITicker
 {
+    private TickMaster _tm;
+
     public event Action<int> OnRoundStart;        // roundIndex (1..)
     public event Action<int, int> OnRoundEnd;      // (roundIndex, winnerSlot 1/2/0)
     public event Action<int> OnMatchEnd;          // winnerSlot 1/2/0
@@ -62,13 +64,14 @@ public class RoundController : MonoBehaviour, ITicker
 
     void OnEnable()
     {
+        _tm = TickMaster.Instance;
+
         if (inited)
-            TickMaster.Instance.Register(this);
+            _tm?.Register(this);
     }
     void OnDisable()
     {
-        if (TickMaster.Instance != null)
-            TickMaster.Instance.Unregister(this);
+        _tm?.Unregister(this);
     }
 
     // ====== 라운드 루프 ======
@@ -271,17 +274,12 @@ public class RoundController : MonoBehaviour, ITicker
 
     void PlayRoundIntroIfAny()
     {
-        // 선택 1) 강제 애니메이션 상태 사용
         TryForceClip(f1, AnimKey.PreBattle, fallbackClipKey: null);
         TryForceClip(f2, AnimKey.PreBattle, fallbackClipKey: null);
-
-        // 선택 2) 캐릭터별로 "Intro" 클립을 AnimKey.Forced에 맵핑해두자.
-        // 없으면 아무것도 재생 안 해도 무방.
     }
 
     void PlayKoOrWinPose(int winnerSlot)
     {
-        // 승자: 포즈, 패자: 넘어짐/패배 등. 상황에 따라 바꾸고 싶다면 분기.
         if (winnerSlot == 1)
         {
             TryForceClip(f1, AnimKey.Win, null);
@@ -305,7 +303,7 @@ public class RoundController : MonoBehaviour, ITicker
         if (fsm == null) return;
         var animCfg = fsm.GetComponent<CharacterAnimationConfig>();
         if (animCfg == null) return;
-
+        
         string clipKey = animCfg.animSet != null ? animCfg.animSet.GetOrDefault(key, fallbackClipKey) : fallbackClipKey;
         if (string.IsNullOrEmpty(clipKey))
         {
@@ -316,7 +314,7 @@ public class RoundController : MonoBehaviour, ITicker
 
         // ForcedAnimationState가 clipKey를 받아서 1회 재생할 수 있어야 함
         var forced = fsm.GetComponent<ForcedAnimationStateBridge>();
-
-        if (!forced) forced.PlayOnce(clipKey);
+        
+        if (forced) forced.PlayOnce(clipKey);
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PhysicsManager : Singleton<PhysicsManager>, ITicker
 {
+    private TickMaster _tm;
+
     public float gravity = 9.8f; // or 원하는 중력 값
     public List<PhysicsEntity> entities = new();
 
@@ -24,12 +26,13 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
 
     private void OnEnable()
     {
-        TickMaster.Instance.Register(this);
+        _tm = TickMaster.Instance;
+        _tm?.Register(this);
     }
 
     private void OnDisable()
     {
-        if (TickMaster.Instance != null) TickMaster.Instance.Unregister(this);
+        _tm?.Unregister(this);
     }
 
     public void Tick()

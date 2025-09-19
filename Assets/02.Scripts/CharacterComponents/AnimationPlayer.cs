@@ -1,7 +1,8 @@
 using System;
+using UnityEditor.Graphs;
 using UnityEngine;
-using UnityEngine.Playables;
 using UnityEngine.Animations;
+using UnityEngine.Playables;
 
 [RequireComponent(typeof(Animator))]
 public class AnimationPlayer : MonoBehaviour
@@ -37,6 +38,16 @@ public class AnimationPlayer : MonoBehaviour
     private void OnDisable()
     { 
         CleanupPlayable(); 
+    }
+
+    void OnDestroy()
+    {
+        CleanupPlayable();
+    }
+
+    void OnApplicationQuit()
+    {
+        CleanupPlayable();
     }
 
     private void CleanupPlayable()

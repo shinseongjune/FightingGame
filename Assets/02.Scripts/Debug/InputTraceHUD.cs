@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 
 public class InputTraceHUD : MonoBehaviour, ITicker
 {
+    private TickMaster _tm;
+
     [Header("Source")]
     public InputBuffer source;                 // 비워두면 GetComponent로 자동
     public int maxItems = 14;                  // 표시 라인 수
@@ -46,7 +48,8 @@ public class InputTraceHUD : MonoBehaviour, ITicker
 
     void OnEnable()
     {
-        TickMaster.Instance?.Register(this);
+        _tm = TickMaster.Instance;
+        _tm?.Register(this);
 
         if (Application.isPlaying)
         {
@@ -56,7 +59,7 @@ public class InputTraceHUD : MonoBehaviour, ITicker
     }
     void OnDisable()
     {
-        TickMaster.Instance?.Unregister(this);
+        _tm?.Unregister(this);
         toggleAction?.Disable();
         toggleAction?.Dispose();
         toggleAction = null;

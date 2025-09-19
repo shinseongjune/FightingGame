@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BoxManager : Singleton<BoxManager>, ITicker
 {
+    private TickMaster _tm;
+
     public List<BoxComponent> activeBoxes = new();
 
     // 전역 해석 후에만 발행되는 이벤트(한 프레임 우승자들)
@@ -16,12 +18,13 @@ public class BoxManager : Singleton<BoxManager>, ITicker
 
     private void OnEnable()
     {
-        TickMaster.Instance.Register(this);
+        _tm = TickMaster.Instance;
+        _tm?.Register(this);
     }
 
     private void OnDisable()
     {
-        if (TickMaster.Instance != null) TickMaster.Instance.Unregister(this);
+        _tm?.Unregister(this);
     }
 
     public void Tick()

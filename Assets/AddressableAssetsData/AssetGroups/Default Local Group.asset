@@ -30,6 +30,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e0004b0f72e10e478f4b34368656bec
+    m_Address: TestMan2/TestLose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 29de4f58ac7649b4fb97563b0c112c6b
     m_Address: TestMan2/TestCrouchHit
     m_ReadOnly: 0
@@ -70,8 +75,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c188c390b9bd864b8c4374fa346715f
+    m_Address: TestMan2/TestPreBattle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4c2fe1d6f5db84db554f8c7b1813fd
     m_Address: TestMan/TestCrouchHit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b437eaca0039814386de955ff317e29
+    m_Address: TestMan2/TestWin
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -145,6 +160,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be6a9a005a3a1c74ab3d57540426046b
+    m_Address: TestMan/TestWin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c11bad38f7533d84cb7f87bff802c5a6
+    m_Address: TestMan/TestPreBattle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cb19c0500c0fd4042a426c13b268bdb5
     m_Address: Stage/TestMap
     m_ReadOnly: 0
@@ -167,6 +192,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e6aaba266da5a7f4e8acca9d363d7952
     m_Address: StageIllust/TestMap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e97de911f8685a143a18ec1c09f2f656
+    m_Address: TestMan/TestLose
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

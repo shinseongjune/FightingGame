@@ -120,4 +120,25 @@ public class GameManager : Singleton<GameManager>
         // ¸ðµå ½ÌÅ©(¼±ÅÃ)
         matchConfig.mode = currentMode;
     }
+
+    protected void OnDisable()
+    {
+        actions?.Disable(); // ¸ðµç ¸Ê ²ô±â
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        actions?.Disable();
+        actions?.Dispose();
+        actions = null;
+    }
+
+    protected override void OnApplicationQuit()
+    {
+        base.OnApplicationQuit();
+
+        actions?.Disable();
+    }
 }

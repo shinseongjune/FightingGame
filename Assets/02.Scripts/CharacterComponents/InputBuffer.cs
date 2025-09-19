@@ -23,7 +23,7 @@ public class InputBuffer : MonoBehaviour
 
     private void Awake()
     {
-        inputActions = new InputSystem_Actions();
+        inputActions = GameManager.Instance.actions;
         inputActions.Enable(); // ÀüÃ¼ ¸Ê Enable
         character = GetComponent<CharacterProperty>();
     }

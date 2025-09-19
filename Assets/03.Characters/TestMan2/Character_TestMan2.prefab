@@ -2683,6 +2683,7 @@ GameObject:
   - component: {fileID: 2128112782071567512}
   - component: {fileID: 2214678341692705477}
   - component: {fileID: 1230523323767490591}
+  - component: {fileID: 1397114016262088397}
   m_Layer: 0
   m_Name: Character_TestMan2
   m_TagString: Untagged
@@ -2807,7 +2808,7 @@ MonoBehaviour:
   isProjectileInvincible: 0
   superArmorCount: 0
   hp: 0
-  maxHp: 10000
+  maxHp: 100
   saGauge: 0
   maxSAGauge: 300
   isExhausted: 0
@@ -2942,8 +2943,21 @@ MonoBehaviour:
   collisionsEnabled: 1
   receiveHits: 1
   pushboxEnabled: 1
+  immovablePushbox: 0
   followTarget: {fileID: 0}
   followOffset: {x: 0, y: 0}
+--- !u!114 &1397114016262088397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95d2aae1a5858c84d958e6f83381c33b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4821643885564524650
 GameObject:
   m_ObjectHideFlags: 0

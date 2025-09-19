@@ -1,9 +1,10 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-10000)]
 [RequireComponent(typeof(CharacterFSM))]
 public class CharacterStateBootstrap : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         var fsm = GetComponent<CharacterFSM>();
 

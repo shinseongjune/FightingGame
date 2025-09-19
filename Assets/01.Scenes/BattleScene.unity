@@ -676,38 +676,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1308341615
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1308341616}
-  m_Layer: 0
-  m_Name: SceneModules
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1308341616
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308341615}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 814.4449, y: 633.5135, z: -673.627}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1687032639}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1536566736
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,6 +753,7 @@ MonoBehaviour:
   stageRoot: {fileID: 2028371560}
   p1Spawn: {fileID: 526535075}
   p2Spawn: {fileID: 944393241}
+  roundController: {fileID: 1687032638}
 --- !u!4 &1557814030
 Transform:
   m_ObjectHideFlags: 0
@@ -875,6 +844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 765af07a98c1986479b3a27736ff2e1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rulesSO: {fileID: 11400000, guid: ada2eb440558a2245ab6bead646ea0a4, type: 2}
 --- !u!4 &1687032639
 Transform:
   m_ObjectHideFlags: 0
@@ -884,11 +854,11 @@ Transform:
   m_GameObject: {fileID: 1687032637}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -815.7333, y: -633.5135, z: 677.7527}
+  m_LocalPosition: {x: -1.2883911, y: 0, z: 4.1256714}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1308341616}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1998746312
 GameObject:
@@ -966,7 +936,7 @@ SceneRoots:
   - {fileID: 1577587444}
   - {fileID: 1299293387}
   - {fileID: 1998746313}
-  - {fileID: 1308341616}
+  - {fileID: 1687032639}
   - {fileID: 1557814030}
   - {fileID: 526535075}
   - {fileID: 944393241}

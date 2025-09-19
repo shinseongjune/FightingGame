@@ -11,41 +11,32 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (_quitting) return null;
 
-            if (_instance == null)
-            {
-                _instance = FindAnyObjectByType<T>();
+            if (_instance) return _instance;
 
-                if (_instance == null)
-                {
-                    GameObject go = new GameObject(typeof(T).Name);
-                    _instance = go.AddComponent<T>();
-                }
-            }
-
+            _instance = FindAnyObjectByType<T>();
             return _instance;
         }
     }
 
     protected virtual void Awake()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        _instance = this as T;
+        if (_instance && _instance != (T)(object)this) { Destroy(gameObject); return; }
+        _instance = (T)(object)this;
 
         if (ShouldPersistAcrossScenes())
-        {
             DontDestroyOnLoad(gameObject);
-        }
     }
 
     /// <summary>
     /// 씬을 넘어 유지할지 여부. 필요시 오버라이드.
     /// </summary>
     protected virtual bool ShouldPersistAcrossScenes() => true;
+
+    protected virtual void OnDestroy()
+    {
+        if (ReferenceEquals(_instance, this)) _instance = null;
+        _quitting = true; // 파괴 중엔 Instance가 null만 반환
+    }
 
     protected virtual void OnApplicationQuit()
     {

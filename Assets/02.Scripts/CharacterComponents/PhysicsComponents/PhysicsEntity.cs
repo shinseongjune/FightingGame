@@ -10,6 +10,9 @@ public enum PhysicsMode
 
 public class PhysicsEntity : MonoBehaviour
 {
+    private PhysicsManager _pm;
+    private BoxManager _bm;
+
     [System.Serializable] public struct BoxNum { public Vector2 center; public Vector2 size; }
 
     [Header("Default Box Numbers")]
@@ -74,12 +77,16 @@ public class PhysicsEntity : MonoBehaviour
     {
         Position = (Vector2)transform.position;
         isGrounded = Position.y <= groundY + 1e-3f;
-        PhysicsManager.Instance?.Register(this);
+        
+        _pm = PhysicsManager.Instance;
+        _pm?.Register(this);
+
+        _bm = BoxManager.Instance;
     }
 
     void OnDisable()
     {
-        PhysicsManager.Instance?.Unregister(this);
+        _pm?.Unregister(this);
         // 기본 허트박스 등록 해제(안전)
         UnregisterDefaultHurt();
     }
@@ -229,7 +236,7 @@ public class PhysicsEntity : MonoBehaviour
         {
             var hb = _registeredDefaultHurt[i];
             if (hb != null)
-                BoxManager.Instance?.Unregister(hb);
+               _bm?.Unregister(hb);
         }
         _registeredDefaultHurt.Clear();
     }
