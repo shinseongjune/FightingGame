@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 119
+  controlID: 123
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/02.Scripts/CharacterComponents/States/LocomotionStates
+    - Assets/02.Scripts/SceneScripts/ResultScene
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -365,15 +365,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/02.Scripts/CharacterComponents/States/LocomotionStates
+  - Assets/02.Scripts/SceneScripts/ResultScene
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 120}
-    m_SelectedIDs: c0b80000
-    m_LastClickedID: 47296
+    scrollPos: {x: 0, y: 349}
+    m_SelectedIDs: d8b80000
+    m_LastClickedID: 47320
     m_ExpandedIDs: 0000000002b8000004b8000006b8000008b800000ab800000cb800000eb8000010b8000012b8000014b8000016b8000018b800001ab800001cb800001eb8000020b8000022b8000024b8000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1395,7 +1395,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -117010
+  m_LastSelectedObjectID: 47402
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1435,9 +1435,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: a0eeffff
-      m_LastClickedID: -4448
-      m_ExpandedIDs: e4f0ffff0efbffff
+      m_SelectedIDs: 2ab90000
+      m_LastClickedID: 47402
+      m_ExpandedIDs: 88f5ffff2cf6ffff0efbffff80b90000b6b90000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 

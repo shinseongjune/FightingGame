@@ -3,7 +3,14 @@ using UnityEngine.UI;
 
 public class ResultSceneController : MonoBehaviour
 {
+    private GameManager _gm;
+
     [SerializeField] Text resultText;
+
+    private void Awake()
+    {
+        _gm = GameManager.Instance;
+    }
 
     void Start()
     {

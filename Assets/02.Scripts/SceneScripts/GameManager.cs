@@ -1,4 +1,9 @@
-using UnityEngine;
+public class UserData
+{
+    public string userName;
+    public string password;
+    public PlayerSlotId slotId;
+}
 
 public enum GameMode
 {
@@ -22,6 +27,8 @@ public enum PlayerType
 
 public class GameManager : Singleton<GameManager>
 {
+    public UserData currentUser;
+
     // 현재 게임 모드
     public GameMode currentMode = GameMode.PvCPU;
 
