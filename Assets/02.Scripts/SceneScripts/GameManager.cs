@@ -133,10 +133,8 @@ public class GameManager : Singleton<GameManager>
         actions?.Disable(); // ¸ðµç ¸Ê ²ô±â
     }
 
-    protected override void OnDestroy()
+    protected void OnDestroy()
     {
-        base.OnDestroy();
-
         actions?.Disable();
         actions?.Dispose();
         actions = null;

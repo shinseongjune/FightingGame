@@ -38,6 +38,8 @@ public class SkillPerformState : CharacterState
 
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
+
+        wasGrounded = phys.isGrounded;
     }
 
     protected override void OnTick()

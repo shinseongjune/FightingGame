@@ -11,6 +11,8 @@ public class TickMaster : Singleton<TickMaster>
 
     private readonly HashSet<ITicker> pendingRemove = new();
 
+    public bool IsReady { get; private set; }
+
     protected override bool ShouldPersistAcrossScenes() => false;
 
     public void Register(ITicker t)
@@ -22,6 +24,17 @@ public class TickMaster : Singleton<TickMaster>
     public void Unregister(ITicker t)
     {
         pendingRemove.Add(t);
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        IsReady = false;
+    }
+
+    void Start()
+    {
+        IsReady = true;
     }
 
     void Update()

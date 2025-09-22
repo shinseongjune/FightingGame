@@ -9,6 +9,13 @@ public class BattleManager : MonoBehaviour
 
     GameObject stageGO, p1GO, p2GO;
 
+    private void Awake()
+    {
+        Time.timeScale = 1f;
+        GameManager.Instance.actions.Player.Enable();
+        GameManager.Instance.actions.Select.Disable();
+    }
+
     void Start()
     {
         var m = GameManager.Instance.matchConfig;
@@ -26,6 +33,14 @@ public class BattleManager : MonoBehaviour
         p2Prop?.SpawnAt(p2Spawn.position, false);
 
         roundController.BindFighters(p1Prop, p2Prop);
+        StartCoroutine(Co_BeginAfterReady());
+    }
+
+    private System.Collections.IEnumerator Co_BeginAfterReady()
+    {
+        yield return WaitFor.TickMasterReady();
+        yield return WaitFor.PhysicsManagerReady();
+        yield return WaitFor.BoxManagerReady();
         roundController.BeginMatch();
     }
 }

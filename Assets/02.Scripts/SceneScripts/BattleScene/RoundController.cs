@@ -52,6 +52,12 @@ public class RoundController : MonoBehaviour, ITicker
 
     public void BeginMatch()
     {
+        if (TickMaster.Instance == null || !TickMaster.Instance.IsReady)
+        {
+            StartCoroutine(Co_DeferBegin());
+            return;
+        }
+
         R = rulesSO != null ? rulesSO.data : MatchRulesData.Default;
         roundsToWin = Mathf.Max(1, R.winTarget);
         p1RoundsWon = p2RoundsWon = 0;
@@ -60,6 +66,12 @@ public class RoundController : MonoBehaviour, ITicker
 
         TickMaster.Instance.Register(this);
         NextRound();
+    }
+
+    private System.Collections.IEnumerator Co_DeferBegin()
+    {
+        yield return WaitFor.TickMasterReady();
+        BeginMatch();
     }
 
     void OnEnable()
