@@ -159,6 +159,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
                     // ÀâÈù ÂÊ
                     var defFSM = ev.defender.GetComponent<CharacterFSM>();
                     defFSM?.TransitionTo("BeingThrown");
+                    (defFSM?.Current as BeingThrownState)?.SetTrower(ev.attacker.property);
                 }
                 else if (ev.attacker == me)
                 {

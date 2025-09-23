@@ -14,10 +14,6 @@ public enum AnimKey
     Knockdown,
     HardKnockdown,
     WakeUp,         // 기상
-    ThrowStart,     // 잡기 시작(시전자)
-    ThrowLoop,      // 잡은 채로 고정
-    ThrowEnd,       // 던지기 모션(시전자)
-    BeingThrown,    // 잡힘/던져짐(피격자)
     PreBattle,      // 연출 전용
     Win,            // 연출 전용
     Lose,

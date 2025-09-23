@@ -73,4 +73,10 @@ public class Skill_SO : ScriptableObject
 
     [Tooltip("연쇄히트 쿨다운 프레임 수")]
     public int rehitCooldownFrames;
+
+    public string throwAnimationClipName;
+    public string beingThrownAnimationClipName;
+
+    //TODO: hit effect, 그냥 이펙트들 등등
+    //드라이브
 }

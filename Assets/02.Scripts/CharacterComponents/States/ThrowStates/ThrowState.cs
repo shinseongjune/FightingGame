@@ -1,5 +1,6 @@
 // ThrowStates.cs
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 /// <summary> 시전자(공격자) 쪽 잡기 상태 </summary>
 public class ThrowState : CharacterState
@@ -18,7 +19,16 @@ public class ThrowState : CharacterState
         phys.mode = PhysicsMode.Kinematic;   // 연출 동안 루트 제어
         phys.isGravityOn = false;
 
-        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ThrowStart), OnCatchMoment))
+
+        if (target != null)
+        {
+            target.mode = PhysicsMode.Carried;
+            target.followTarget = phys;
+            var signX = property.isFacingRight ? 1f : -1f;
+            target.followOffset = new Vector2(holdOffset.x * signX, holdOffset.y);
+        }
+
+        if (!TryPlay(property.characterName + "/" + property.currentSkill.throwAnimationClipName, ReturnToNeutralPose))
         {
             // 연출 시작조차 못하면 깨끗하게 복귀
             ReturnToNeutralPose();
@@ -28,64 +38,27 @@ public class ThrowState : CharacterState
 
     protected override void OnTick() { }
 
-    // ThrowStart 끝나는 타이밍에 실제 ‘들기’
-    void OnCatchMoment()
-    {
-        if (target != null)
-        {
-            target.mode = PhysicsMode.Carried;
-            target.followTarget = phys;
-            target.followOffset = holdOffset;
-        }
-
-        // 이어서 던지기 모션
-        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ThrowEnd), OnThrowRelease))
-        {
-            if (target != null)
-            {
-                target.mode = PhysicsMode.Normal;
-                target.followTarget = null;
-            }
-            ReturnToNeutralPose();
-        }
-    }
-
-    void OnThrowRelease()
-    {
-        if (target != null)
-        {
-            // 붙잡기 해제 + 던지기 속도 부여
-            target.mode = PhysicsMode.Normal;
-            target.followTarget = null;
-
-            // 간단한 던지기 값(필요시 Skill_SO로 파라미터화)
-            Vector2 launch = new Vector2(property.isFacingRight ? 6f : -6f, 8f);
-            target.Velocity = launch;
-
-            // 맞는 쪽은 공중 피격/다운으로
-            var targetFSM = target.GetComponent<CharacterFSM>();
-            if (targetFSM != null)
-            {
-                // 상황에 맞게 하드/일반 다운 분기
-                targetFSM.TransitionTo("HardKnockdown");
-            }
-        }
-
-        // 시전자는 후딜 처리
-        ReturnToNeutralPose();
-    }
-
     protected override void OnExit()
     {
         property.isInputEnabled = true;
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
+
+        if (target != null)
+        {
+            target.mode = PhysicsMode.Normal;
+            target.followTarget = null;
+        }
     }
 }
 
 /// <summary> 피격자(잡힌 쪽) 상태 </summary>
 public class BeingThrownState : CharacterState
 {
+    CharacterProperty thrower;
+
+    public void SetTrower(CharacterProperty c) => thrower = c;
+
     public BeingThrownState(CharacterFSM f) : base(f) { }
     public override CharacterStateTag? StateTag => CharacterStateTag.BeingThrown;
 
@@ -95,12 +68,21 @@ public class BeingThrownState : CharacterState
         phys.mode = PhysicsMode.Carried; // ThrowState에서 followTarget 세팅
         phys.isGravityOn = false;
 
-        if (!TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.BeingThrown)))
+        if (thrower == null || thrower.currentSkill == null)
+        {
+            // 안전 복구
+            phys.mode = PhysicsMode.Normal;
+            phys.isGravityOn = true;
+            Transition("Knockdown");
+            return;
+        }
+
+        if (!TryPlay(property.characterName + "/" + thrower.currentSkill.beingThrownAnimationClipName))
         {
             // 클립이 없어도 최소한 상태가 굳지 않도록
             phys.mode = PhysicsMode.Normal;
             phys.isGravityOn = true;
-            Transition("Fall");
+            Transition("Knockdown");
             return;
         }
         phys.Velocity = Vector2.zero;
@@ -113,5 +95,7 @@ public class BeingThrownState : CharacterState
     {
         property.isInputEnabled = true;
         // mode/중력은 시전자 쪽에서 해제 시점에 조정
+
+        Transition("Knockdown");
     }
 }

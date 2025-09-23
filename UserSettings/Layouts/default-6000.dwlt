@@ -167,8 +167,8 @@ MonoBehaviour:
     y: 0
     width: 849
     height: 449
-  m_MinSize: {x: 201, y: 226}
-  m_MaxSize: {x: 4001, y: 4026}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/02.Scripts/CharacterComponents
+    - Assets/02.Scripts/Animation
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -365,16 +365,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/02.Scripts/CharacterComponents
+  - Assets/02.Scripts/Animation
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 16b80000
-    m_LastClickedID: 47126
-    m_ExpandedIDs: 000000000cb800000eb8000010b8000012b8000014b8000016b8000018b800001ab800001cb800001eb8000020b8000022b8000024b8000026b8000028b800002ab800002cb800002eb8000000ca9a3b
+    scrollPos: {x: 0, y: 60}
+    m_SelectedIDs: c0b80000
+    m_LastClickedID: 47296
+    m_ExpandedIDs: 000000000ab800000cb800000eb8000010b8000012b8000014b8000016b8000018b800001ab800001cb800001eb8000020b8000022b8000024b8000026b8000028b800002ab800002cb8000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -403,7 +403,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000000cb800000eb8000010b8000012b8000014b8000016b8000018b800001ab800001cb800001eb8000020b8000022b8000024b8000026b8000028b800002ab800002cb800002eb80000
+    m_ExpandedIDs: 000000000ab800000cb800000eb8000010b8000012b8000014b8000016b8000018b800001ab800001cb800001eb8000020b8000022b8000024b8000026b8000028b800002ab800002cb80000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -435,18 +435,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: 2c800000d48100009e6900001e7300003a850000548500006a0a0100b28f0000b88f0000568000007280000054800000f6130100ea130100221301009a130100be130100523601003a130100f47b0000047c0000f87b0000ee740000588eecff607c0000387e00003c8800005488000050880000f68a0000fa8a0000b88900007a8900007e89000092890000ae89000086890000a28900005c8900006e89000072890000768900009a890000b6890000b2890000a68900003a88000078890000748900008c8900000e9500000000000024fc000088cb00004cc200003cc2000038c2000040c2000056c2000050c2000044c2000056cc00004ecc000052cc000096bd00007ef5000064f400004ce2000032e1000018e00000d6b900001ec000001ac0000084ba0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: ThrowState
+      m_OriginalName: ThrowState
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 44130
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
       m_ClientGUIView: {fileID: 11}
@@ -1435,9 +1435,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: a0a00000
+      m_SelectedIDs: 9a870000
       m_LastClickedID: 0
-      m_ExpandedIDs: 02fbffff
+      m_ExpandedIDs: 0efbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
