@@ -35,9 +35,9 @@ MonoBehaviour:
     clipKey: TestCrouch
   - key: 13
     clipKey: TestHitGround
-  - key: 23
+  - key: 19
     clipKey: TestPreBattle
-  - key: 24
+  - key: 20
     clipKey: TestWin
-  - key: 25
+  - key: 21
     clipKey: TestLose

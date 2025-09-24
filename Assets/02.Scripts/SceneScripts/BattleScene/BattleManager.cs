@@ -6,6 +6,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform p1Spawn;
     [SerializeField] private Transform p2Spawn;
     [SerializeField] private RoundController roundController;
+    [SerializeField] private CameraRig_25D cameraRig;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -27,6 +28,7 @@ public class BattleManager : MonoBehaviour
         p1GO = CharacterLibrary.Instance.Instantiate(p1Key, p1Spawn.position, p1Spawn.rotation);
         p2GO = CharacterLibrary.Instance.Instantiate(p2Key, p2Spawn.position, p2Spawn.rotation);
 
+
         var p1Prop = p1GO.GetComponent<CharacterProperty>();
         var p2Prop = p2GO.GetComponent<CharacterProperty>();
         p1Prop?.SpawnAt(p1Spawn.position, true);
@@ -34,6 +36,9 @@ public class BattleManager : MonoBehaviour
 
         roundController.BindFighters(p1Prop, p2Prop);
         StartCoroutine(Co_BeginAfterReady());
+
+        cameraRig.fighters[0] = p1GO.transform;
+        cameraRig.fighters[1] = p2GO.transform;
     }
 
     private System.Collections.IEnumerator Co_BeginAfterReady()

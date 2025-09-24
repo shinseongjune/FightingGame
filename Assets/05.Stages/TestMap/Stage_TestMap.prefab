@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6788835007737676253}
   - component: {fileID: 8692472738640472927}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Stage_TestMap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -48,6 +48,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2397ad18cc6ffd24794117af4ccbbc87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bounds:
+    leftX: -8
+    rightX: 8
+    groundY: 0
+    hasCeiling: 0
+    ceilingY: 6
   wallHeight: 6
   wallThickness: 0.5
 --- !u!1 &3919721452840343428
@@ -62,7 +68,7 @@ GameObject:
   - component: {fileID: 6195605391699108235}
   - component: {fileID: 5935457107832382858}
   - component: {fileID: 5165624091766714105}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +176,7 @@ GameObject:
   - component: {fileID: 4532938433087866253}
   - component: {fileID: 4554982529256189650}
   - component: {fileID: 6998608875829832565}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +284,7 @@ GameObject:
   - component: {fileID: 1825359220116832358}
   - component: {fileID: 6545175668811304346}
   - component: {fileID: 8266707012231552891}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +393,7 @@ GameObject:
   - component: {fileID: 5985580896993187133}
   - component: {fileID: 8501427846442987400}
   - component: {fileID: 3306678561861655389}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
