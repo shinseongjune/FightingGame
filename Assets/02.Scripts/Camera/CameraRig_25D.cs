@@ -74,10 +74,20 @@ public sealed class CameraRig_25D : MonoBehaviour
         Vector3? p1 = (fighters.Length > 0 && fighters[0] != null) ? fighters[0].position : (Vector3?)null;
         Vector3? p2 = (fighters.Length > 1 && fighters[1] != null) ? fighters[1].position : (Vector3?)null;
 
-        if (p1 == null && p2 == null) return;
+        if (p1 == null && p2 == null)
+        {
+            charCam.enabled = false;
+            bgCam.enabled = false;
+            return;
+        }
+        else
+        {
+            charCam.enabled = true;
+            bgCam.enabled = true;
+        }
 
-        // 2) 중심점과 거리 계산 (2D 격투: X는 수평, Y는 수직, Z는 고정평면)
-        Vector3 a = p1 ?? p2.Value;
+            // 2) 중심점과 거리 계산 (2D 격투: X는 수평, Y는 수직, Z는 고정평면)
+            Vector3 a = p1 ?? p2.Value;
         Vector3 b = p2 ?? p1.Value;
 
         float dx = Mathf.Abs(b.x - a.x);
