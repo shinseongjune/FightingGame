@@ -30,11 +30,12 @@ public enum CharacterStateTag
     ForcedAnimation,
 }
 
-public class CharacterProperty : MonoBehaviour
+public class CharacterProperty : MonoBehaviour, ITicker
 {
     public string characterName;
 
     PhysicsEntity phys;
+    CharacterFSM fsm;
 
     public CharacterStateTag characterStateTag;
 
@@ -65,7 +66,7 @@ public class CharacterProperty : MonoBehaviour
     public bool isDriveGaugeCharging;
     public float driveGauge;
     public float maxDriveGauge = 600;
-    public float driveGaugeTickChargeAmount = 1;
+    public float driveGaugeTickChargeAmount = 25/60;
 
     public int pendingHitstunFrames;
     public int pendingBlockstunFrames;
@@ -77,6 +78,24 @@ public class CharacterProperty : MonoBehaviour
     private void Awake()
     {
         phys = GetComponent<PhysicsEntity>();
+        fsm = GetComponent<CharacterFSM>();
+    }
+
+    public void Tick()
+    {
+        if (driveGauge <= 0)
+        {
+            isExhausted = true;
+        }
+        else if (isExhausted && driveGauge >= maxDriveGauge)
+        {
+            isExhausted = false;
+        }
+
+        if (isExhausted || isDriveGaugeCharging)
+        {
+            ChargeDriveGauge(driveGaugeTickChargeAmount);
+        }
     }
 
     public void SetHitstun(int frames, Vector2 kb)
@@ -94,9 +113,19 @@ public class CharacterProperty : MonoBehaviour
         saGauge = Mathf.Min(saGauge + amount, maxSAGauge);
     }
 
+    public void ConsumeSAGauge(float amount)
+    {
+        saGauge = Mathf.Max(0, saGauge - amount);
+    }
+
     public void ChargeDriveGauge(float amount)
     {
         driveGauge = Mathf.Min(driveGauge + amount, maxDriveGauge);
+    }
+
+    public void ConsumeDriveGauge(float amount)
+    {
+        driveGauge = Mathf.Max(0, driveGauge - amount);
     }
 
     public void SetFacing(bool facingRight)
