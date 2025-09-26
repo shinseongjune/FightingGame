@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Hierarchy;
 using UnityEngine;
 
 public enum PhysicsMode
@@ -226,6 +227,30 @@ public class PhysicsEntity : MonoBehaviour
         if (currentBodyBox != null)
         {
             if (currentBodyBox.owner == null) currentBodyBox.owner = this;
+        }
+    }
+
+    public void SetActiveWhiffBoxes(bool active)
+    {
+        if (currentWhiffBoxes != null)
+        {
+            foreach (var hb in currentWhiffBoxes)
+            {
+                if (hb == null) continue;
+
+                hb.type = BoxType.Hurt;
+
+                if (hb.owner == null) hb.owner = this;
+
+                if (active)
+                {
+                    BoxManager.Instance?.Register(hb);
+                }
+                else
+                {
+                    BoxManager.Instance.Unregister(hb);
+                }
+            }
         }
     }
 

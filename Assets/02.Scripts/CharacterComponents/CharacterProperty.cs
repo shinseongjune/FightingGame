@@ -121,6 +121,10 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public void ChargeDriveGauge(float amount)
     {
         driveGauge = Mathf.Min(driveGauge + amount, maxDriveGauge);
+        if (driveGauge <= 0)
+        {
+            isExhausted = true;
+        }
     }
 
     public void ConsumeDriveGauge(float amount)

@@ -70,9 +70,34 @@ public abstract class CharacterState
         }
 
         // 전이용 컨텍스트 저장
-        property.characterStateTag = CharacterStateTag.Skill;
         property.currentSkill = matched;
-        fsm.TransitionTo("Skill");
+        switch (matched.skillFlag)
+        {
+            case SkillFlag.None:
+                property.characterStateTag = CharacterStateTag.Skill;
+                fsm.TransitionTo("Skill");
+                break;
+            case SkillFlag.DriveImpact:
+                property.characterStateTag = CharacterStateTag.DriveImpact;
+                fsm.TransitionTo("DriveImpact");
+                break;
+            case SkillFlag.DriveParry:
+                property.characterStateTag = CharacterStateTag.DriveParry;
+                fsm.TransitionTo("DriveParry");
+                break;
+            case SkillFlag.DriveRush:
+                property.characterStateTag = CharacterStateTag.DriveRush;
+                fsm.TransitionTo("DriveRush");
+                break;
+            case SkillFlag.DriveReversal:
+                property.characterStateTag = CharacterStateTag.DriveReversal;
+                fsm.TransitionTo("DriveReversal");
+                break;
+            default:
+                property.characterStateTag = CharacterStateTag.Skill;
+                fsm.TransitionTo("Skill");
+                break;
+        }
         return true;
     }
 
@@ -174,6 +199,10 @@ public abstract class CharacterState
             // 상태 태그 일치 요구
             if (conds[i].currentCharacterState != CharacterStateTag.None &&
                 prop.characterStateTag != conds[i].currentCharacterState)
+                ok = false;
+
+            // 드라이브 코스트 요구
+            if (prop.isExhausted)
                 ok = false;
 
             if (ok) return true;

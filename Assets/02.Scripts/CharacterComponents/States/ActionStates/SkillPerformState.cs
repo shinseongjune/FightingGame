@@ -25,7 +25,7 @@ public class SkillPerformState : CharacterState
 
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
-        phys.SetPose(CharacterStateTag.Skill);
+        phys.SetActiveWhiffBoxes(true);
 
         bool ok = TryPlay(property.characterName + "/" + skill.animationClipName, OnAnimComplete);
         if (!ok)
@@ -46,7 +46,7 @@ public class SkillPerformState : CharacterState
     {
         if (!wasGrounded && phys.isGrounded)
         {
-            fsm.TransitionTo("Land");
+            fsm.TransitionTo("Idle");
         }
 
         wasGrounded = phys.isGrounded;
@@ -69,6 +69,8 @@ public class SkillPerformState : CharacterState
         property.isInputEnabled = true;
         property.isSkillCancelable = false;
         property.currentSkill = null;
+
+        phys.SetActiveWhiffBoxes(false);
 
         // FSM이 기본적으로 전이 시 BoxPresetApplier.ClearAll()을 호출하고 있으니
         // 여기서 굳이 박스를 지울 필요는 없음.
@@ -95,8 +97,7 @@ public class SkillPerformState : CharacterState
 
     public override void HandleThrow(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)
     {
-        // 잡기 성립 시에는 보통 강제 전이
-        fsm.TransitionTo("Throw"); // 구현되어 있다면
+
     }
 
     // ---- 중립 복귀 ----

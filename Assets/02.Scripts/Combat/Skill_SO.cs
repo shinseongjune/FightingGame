@@ -39,6 +39,7 @@ public struct BoxLifetime
 }
 
 public enum HitLevel { High, Mid, Low, Overhead }
+public enum SkillFlag { None, DriveImpact, DriveParry, DriveRush, DriveReversal }
 
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
 public class Skill_SO : ScriptableObject
@@ -77,6 +78,8 @@ public class Skill_SO : ScriptableObject
     public string throwAnimationClipName;
     public string beingThrownAnimationClipName;
 
+    [Header("드라이브 정보")]
+    public SkillFlag skillFlag;
+
     //TODO: hit effect, 그냥 이펙트들 등등
-    //드라이브
 }
