@@ -11,6 +11,9 @@ public class HitGroundState : CharacterState
 
     protected override void OnEnter()
     {
+        // 러시 중 피격 시 만약을 위해 러시캔슬 취소
+        property.isRushCanceled = false;
+
         // 입력 금지, 스킬캔슬 금지
         property.isInputEnabled = false;
         property.isSkillCancelable = false;

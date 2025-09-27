@@ -54,6 +54,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public bool isInvincible;
     public bool isAirInvincible;
     public bool isProjectileInvincible;
+    public bool isRushCanceled;
     public int superArmorCount;
 
     public float hp;

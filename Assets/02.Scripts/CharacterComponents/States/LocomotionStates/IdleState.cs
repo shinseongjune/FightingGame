@@ -7,6 +7,8 @@ public class IdleState : CharacterState
 
     protected override void OnEnter()
     {
+        property.currentSkill = null;
+
         property.isInputEnabled = true;
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;

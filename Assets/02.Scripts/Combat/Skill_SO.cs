@@ -61,6 +61,8 @@ public class Skill_SO : ScriptableObject
     public int hitstunDuration;
     public int blockstunDuration;
 
+    public float knockbackDistance;
+
     public bool causesLaunch;
     public bool causesKnockdown;
 

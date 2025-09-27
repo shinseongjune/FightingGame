@@ -21,6 +21,8 @@ MonoBehaviour:
     currentCharacterState: 6
   - currentSkill: {fileID: 0}
     currentCharacterState: 7
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 18
   command:
     inputData:
     - direction: 0
@@ -44,3 +46,8 @@ MonoBehaviour:
     box:
       center: {x: 0.4, y: 1.1}
       size: {x: 1, y: 0.3}
+    incrementAttackInstance: 0
+  rehitCooldownFrames: 0
+  throwAnimationClipName: 
+  beingThrownAnimationClipName: 
+  skillFlag: 0

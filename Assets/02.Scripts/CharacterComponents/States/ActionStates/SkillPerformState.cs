@@ -5,6 +5,8 @@ public class SkillPerformState : CharacterState
 
     private bool wasGrounded;
 
+    public bool isRushCanceled;
+
     // 간단한 예: 특정 프레임부터 캔슬 허용
     // 필요하면 Skill_SO에 창(window) 데이터를 넣어와도 됨.
     private int cancelStartFrame = 0;   // 예: 0이면 즉시 불가
@@ -12,10 +14,25 @@ public class SkillPerformState : CharacterState
 
     public SkillPerformState(CharacterFSM f) : base(f) { }
 
-    public override CharacterStateTag? StateTag => CharacterStateTag.Skill;
+    public override CharacterStateTag? StateTag
+    {
+        get
+        {
+            if (isRushCanceled)
+                return CharacterStateTag.DriveRushSkill;
+
+            return CharacterStateTag.Skill;
+        }
+    }
 
     protected override void OnEnter()
     {
+        if (property.isRushCanceled)
+        {
+            isRushCanceled = true;
+            property.isRushCanceled = false;
+        }
+
         property.attackInstanceId++;
 
         finished = false;

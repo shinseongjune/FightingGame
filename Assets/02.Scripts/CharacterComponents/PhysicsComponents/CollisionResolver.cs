@@ -14,6 +14,8 @@ class HitSnapshot
     public int hitstun;        // 당시 확정된 경직/블록스턴 수치
     public int blockstun;
 
+    public float knockback;
+
     public bool isThrow;
     public bool isGuardTrigger;
 }
@@ -114,6 +116,7 @@ public class CollisionResolver : MonoBehaviour, ITicker
 
             int hitstun = skill != null ? skill.hitstunDuration : 12;
             int blockstun = skill != null ? skill.blockstunDuration : 10;
+            float knockback = skill != null ? skill.knockbackDistance : 1;
 
             frameEvents.Add(new HitSnapshot
             {
@@ -122,7 +125,8 @@ public class CollisionResolver : MonoBehaviour, ITicker
                 defender = def,
                 skill = skill,
                 hitstun = hitstun,
-                blockstun = blockstun
+                blockstun = blockstun,
+                knockback = knockback
             });
         }
     }
@@ -214,8 +218,8 @@ public class CollisionResolver : MonoBehaviour, ITicker
                     // 넉백은 공격자 페이싱 기준 + 스냅샷 스킬의 성질 사용
                     float dir = (atkProp != null && atkProp.isFacingRight) ? +1f : -1f;
                     Vector2 kb = (ev.skill != null && ev.skill.causesLaunch)
-                                    ? new Vector2(4f * dir, 8f)
-                                    : new Vector2(6f * dir, 0f);
+                                    ? new Vector2(ev.knockback * dir, 8f)
+                                    : new Vector2(ev.knockback * dir, 0f);
 
                     // ★ 스냅샷의 hitstun 사용
                     defProp?.SetHitstun(ev.hitstun, kb);

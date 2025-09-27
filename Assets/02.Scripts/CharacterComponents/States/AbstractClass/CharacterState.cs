@@ -202,7 +202,7 @@ public abstract class CharacterState
                 ok = false;
 
             // 드라이브 코스트 요구
-            if (prop.isExhausted)
+            if (skill.skillFlag != SkillFlag.None && prop.isExhausted)
                 ok = false;
 
             if (ok) return true;
