@@ -21,6 +21,7 @@ public class GuardingState : CharacterState
 
         property.isInputEnabled = true;        // 입력은 받되, 공격은 제한할 수도 있음
         property.isSkillCancelable = false;    // 필요 시 규칙으로 열기
+        property.isDriveGaugeCharging = false;
     }
 
     protected override void OnTick()
@@ -68,5 +69,8 @@ public class GuardingState : CharacterState
         fsm.TransitionTo("GuardHit");
     }
 
-    protected override void OnExit() { }
+    protected override void OnExit()
+    {
+        property.isDriveGaugeCharging = true;
+    }
 }

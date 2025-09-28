@@ -31,6 +31,7 @@ public class DriveRushState : CharacterState
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
         property.ConsumeDriveGauge(driveCost);
+        property.isDriveGaugeCharging = false;
     }
 
     protected override void OnTick()
@@ -43,6 +44,7 @@ public class DriveRushState : CharacterState
         // 상태 빠져나갈 때 입력 잠금 해제
         property.isInputEnabled = true;
         property.isSkillCancelable = false;
+        property.isDriveGaugeCharging = true;
 
         if (!isCanceled)
         {

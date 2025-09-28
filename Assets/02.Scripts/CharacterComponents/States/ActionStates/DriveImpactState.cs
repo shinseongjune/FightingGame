@@ -32,6 +32,7 @@ public class DriveImpactState : CharacterState
         property.isSkillCancelable = false;
         property.superArmorCount = 3;
         property.ConsumeDriveGauge(driveCost);
+        property.isDriveGaugeCharging = false;
     }
 
     protected override void OnTick()
@@ -46,6 +47,7 @@ public class DriveImpactState : CharacterState
         property.isSkillCancelable = false;
         property.currentSkill = null;
         property.superArmorCount = 0;
+        property.isDriveGaugeCharging = true;
 
         phys.SetActiveWhiffBoxes(false);
     }

@@ -55,6 +55,7 @@ public class SkillPerformState : CharacterState
 
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
+        property.isDriveGaugeCharging = false;
 
         wasGrounded = phys.isGrounded;
     }
@@ -86,6 +87,7 @@ public class SkillPerformState : CharacterState
         property.isInputEnabled = true;
         property.isSkillCancelable = false;
         property.currentSkill = null;
+        property.isDriveGaugeCharging = true;
 
         phys.SetActiveWhiffBoxes(false);
 
@@ -104,6 +106,7 @@ public class SkillPerformState : CharacterState
     {
         // 히트 확인 시 즉시 캔슬 창 열기(원하면 조건부)
         property.isSkillCancelable = true;
+        property.ChargeDriveGauge(skill.driveGaugeChargeAmount);
     }
 
     public override void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)

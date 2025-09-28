@@ -28,6 +28,7 @@ public class DriveReversalState : CharacterState
         property.isInputEnabled = false;
         property.isSkillCancelable = false;
         property.ConsumeDriveGauge(driveCost);
+        property.isDriveGaugeCharging = false;
     }
 
     protected override void OnTick()
@@ -41,6 +42,7 @@ public class DriveReversalState : CharacterState
         property.isInputEnabled = true;
         property.isSkillCancelable = false;
         property.currentSkill = null;
+        property.isDriveGaugeCharging = true;
 
         ReturnToNeutral();
     }

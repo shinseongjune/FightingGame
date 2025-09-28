@@ -63,6 +63,9 @@ public class Skill_SO : ScriptableObject
 
     public float knockbackDistance;
 
+    public float driveGaugeChargeAmount;
+    public float saGaugeChargeAmount;
+
     public bool causesLaunch;
     public bool causesKnockdown;
 
