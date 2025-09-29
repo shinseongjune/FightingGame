@@ -41,6 +41,46 @@ public struct BoxLifetime
 public enum HitLevel { High, Mid, Low, Overhead }
 public enum SkillFlag { None, DriveImpact, DriveParry, DriveRush, DriveReversal }
 
+[System.Serializable]
+public class PushProfile
+{
+    public float hitDistance = 0.45f;
+    public int hitDurationFrames = 8;
+    public float guardDistance = 0.30f;
+    public int guardDurationFrames = 6;
+    public float airHitDistance = 0.35f;
+    public int airHitDurationFrames = 6;
+    public int easingType = 0; // 0=선형, 1/2/3=ease
+}
+
+public enum KnockdownMode
+{
+    None,   // 넉다운 아님
+    Trip,   // 바닥으로 그냥 넘김(수직 변화 X)
+    PopUp,  // 살짝 띄워서 넘김(짧은 리프트만)
+}
+
+[System.Serializable]
+public class KnockdownProfile
+{
+    public KnockdownMode mode = KnockdownMode.None;
+
+    [Tooltip("PopUp일 때 정점 높이(미터). 아주 작게(예: 0.4~0.7)")]
+    public float popUpApexHeight = 0.5f;
+
+    [Tooltip("넘어진 뒤 강제 다운 유지 프레임(기상 전 대기)")]
+    public int downFrames = 40;
+
+    [Tooltip("미끄러지는 거리(넘어진 직후 수평 잔여 이동). 선택사항")]
+    public float slideDistance = 0.0f;
+
+    [Tooltip("slideDistance 분배 프레임")]
+    public int slideDurationFrames = 8;
+
+    [Tooltip("기상 가능한 다운인지(소프트KD)")]
+    public bool techable = true;
+}
+
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
 public class Skill_SO : ScriptableObject
 {
@@ -61,13 +101,14 @@ public class Skill_SO : ScriptableObject
     public int hitstunDuration;
     public int blockstunDuration;
 
-    public float knockbackDistance;
+    [Header("거리 분배 넉백(수평)")]
+    public PushProfile push = new PushProfile();
+
+    [Header("넉다운 설정")]
+    public KnockdownProfile knockdown = new KnockdownProfile();
 
     public float driveGaugeChargeAmount;
     public float saGaugeChargeAmount;
-
-    public bool causesLaunch;
-    public bool causesKnockdown;
 
     public HitLevel hitLevel = HitLevel.High;
 

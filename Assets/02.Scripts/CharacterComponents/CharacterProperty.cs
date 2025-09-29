@@ -34,8 +34,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
 {
     public string characterName;
 
-    PhysicsEntity phys;
-    CharacterFSM fsm;
+    public PhysicsEntity phys;
+    public CharacterFSM fsm;
 
     public CharacterStateTag characterStateTag;
 
@@ -151,5 +151,10 @@ public class CharacterProperty : MonoBehaviour, ITicker
         phys.Position = worldPos;
         phys.SyncTransform();
         SetFacing(initialFacing);
+    }
+
+    public void ApplyDamage(float damage)
+    {
+        hp = Mathf.Max(0, hp - damage);
     }
 }

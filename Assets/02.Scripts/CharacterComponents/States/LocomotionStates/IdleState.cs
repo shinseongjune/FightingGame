@@ -18,6 +18,20 @@ public class IdleState : CharacterState
 
     protected override void OnTick()
     {
+        if (enemy.fsm.Current.StateTag == CharacterStateTag.Idle)
+        {
+            if (enemy.transform.position.x > tr.position.x)
+            {
+                property.SetFacing(true);
+                enemy.SetFacing(false);
+            }
+            else
+            {
+                property.SetFacing(false);
+                enemy.SetFacing(true);
+            }
+        }
+
         // 1) 스킬 발동 시도
         if (TryStartSkill()) return;
 

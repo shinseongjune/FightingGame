@@ -35,6 +35,9 @@ MonoBehaviour:
   damageOnHit: 400
   hitstunDuration: 12
   blockstunDuration: 4
+  knockbackVelocity: 10
+  driveGaugeChargeAmount: 0
+  saGaugeChargeAmount: 0
   causesLaunch: 0
   causesKnockdown: 0
   hitLevel: 0

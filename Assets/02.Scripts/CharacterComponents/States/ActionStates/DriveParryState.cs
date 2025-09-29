@@ -1,7 +1,8 @@
 public class DriveParryState : CharacterState
 {
-    private int driveCost = 50;
+    private int driveCost = 100;
     private int driveTickCost = 33 / 60;
+    private int hitDriveCharge = 100;
 
     private Skill_SO skill;
 
@@ -62,7 +63,9 @@ public class DriveParryState : CharacterState
     // ---- 충돌 이벤트(히트캔슬/가드캔슬 등) ----
     public override void HandleHit(HitData hit)
     {
+        property.ChargeDriveGauge(hitDriveCharge);
 
+        //TODO: 패리사운드, 이펙트, 시간정지, 저스트도 여기서 처리.
     }
 
     public override void HandleGuard(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)

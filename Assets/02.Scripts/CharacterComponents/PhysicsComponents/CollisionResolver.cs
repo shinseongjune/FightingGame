@@ -1,361 +1,563 @@
+// Assets/02.Scripts/CharacterComponents/PhysicsComponents/CollisionResolver.cs
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-enum GuardPosture { Standing, Crouching, Airborne }
-
-class HitSnapshot
-{
-    public CollisionData cd;
-    public PhysicsEntity attacker;
-    public PhysicsEntity defender;
-
-    public Skill_SO skill;     // 충돌 '당시' 공격 스킬(스냅샷)
-    public int hitstun;        // 당시 확정된 경직/블록스턴 수치
-    public int blockstun;
-
-    public float knockback;
-
-    public bool isThrow;
-    public bool isGuardTrigger;
-}
-
-[RequireComponent(typeof(CharacterFSM))]
-[RequireComponent(typeof(CharacterProperty))]
+/// <summary>
+/// BoxManager가 뿌리는 CollisionData(박스 쌍)만으로
+/// - 공격자/피격자 판별 (박스 타입 기반)
+/// - 히트/가드 확정 후, 수평 push를 "거리/기간"으로 분배(velocity 넉백 제거)
+/// - 코너 분배(피격자 우선 → 남은 거리만큼 공격자 역밀림)
+/// - 히트/가드 스턴, 데미지, 넉다운(런치 없음; Trip/PopUpLight만)
+/// 를 적용한다.
+/// 
+/// 의존:
+/// - BoxType { Body, Hit, Hurt, Throw, GuardTrigger }
+/// - PhysicsEntity: Position, Velocity, currentBodyBox, SyncTransform(), isGrounded 등
+/// - CharacterProperty: isFacingRight, IsGrounded, SetHitstun(int, Vector2), SetBlockstun(int),
+///                      ApplyDamage(float), EnterKnockdown(), currentSkill 등
+/// - StageSetup: bounds.leftX/rightX (월 경계)
+/// - TickMaster.TICK_INTERVAL
+/// </summary>
 [RequireComponent(typeof(PhysicsEntity))]
-public class CollisionResolver : MonoBehaviour, ITicker
+[RequireComponent(typeof(CharacterProperty))]
+public sealed class CollisionResolver : MonoBehaviour, ITicker
 {
-    PhysicsEntity me;
+    #region Types
+    enum PairKind { None, Hit, Throw, GuardTrigger }
 
-    // 이번 틱에 “나와 관련된” 충돌만 모아두는 큐
-    private readonly List<HitSnapshot> frameEvents = new();
-
-    private BoxManager boxManager;
-
-    // 중복 충돌 방지용
-    readonly HashSet<(PhysicsEntity atk, PhysicsEntity def, int inst)> hitOnce = new();
-
-    // 프레임 카운터(내부용; Tick마다++)
-    int _frame;
-
-    // (공격자, 피격자, 박스UID) -> nextAllowedFrame
-    readonly Dictionary<(int atkId, int defId, int boxUid), int> _rehitUntil = new();
-
-    void Awake()
+    struct FrameEvent
     {
-        me = GetComponent<PhysicsEntity>();
+        public PairKind kind;
+        public CollisionData cd;
+
+        public PhysicsEntity attacker;
+        public PhysicsEntity defender;
+
+        public CharacterProperty atkProp;
+        public CharacterProperty defProp;
+
+        public Skill_SO skill;
+        public bool defenderAir;
+
+        // 수치
+        public int hitstun;
+        public int blockstun;
+        public float damage;
+
+        // 방향(+1/-1): 공격자 페이싱 기준
+        public float dir;
+
+        // 같은 프레임에 GuardTrigger를 먼저 받은 경우 표시
+        public bool guardTouch;
     }
 
-    void OnEnable()
+    // 거리 분배 요청(피격자 기준으로 저장; 공격자는 역밀림용으로 함께 이동)
+    struct PushJob
     {
-        boxManager = BoxManager.Instance;
-        if (boxManager != null)
-            boxManager.OnCollision += OnCollision;
+        public PhysicsEntity attacker;
+        public PhysicsEntity defender;
+        public float dir;           // +1/-1 (공격자 페이싱)
+        public float remainDist;    // 남은 이격 거리(>0)
+        public int framesLeft;      // 남은 프레임(>=1)
+        public int totalFrames;
+        public int easingType;      // 0=linear, 1=easeOutCubic, 2=easeInCubic, 3=easeInOutCubic
+    }
+    #endregion
+
+    #region Refs
+    private PhysicsEntity _me;
+    private CharacterProperty _prop;
+    private InputBuffer inputBuffer;
+    private BoxManager _box;
+    private StageSetup _stage;
+    private StageSetup.StageBounds _bounds;
+    #endregion
+
+    #region Buffers
+    private readonly List<FrameEvent> _events = new(8);
+    private readonly List<PushJob> _pushJobs = new(8);
+    private int _frame;
+    private readonly Dictionary<(int atk, int def, int uid), int> _rehitUntil = new();
+    #endregion
+
+    #region Defaults & Tuning
+    private const float DefaultHitDistance = 0.45f;
+    private const int DefaultHitFrames = 8;
+    private const float DefaultGuardDistance = 0.30f;
+    private const int DefaultGuardFrames = 6;
+    private const float DefaultAirHitDistance = 0.35f;
+    private const int DefaultAirHitFrames = 6;
+
+    private const float PopUpLightVy = 3.5f; // KnockdownMode.PopUpLight일 때만 소량 부여
+
+    // skill.knockbackVelocity를 거리로 환산할 때 사용할 임시 프레임 수(옵션)
+    private const int VelocityToDistanceFrames = 6;
+    #endregion
+
+    float InnerRightX => _bounds.rightX - _stage.wallThickness * 0.5f;
+    float InnerLeftX => _bounds.leftX + _stage.wallThickness * 0.5f;
+
+    #region Unity
+    private void Awake()
+    {
+        _me = GetComponent<PhysicsEntity>();
+        _prop = GetComponent<CharacterProperty>();
+        inputBuffer = GetComponent<InputBuffer>();
     }
 
-    void OnDisable()
+    private void OnEnable()
     {
-        if (boxManager != null)
-            boxManager.OnCollision -= OnCollision;
+        _box = BoxManager.Instance;
+        if (_box != null) _box.OnCollision += OnCollisionFromBoxManager;
 
-        boxManager = null;
+        _stage = FindFirstObjectByType<StageSetup>();
+        if (_stage != null) _bounds = _stage.bounds;
     }
 
-    // BoxManager에서 모든 우선순위 정리 후 페어별로 호출됨
-    void OnCollision(CollisionData cd)
+    private void OnDisable()
     {
-        if (cd.boxA == null || cd.boxB == null) return;
-        if (cd.boxA.owner != me && cd.boxB.owner != me) return; // 나와 무관하면 무시
+        if (_box != null) _box.OnCollision -= OnCollisionFromBoxManager;
+        _box = null;
+    }
+    #endregion
 
-        // Throw 우선 스냅샷
-        if (IsPair(cd, BoxType.Throw, BoxType.Hurt, out var atkT, out var defT))
+    #region BoxManager → collect
+    private void OnCollisionFromBoxManager(CollisionData cd)
+    {
+        if (cd?.boxA == null || cd.boxB == null) return;
+
+        // 내 캐릭터가 관련된 충돌만 관심
+        if (cd.boxA.owner != _me && cd.boxB.owner != _me) return;
+
+        // 쌍을 분류하고 공격자/피격자 결정
+        if (!Classify(cd, out PairKind kind, out var atkBox, out var defBox)) return;
+
+        var atk = atkBox.owner;
+        var def = defBox.owner;
+        if (atk == null || def == null) return;
+
+        var atkProp = atk.GetComponent<CharacterProperty>();
+        var defProp = def.GetComponent<CharacterProperty>();
+        if (atkProp == null || defProp == null) return;
+
+        // 방향(+1/-1): 공격자 페이싱 기준
+        float dir = atkProp.isFacingRight ? +1f : -1f;
+
+        // 기술/수치: Skill_SO는 박스에 sourceSkill 또는 공격자 currentSkill에서 취득
+        var skill = atkBox.sourceSkill != null ? atkBox.sourceSkill : atkProp.currentSkill;
+        int hitstun = skill != null ? Mathf.Max(0, skill.hitstunDuration) : 0;
+        int blockstun = skill != null ? Mathf.Max(0, skill.blockstunDuration) : 0;
+        float damage = skill != null ? Mathf.Max(0, skill.damageOnHit) : 0f;
+
+        bool defAir = !defProp.phys.isGrounded;
+
+        // GuardTrigger는 같은 프레임 내 guardTouch 표시용
+        bool guardTouch = (kind == PairKind.GuardTrigger);
+
+        _events.Add(new FrameEvent
         {
-            frameEvents.Add(new HitSnapshot
-            {
-                cd = cd,
-                attacker = atkT,
-                defender = defT,
-                isThrow = true
-            });
-            return;
-        }
-
-        // GuardTrigger 스냅샷 (선가드 유발용)
-        if (IsPair(cd, BoxType.GuardTrigger, BoxType.Hurt, out var atkG, out var defG))
-        {
-            // 공격 스킬 스냅샷: 박스에 sourceSkill이 있으면 우선, 없으면 currentSkill
-            var atkBox = cd.boxA.type == BoxType.GuardTrigger ? cd.boxA : cd.boxB;
-            var atkProp = atkG.GetComponent<CharacterProperty>();
-            var skill = (atkBox is not null ? atkBox.sourceSkill : null) ?? atkProp?.currentSkill;
-
-            frameEvents.Add(new HitSnapshot
-            {
-                cd = cd,
-                attacker = atkG,
-                defender = defG,
-                skill = skill,
-                isGuardTrigger = true
-            });
-            return;
-        }
-
-        // Hit 스냅샷 (경직/넉백은 여기서 확정)
-        if (IsPair(cd, BoxType.Hit, BoxType.Hurt, out var atk, out var def))
-        {
-            var atkProp = atk.GetComponent<CharacterProperty>();
-
-            // ★ 충돌 '당시' 스킬을 박스에서 스냅샷
-            var hitBox = cd.boxA.type == BoxType.Hit ? cd.boxA : cd.boxB;
-            var skill = (hitBox is not null ? hitBox.sourceSkill : null) ?? atkProp?.currentSkill;
-            
-            // ★ 중복히트 1회: 공격 인스턴스ID 기준 (스킬 진입마다 증가)
-            int inst = atkProp != null ? atkProp.attackInstanceId : 0;
-            var key = (atk: atk, def: def, inst: inst);
-            if (hitOnce.Contains(key)) return;   // 이미 같은 인스턴스로 이 상대를 맞췄으면 무시
-            hitOnce.Add(key);
-
-            int hitstun = skill != null ? skill.hitstunDuration : 12;
-            int blockstun = skill != null ? skill.blockstunDuration : 10;
-            float knockback = skill != null ? skill.knockbackDistance : 1;
-
-            frameEvents.Add(new HitSnapshot
-            {
-                cd = cd,
-                attacker = atk,
-                defender = def,
-                skill = skill,
-                hitstun = hitstun,
-                blockstun = blockstun,
-                knockback = knockback
-            });
-        }
+            kind = kind,
+            cd = cd,
+            attacker = atk,
+            defender = def,
+            atkProp = atkProp,
+            defProp = defProp,
+            skill = skill,
+            defenderAir = defAir,
+            hitstun = hitstun,
+            blockstun = blockstun,
+            damage = damage,
+            dir = dir,
+            guardTouch = guardTouch
+        });
     }
 
-    public void Tick()
+    private static bool Classify(CollisionData cd, out PairKind kind, out BoxComponent attacker, out BoxComponent defender)
     {
-        _frame++;
-
-        if (frameEvents.Count == 0) return;
-
-        // 1) 선가드 유발(GuardTrigger) 먼저 처리
-        for (int i = 0; i < frameEvents.Count; i++)
-        {
-            var ev = frameEvents[i];
-            if (!ev.isGuardTrigger) continue;
-
-            // 내가 수비자일 때만 선가드 적용
-            if (ev.defender == me && IsHoldingGuard(ev.defender))
-            {
-                EnsureGuarding(ev.defender);
-            }
-        }
-
-        // 2) Throw/Hit 처리
-        for (int i = 0; i < frameEvents.Count; i++)
-        {
-            var ev = frameEvents[i];
-
-            // ---- Throw ----
-            if (ev.isThrow)
-            {
-                if (ev.defender == me)
-                {
-                    // 잡힌 쪽
-                    var defFSM = ev.defender.GetComponent<CharacterFSM>();
-                    defFSM?.TransitionTo("BeingThrown");
-                    (defFSM?.Current as BeingThrownState)?.SetTrower(ev.attacker.property);
-                }
-                else if (ev.attacker == me)
-                {
-                    // 시전자 쪽
-                    var atFSM = ev.attacker.GetComponent<CharacterFSM>();
-                    atFSM?.TransitionTo("Throw");
-                    (atFSM?.Current as ThrowState)?.SetTarget(ev.defender);
-                }
-                continue;
-            }
-
-            var hitBox = ev.cd.boxA.type == BoxType.Hit ? ev.cd.boxA : ev.cd.boxB;
-            int cd = ev.skill.rehitCooldownFrames;
-
-            int atkId = ev.attacker.GetInstanceID();
-            int defId = ev.defender.GetInstanceID();
-            int uid = hitBox.uid;
-
-            // 쿨다운 중이면 스킵
-            if (_rehitUntil.TryGetValue((atkId, defId, uid), out int next) && _frame < next)
-            {
-                continue;
-            }
-
-            // 다음 허용 프레임 갱신
-            _rehitUntil[(atkId, defId, uid)] = _frame + cd;
-
-            // ---- Hit / Guard ----
-            // 가드 가능 여부 계산(당시 스킬의 hitLevel 사용)
-            var level = ev.skill != null ? ev.skill.hitLevel : HitLevel.Mid;
-            var posture = GetPosture(ev.defender);
-            bool holdingBack = IsHoldingBack(ev.defender, ev.attacker);
-            bool guardAllowed = holdingBack && CanBlock(level, posture);
-
-            if (ev.defender == me)
-            {
-                if (guardAllowed)
-                {
-                    // ★ 스냅샷의 blockstun 사용 (currentSkill 의존 X)
-                    var defProp = ev.defender.GetComponent<CharacterProperty>();
-                    defProp?.SetBlockstun(ev.blockstun);
-
-                    var defFSM = ev.defender.GetComponent<CharacterFSM>();
-                    defFSM?.Current?.HandleGuard(ev.attacker, ev.defender, ev.cd);
-                    defFSM?.TransitionTo("GuardHit");
-                }
-                else
-                {
-                    var defProp = ev.defender.GetComponent<CharacterProperty>();
-                    var atkProp = ev.attacker.GetComponent<CharacterProperty>();
-
-                    // 넉백은 공격자 페이싱 기준 + 스냅샷 스킬의 성질 사용
-                    float dir = (atkProp != null && atkProp.isFacingRight) ? +1f : -1f;
-                    Vector2 kb = (ev.skill != null && ev.skill.causesLaunch)
-                                    ? new Vector2(ev.knockback * dir, 8f)
-                                    : new Vector2(ev.knockback * dir, 0f);
-
-                    // ★ 스냅샷의 hitstun 사용
-                    defProp?.SetHitstun(ev.hitstun, kb);
-
-                    var defFSM = ev.defender.GetComponent<CharacterFSM>();
-                    if (ev.skill != null && ev.skill.causesKnockdown)
-                    {
-                        defFSM?.TransitionTo("Knockdown");
-                    }
-                    else
-                    {
-                        if (ev.defender.isGrounded) defFSM?.TransitionTo("HitGround");
-                        else defFSM?.TransitionTo("HitAir");
-                    }
-
-                    // 수신자 상태 훅
-                    defFSM?.Current?.HandleHit(MakeHitData(ev.attacker, ev.defender, ev.cd));
-
-                    if (ev.skill != null) defProp.hp = Mathf.Max(0, defProp.hp - ev.skill.damageOnHit);
-                }
-            }
-
-            if (ev.attacker == me)
-            {
-                var atkFSM = ev.attacker.GetComponent<CharacterFSM>();
-                var atkState = atkFSM?.Current;
-                if (guardAllowed) atkState?.HandleGuard(ev.attacker, ev.defender, ev.cd);
-                else atkState?.HandleHit(MakeHitData(ev.attacker, ev.defender, ev.cd));
-            }
-        }
-
-        // 3) 프레임 이벤트 비움
-        frameEvents.Clear();
-    }
-
-    // ---------- 유틸 ----------
-
-    private static bool IsPair(CollisionData cd, BoxType x, BoxType y, out PhysicsEntity atk, out PhysicsEntity def)
-    {
-        atk = def = null;
         var a = cd.boxA; var b = cd.boxB;
-        if (a == null || b == null) return false;
+        kind = PairKind.None; attacker = defender = null;
 
-        if ((a.type == x && b.type == y) || (a.type == y && b.type == x))
+        if (IsPair(a, b, BoxType.Hit, BoxType.Hurt))
         {
-            // 공격자 = (Hit/Throw/GuardTrigger)쪽, 피격자 = Hurt쪽
-            BoxComponent atkBox = a.type == x ? a : b;
-            BoxComponent defBox = a.type == y ? a : b;
-            atk = atkBox.owner;
-            def = defBox.owner;
+            kind = PairKind.Hit;
+            (attacker, defender) = a.type == BoxType.Hit ? (a, b) : (b, a);
+            return true;
+        }
+        if (IsPair(a, b, BoxType.Throw, BoxType.Hurt))
+        {
+            kind = PairKind.Throw;
+            (attacker, defender) = a.type == BoxType.Throw ? (a, b) : (b, a);
+            return true;
+        }
+        if (IsPair(a, b, BoxType.GuardTrigger, BoxType.Hurt))
+        {
+            kind = PairKind.GuardTrigger;
+            (attacker, defender) = a.type == BoxType.GuardTrigger ? (a, b) : (b, a);
             return true;
         }
         return false;
     }
 
-    private bool IsHoldingGuard(PhysicsEntity def)
-    {
-        // 단순판정: 입력 버퍼의 마지막 방향이 Back/DownBack
-        var ib = def.GetComponent<InputBuffer>();
-        var d = ib != null ? ib.LastInput.direction : Direction.Neutral;
-        return d == Direction.Back || d == Direction.DownBack;
-    }
+    private static bool IsPair(BoxComponent a, BoxComponent b, BoxType ta, BoxType tb)
+        => (a.type == ta && b.type == tb) || (a.type == tb && b.type == ta);
+    #endregion
 
-    private bool IsCurrentlyGuarding(PhysicsEntity def)
+    #region Tick (deterministic)
+    public void Tick()
     {
-        var f = def.GetComponent<CharacterFSM>();
-        var s = f?.Current?.StateTag;
-        return s.HasValue && s.Value == CharacterStateTag.Guarding;
-    }
+        _frame++;
 
-    private void EnsureGuarding(PhysicsEntity def)
-    {
-        var f = def.GetComponent<CharacterFSM>();
-        if (!IsCurrentlyGuarding(def))
-            f?.TransitionTo("Guarding");
-    }
-
-    private HitData MakeHitData(PhysicsEntity atk, PhysicsEntity def, CollisionData cd)
-    {
-        var atkProp = atk.GetComponent<CharacterProperty>();
-        var skill = atkProp != null ? atkProp.currentSkill : null;
-
-        return new HitData
+        if (_events.Count > 0)
         {
-            attacker = atk,
-            taker = def,
-            collision = cd,
-            skill = skill,
-            // 높이/방향은 필요시 더 정교하게
-            height = HitHeight.Middle,
-            direction = atkProp != null && atkProp.isFacingRight ? HitDirection.Right : HitDirection.Left
-        };
-    }
+            // 1) GuardTrigger를 먼저 스캔해서, 같은 (atk,def) 쌍의 Hit에 guardTouch 플래그를 전달
+            MarkGuardTouches();
 
-    // -------- 가드 ---------
+            // 2) Throw/Hit 처리
+            for (int i = 0; i < _events.Count; i++)
+            {
+                var ev = _events[i];
 
-    GuardPosture GetPosture(PhysicsEntity def)
-    {
-        if (!def.isGrounded) return GuardPosture.Airborne;
+                switch (ev.kind)
+                {
+                    case PairKind.Throw:
+                        ApplyThrow(ev);
+                        break;
 
-        var fsm = def.GetComponent<CharacterFSM>();
-        var tag = fsm?.Current?.StateTag;
+                    case PairKind.Hit:
+                        ApplyHitOrBlock(ev);
+                        break;
 
-        // 상태 태그나 입력 둘 중 하나만 내려도 인식되게
-        if (tag == CharacterStateTag.Crouch) return GuardPosture.Crouching;
+                        // GuardTrigger는 위에서 guardTouch 마킹만 하고 별 처리 없음
+                }
+            }
 
-        var ib = def.GetComponent<InputBuffer>();
-        var d = ib != null ? ib.LastInput.direction : Direction.Neutral;
-        if (d is Direction.Down or Direction.DownBack or Direction.DownForward)
-            return GuardPosture.Crouching;
+            _events.Clear();
+        }
 
-        return GuardPosture.Standing;
-    }
-
-    // 2) 가드 입력(뒤/뒤하) 유지 여부
-    bool IsHoldingBack(PhysicsEntity def, PhysicsEntity atk)
-    {
-        var ib = def.GetComponent<InputBuffer>();
-        var d = ib != null ? ib.LastInput.direction : Direction.Neutral;
-
-        // 단순화: 공격자가 내 오른쪽에 있으면 Back=Left, 왼쪽에 있으면 Back=Right 로 치환해도 됨.
-        // 우선은 좌우 뒤집기 없이 Back/DownBack만 체크(원하면 교차 판정 추가 가능)
-        return d == Direction.Back || d == Direction.DownBack;
-    }
-
-    // 3) 가드 가능 테이블(요구사항 반영)
-    bool CanBlock(HitLevel level, GuardPosture posture)
-    {
-        switch (posture)
+        // 3) 분배 큐 처리(모든 PushJob을 한 프레임 분배)
+        if (_pushJobs.Count > 0)
         {
-            case GuardPosture.Standing:
-                return level == HitLevel.High || level == HitLevel.Mid || level == HitLevel.Overhead;
-            case GuardPosture.Crouching:
-                return level == HitLevel.Low;
-            default: // Airborne
-                return false; // 공중가드 없음
+            for (int i = _pushJobs.Count - 1; i >= 0; --i)
+            {
+                var job = _pushJobs[i];
+                float step = ComputeStep(job);
+
+                float consumed = ApplyCornerSplit(job.attacker, job.defender, job.dir, step);
+
+                job.remainDist = Mathf.Max(0f, job.remainDist - consumed);
+                job.framesLeft = Mathf.Max(0, job.framesLeft - 1);
+
+                if (job.remainDist <= 1e-5f || job.framesLeft <= 0)
+                    _pushJobs.RemoveAt(i);
+                else
+                    _pushJobs[i] = job;
+            }
         }
     }
+    #endregion
+
+    #region Apply: Guard mark / Throw / Hit-Block / Push
+    private void MarkGuardTouches()
+    {
+        // 간단히: 이 프레임 guardTrigger가 닿은 (atk,def) 목록을 만든다.
+        // 같은 (atk,def)의 Hit 이벤트에 guardTouch=true를 OR 시킨다.
+        Span<(int atk, int def)> tmp = stackalloc (int, int)[_events.Count];
+        int n = 0;
+
+        for (int i = 0; i < _events.Count; i++)
+        {
+            if (_events[i].kind != PairKind.GuardTrigger) continue;
+            tmp[n++] = (_events[i].attacker.GetInstanceID(), _events[i].defender.GetInstanceID());
+        }
+        if (n == 0) return;
+
+        for (int i = 0; i < _events.Count; i++)
+        {
+            var ev = _events[i];
+            if (ev.kind != PairKind.Hit) continue;
+
+            int atkId = ev.attacker.GetInstanceID();
+            int defId = ev.defender.GetInstanceID();
+
+            for (int k = 0; k < n; k++)
+            {
+                if (tmp[k].atk == atkId && tmp[k].def == defId)
+                {
+                    ev.guardTouch = true;
+                    _events[i] = ev;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void ApplyThrow(in FrameEvent ev)
+    {
+        // 상태 전이(기존 Throw/BeingThrown 구조에 맞춤)
+        if (ev.defender == _me)
+        {
+            var defFSM = ev.defender.GetComponent<CharacterFSM>();
+            defFSM?.TransitionTo("BeingThrown");
+            (defFSM?.Current as BeingThrownState)?.SetTrower(ev.attacker.property);
+        }
+        else if (ev.attacker == _me)
+        {
+            var atFSM = ev.attacker.GetComponent<CharacterFSM>();
+            atFSM?.TransitionTo("Throw");
+            (atFSM?.Current as ThrowState)?.SetTarget(ev.defender);
+        }
+    }
+
+    private void ApplyHitOrBlock(in FrameEvent ev)
+    {
+        // 멀티히트 제한(히트박스 UID 기반)
+        var hitBox = ev.cd.boxA.type == BoxType.Hit ? ev.cd.boxA : ev.cd.boxB;
+        int uid = hitBox.uid;
+        int atkId = ev.attacker.GetInstanceID();
+        int defId = ev.defender.GetInstanceID();
+
+        int cd = ev.skill != null ? ev.skill.rehitCooldownFrames : 0;
+        if (_rehitUntil.TryGetValue((atkId, defId, uid), out int next) && _frame < next)
+            return; // 아직 재히트 금지
+        _rehitUntil[(atkId, defId, uid)] = _frame + Mathf.Max(1, cd);
+
+        // 가드 여부: GuardTrigger 접촉 + 피격자가 실제로 가드를 유지(입력) 중일 때
+        bool blocked = ev.guardTouch && IsHoldingGuard(ev.defProp, ev.atkProp);
+
+        // 스턴 & 데미지
+        if (blocked)
+        {
+            if (ev.blockstun > 0)
+            {
+                ev.defProp.SetBlockstun(ev.blockstun);
+                ev.defProp.fsm.TransitionTo("GuardHit");
+            }
+        }
+        else
+        {
+            if (ev.damage > 0f) ev.defProp.ApplyDamage(ev.damage);
+            if (ev.hitstun > 0)
+            {
+                ev.defProp.SetHitstun(ev.hitstun, Vector2.zero);
+                if (ev.skill.knockdown.mode == KnockdownMode.None)
+                {
+                    if (ev.defProp.phys.isGrounded)
+                    {
+                        ev.defProp.fsm.TransitionTo("HitGround");
+                    }
+                    else
+                    {
+                        ev.defProp.fsm.TransitionTo("HitAir");
+                    }
+                }           
+            }
+        }
+
+        // 수평 push 분배 요청(velocity 사용 안 함)
+        EnqueuePush(ev, blocked);
+
+        // 넉다운
+        if (!blocked && ev.skill != null && ev.skill.knockdown.mode != KnockdownMode.None)
+        {
+            ApplyKnockdown(ev.defender, ev.defProp, ev.skill);
+        }
+    }
+
+    private void EnqueuePush(in FrameEvent ev, bool blocked)
+    {
+        float dist; int frames; int easing;
+        GetPushSpec(ev, blocked, out dist, out frames, out easing);
+        if (dist <= 1e-5f || frames <= 0) return;
+
+        // 이 리졸버는 "나(_me)가 관련된 이벤트만" 모으므로,
+        // defender가 나일 때에만 분배 큐에 올린다. (상대 캐릭터도 자기 리졸버에서 자체 큐를 가짐)
+        if (ev.defender != _me) return;
+
+        _pushJobs.Add(new PushJob
+        {
+            attacker = ev.attacker,
+            defender = ev.defender,
+            dir = ev.dir,
+            remainDist = dist,
+            framesLeft = frames,
+            totalFrames = frames,
+            easingType = easing
+        });
+    }
+
+    private void GetPushSpec(in FrameEvent ev, bool blocked, out float dist, out int frames, out int easingType)
+    {
+        // Skill_SO에 거리/기간 필드가 없으므로 임시 기본값 사용.
+        // 필요 시 skill.knockbackVelocity를 거리로 환산하여 보정.
+        easingType = 0;
+
+        if (blocked)
+        {
+            dist = DefaultGuardDistance;
+            frames = DefaultGuardFrames;
+        }
+        else if (ev.defenderAir)
+        {
+            dist = DefaultAirHitDistance;
+            frames = DefaultAirHitFrames;
+        }
+        else
+        {
+            dist = DefaultHitDistance;
+            frames = DefaultHitFrames;
+        }
+    }
+    #endregion
+
+    #region Corner split & easing
+    private float ComputeStep(in PushJob job)
+    {
+        if (job.easingType == 0) // linear
+            return job.remainDist / job.framesLeft;
+
+        float tPrev = 1f - (job.framesLeft / (float)job.totalFrames);
+        float tNow = 1f - ((job.framesLeft - 1) / (float)job.totalFrames);
+        float ePrev = Ease(job.easingType, tPrev);
+        float eNow = Ease(job.easingType, tNow);
+        float frac = Mathf.Max(0f, eNow - ePrev);
+
+        // 분배 누적 오차를 줄이기 위한 최소 보장
+        float linearMin = job.remainDist / job.framesLeft * 0.5f;
+        return Mathf.Max(frac * job.remainDist, linearMin);
+    }
+
+    private static float Ease(int type, float x)
+    {
+        x = Mathf.Clamp01(x);
+        switch (type)
+        {
+            case 1: // easeOutCubic
+                return 1f - Mathf.Pow(1f - x, 3f);
+            case 2: // easeInCubic
+                return x * x * x;
+            default: // 3: easeInOutCubic
+                if (x < 0.5f) return 4f * x * x * x;
+                return 1f - Mathf.Pow(-2f * x + 2f, 3f) / 2f;
+        }
+    }
+
+    /// <summary>
+    /// 피격자(defender)를 우선 dir 방향으로 밀고, 벽으로 막힌 나머지는 공격자(attacker)를 역방향으로 이동.
+    /// 실제 이동(수신자+공격자)의 합을 반환(= 소비된 거리).
+    /// </summary>
+    private float ApplyCornerSplit(PhysicsEntity attacker, PhysicsEntity defender, float dir, float desired)
+    {
+        if (desired <= 0f || defender == null) return 0f;
+
+        if (_stage == null)
+        {
+            defender.Position += new Vector2(dir * desired, 0f);
+            defender.SyncTransform();
+            return desired;
+        }
+
+        Rect defAabb = GetBodyAABB(defender);
+
+        // ① 남은 공간 계산을 "실내측 엣지" 기준으로
+        float defFree = (dir > 0f)
+            ? Mathf.Max(0f, InnerRightX - defAabb.xMax)
+            : Mathf.Max(0f, defAabb.xMin - InnerLeftX);
+
+        float defMove = Mathf.Min(desired, defFree);
+        if (defMove > 0f)
+        {
+            defender.Position += new Vector2(dir * defMove, 0f);
+            defender.SyncTransform();
+
+            // ② 이동 후 최종 클램프(겹침 방지용)
+            defAabb = GetBodyAABB(defender);
+            if (dir > 0f && defAabb.xMax > InnerRightX)
+            {
+                float fix = defAabb.xMax - InnerRightX;
+                defender.Position += new Vector2(-fix, 0f);
+                defender.SyncTransform();
+            }
+            else if (dir < 0f && defAabb.xMin < InnerLeftX)
+            {
+                float fix = InnerLeftX - defAabb.xMin;
+                defender.Position += new Vector2(fix, 0f);
+                defender.SyncTransform();
+            }
+        }
+
+        float remainder = desired - defMove;
+        float atkMove = 0f;
+
+        if (remainder > 1e-6f && attacker != null)
+        {
+            Rect atkAabb = GetBodyAABB(attacker);
+
+            float atkFree = (dir > 0f)
+                ? Mathf.Max(0f, atkAabb.xMin - InnerLeftX)
+                : Mathf.Max(0f, InnerRightX - atkAabb.xMax);
+
+            atkMove = Mathf.Min(remainder, atkFree);
+            if (atkMove > 0f)
+            {
+                attacker.Position += new Vector2(-dir * atkMove, 0f);
+                attacker.SyncTransform();
+
+                // 공격자도 클램프
+                atkAabb = GetBodyAABB(attacker);
+                if (dir > 0f && atkAabb.xMin < InnerLeftX)
+                {
+                    float fix = InnerLeftX - atkAabb.xMin;
+                    attacker.Position += new Vector2(fix, 0f);
+                    attacker.SyncTransform();
+                }
+                else if (dir < 0f && atkAabb.xMax > InnerRightX)
+                {
+                    float fix = atkAabb.xMax - InnerRightX;
+                    attacker.Position += new Vector2(-fix, 0f);
+                    attacker.SyncTransform();
+                }
+            }
+        }
+
+        return defMove + atkMove;
+    }
+
+    private static Rect GetBodyAABB(PhysicsEntity pe)
+    {
+        var b = pe.currentBodyBox;
+        if (b != null) return b.GetAABB();
+        // 안전 가정치
+        return new Rect(pe.Position.x - 0.25f, pe.Position.y, 0.5f, 1f);
+    }
+    #endregion
+
+    #region Guard / KD helpers
+    // 공격자 기준 "Back/DownBack" 유지 여부 판단
+    private bool IsHoldingGuard(CharacterProperty defender, CharacterProperty attacker)
+    {
+        var dir = inputBuffer.LastInput.direction;
+        return dir == Direction.Back || dir == Direction.DownBack;
+    }
+
+    private void ApplyKnockdown(PhysicsEntity defender, CharacterProperty defProp, Skill_SO skill)
+    {
+        if (defender == null || defProp == null || skill == null) return;
+
+        var mode = skill.knockdown.mode;
+        switch (mode)
+        {
+            case KnockdownMode.PopUp:
+                var v = defender.Velocity;
+                v.y = Mathf.Max(v.y, PopUpLightVy);
+                defender.Velocity = v;
+                defProp.fsm.TransitionTo("Knockdown");
+                break;
+
+            default: // Trip
+                defProp.fsm.TransitionTo("Knockdown");
+                break;
+        }
+    }
+    #endregion
 }
