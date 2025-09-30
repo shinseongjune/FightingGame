@@ -325,6 +325,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         // 가드 여부: GuardTrigger 접촉 + 피격자가 실제로 가드를 유지(입력) 중일 때
         bool blocked = ev.guardTouch && IsHoldingGuard(ev.defProp, ev.atkProp);
 
+        // 게이지 충전
+        ev.atkProp.ChargeDriveGauge(ev.skill.driveGaugeChargeAmount);
+        ev.atkProp.ChargeSAGauge(ev.skill.saGaugeChargeAmount);
+
         // 스턴 & 데미지
         if (blocked)
         {
