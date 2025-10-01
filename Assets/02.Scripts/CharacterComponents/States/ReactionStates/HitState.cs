@@ -150,6 +150,13 @@ public class BlockstunState : CharacterState
 
     protected override void OnTick()
     {
+        // 드라이브 리버설 전용
+        if (TryStartSkill())
+        {
+            phys.Velocity = Vector2.zero;
+            return;
+        }
+
         phys.Velocity = new Vector2(Mathf.MoveTowards(phys.Velocity.x, 0f, 25f * TickMaster.TICK_INTERVAL), 0f);
 
         if (--remain <= 0)
