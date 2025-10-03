@@ -55,6 +55,17 @@ public sealed class CameraRig_25D : MonoBehaviour
     private Vector3 _vel;       // SmoothDamp용
     private float _sizeVel;     // SmoothDamp용
 
+    // 외부에서 1프레임치로 주입되는 흔들림 값(월드 XY, z-롤)
+    private Vector2 _externalOffset;
+    private float _externalRollDeg;
+
+    /// <summary>CameraShake 등 외부 FX가 현재 프레임에 적용할 가외 오프셋/롤을 등록</summary>
+    public void ApplyExternalShake(Vector2 worldOffset, float rollDeg)
+    {
+        _externalOffset += worldOffset;
+        _externalRollDeg += rollDeg;
+    }
+
     void Reset()
     {
         // 자동 추정
@@ -86,8 +97,8 @@ public sealed class CameraRig_25D : MonoBehaviour
             bgCam.enabled = true;
         }
 
-            // 2) 중심점과 거리 계산 (2D 격투: X는 수평, Y는 수직, Z는 고정평면)
-            Vector3 a = p1 ?? p2.Value;
+        // 2) 중심점과 거리 계산 (2D 격투: X는 수평, Y는 수직, Z는 고정평면)
+        Vector3 a = p1 ?? p2.Value;
         Vector3 b = p2 ?? p1.Value;
 
         float dx = Mathf.Abs(b.x - a.x);
@@ -191,6 +202,25 @@ public sealed class CameraRig_25D : MonoBehaviour
         charCam.orthographicSize = smoothedSize;
 
         SyncBackgroundCamera(smoothedSize);
+
+        // 외부 흔들림 오프셋/롤 주입
+        if (charCam != null)
+        {
+            var t = charCam.transform;
+            t.position += new Vector3(_externalOffset.x, _externalOffset.y, 0f);
+            t.rotation = Quaternion.Euler(0f, 0f, _externalRollDeg) * t.rotation;
+        }
+        if (bgCam != null)
+        {
+            var t = bgCam.transform;
+            // 배경도 같은 평행이동을 적용해야 양 카메라 정렬이 유지됨
+            t.position += new Vector3(_externalOffset.x, _externalOffset.y, 0f);
+            t.rotation = Quaternion.Euler(0f, 0f, _externalRollDeg) * t.rotation;
+        }
+
+        // 4) 한 프레임 사용 후 초기화(누적 방지)
+        _externalOffset = Vector2.zero;
+        _externalRollDeg = 0f;
     }
 
     void SyncBackgroundCamera(float orthoHalfHeight)

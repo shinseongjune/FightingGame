@@ -2793,10 +2793,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterName: TestMan2
+  phys: {fileID: 0}
+  fsm: {fileID: 0}
   characterStateTag: 0
-  allSkills:
-  - {fileID: 11400000, guid: 84ff5488c64116640932061430766fc1, type: 2}
-  - {fileID: 11400000, guid: 7fb24bdacce2ee3409d18188cf5e0e64, type: 2}
+  allSkills: []
   currentSkill: {fileID: 0}
   isFacingRight: 0
   isStartUp: 0
@@ -2806,9 +2806,10 @@ MonoBehaviour:
   isInvincible: 0
   isAirInvincible: 0
   isProjectileInvincible: 0
+  isRushCanceled: 0
   superArmorCount: 0
   hp: 0
-  maxHp: 100
+  maxHp: 10000
   saGauge: 0
   maxSAGauge: 300
   isExhausted: 0

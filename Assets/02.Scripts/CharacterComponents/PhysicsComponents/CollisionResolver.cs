@@ -97,6 +97,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     float InnerRightX => _bounds.rightX - _stage.wallThickness * 0.5f;
     float InnerLeftX => _bounds.leftX + _stage.wallThickness * 0.5f;
+    // === [HITSTOP] Helpers: CollisionResolver 내부에 추가 ===
+
+    static int s_lastAppliedFrame = -1;
+    static readonly HashSet<int> s_appliedAttackIdsThisFrame = new HashSet<int>();
+
+    static readonly Dictionary<int, HashSet<int>> s_hitOnceRegistry = new Dictionary<int, HashSet<int>>();
+
 
     #region Unity
     private void Awake()
@@ -218,6 +225,16 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             {
                 var ev = _events[i];
 
+                int attackInstanceId = ev.atkProp.attackInstanceId;
+                int defenderUid = ev.defProp.gameObject.GetInstanceID();
+
+                if (AlreadyHitThisAttack(attackInstanceId, defenderUid))
+                {
+                    continue;
+                }
+
+                MarkHitThisAttack(attackInstanceId, defenderUid);
+
                 switch (ev.kind)
                 {
                     case PairKind.Throw:
@@ -332,6 +349,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         // 스턴 & 데미지
         if (blocked)
         {
+            // 가드 시
             if (ev.blockstun > 0)
             {
                 ev.defProp.SetBlockstun(ev.blockstun);
@@ -340,6 +358,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         }
         else
         {
+            // 히트 시
             if (ev.damage > 0f) ev.defProp.ApplyDamage(ev.damage);
             if (ev.hitstun > 0)
             {
@@ -355,6 +374,23 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                         ev.defProp.fsm.TransitionTo("HitAir");
                     }
                 }           
+            }
+
+            // 히트스탑
+            int atkInstance = ev.atkProp.attackInstanceId;
+            float damage = ev.damage;
+
+            int frames = CalcHitstopFramesByDamage(damage, false); //TODO: 추후 카운터 여부 처리, 콤보 시 적용 x
+
+            ApplyHitstopOnce(atkInstance, frames);
+
+            if (frames >= 0 && CameraShakeHook.Try(out var sh))
+            {
+                // 피해량을 0..1로 정규화(예: 120데미지 = 1.0, 60 = 0.5 등)
+                float mag = Mathf.Clamp01(damage / 120f);
+
+                // 짧고 굵게
+                sh.Impulse(mag, 0.10f, extraSeed: ev.atkProp.attackInstanceId);
             }
         }
 
@@ -564,4 +600,77 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         }
     }
     #endregion
+
+    #region HitStop
+    /// <summary> 같은 프레임 내에서 같은 공격(attackInstanceId)에 대해 히트스탑을 1회만 적용 </summary>
+    static void ApplyHitstopOnce(int attackInstanceId, int frames)
+    {
+        // 프레임 바뀌면 세트 초기화
+        int f = UnityEngine.Time.frameCount;
+        if (f != s_lastAppliedFrame)
+        {
+            s_lastAppliedFrame = f;
+            s_appliedAttackIdsThisFrame.Clear();
+        }
+
+        if (frames <= 0) return;
+        if (s_appliedAttackIdsThisFrame.Contains(attackInstanceId)) return;
+
+        s_appliedAttackIdsThisFrame.Add(attackInstanceId);
+
+        // TimeController가 프로젝트에 이미 추가돼 있다고 가정
+        if (TimeController.Instance != null)
+            TimeController.Instance.ApplyHitstop(frames);
+    }
+
+    /// <summary>
+    /// 피해량 기반 히트스탑 프레임 산출.
+    /// - 피격 성공: damage 계수 높게
+    /// - 카운터면 +보정 (있으면)
+    /// </summary>
+    static int CalcHitstopFramesByDamage(float damage, bool isCounter)
+    {
+        if (damage <= 300) return 0;
+
+        // 튜닝 파라미터 (원하면 ScriptableObject로 빼도 됨)
+        const float kHit = 0.5f;   // 히트: 1 데미지당 0.5프레임
+        const int minHit = 3;
+        const int maxFrames = 14;
+        const int counterBonus = 2;
+
+        float raw = damage * kHit;
+        int frames = Mathf.RoundToInt(raw);
+
+        frames = Mathf.Clamp(frames, minHit, maxFrames);
+        if (isCounter) frames = Mathf.Min(frames + counterBonus, maxFrames);
+        
+        return Mathf.Max(0, frames);
+    }
+    #endregion
+
+    static bool AlreadyHitThisAttack(int attackInstanceId, int defenderUid)
+    {
+        if (s_hitOnceRegistry.TryGetValue(attackInstanceId, out var set))
+            return set.Contains(defenderUid);
+        return false;
+    }
+
+    static void MarkHitThisAttack(int attackInstanceId, int defenderUid)
+    {
+        if (!s_hitOnceRegistry.TryGetValue(attackInstanceId, out var set))
+        {
+            set = new System.Collections.Generic.HashSet<int>();
+            s_hitOnceRegistry[attackInstanceId] = set;
+        }
+        set.Add(defenderUid);
+    }
+}
+
+public static class CameraShakeHook
+{
+    public static bool Try(out CameraShake sh)
+    {
+        sh = GameObject.FindFirstObjectByType<CameraShake>();
+        return sh != null;
+    }
 }

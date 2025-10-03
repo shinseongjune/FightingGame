@@ -32,14 +32,26 @@ MonoBehaviour:
       isUsed: 0
     isStrict: 0
     maxFrameGap: 4
-  damageOnHit: 400
+  damageOnHit: 300
   hitstunDuration: 12
   blockstunDuration: 4
-  knockbackVelocity: 10
+  push:
+    hitDistance: 0.45
+    hitDurationFrames: 8
+    guardDistance: 0.3
+    guardDurationFrames: 6
+    airHitDistance: 0.35
+    airHitDurationFrames: 6
+    easingType: 0
+  knockdown:
+    mode: 0
+    popUpApexHeight: 0.5
+    downFrames: 40
+    slideDistance: 0
+    slideDurationFrames: 8
+    techable: 1
   driveGaugeChargeAmount: 0
   saGaugeChargeAmount: 0
-  causesLaunch: 0
-  causesKnockdown: 0
   hitLevel: 0
   animationClipName: TestPunch
   boxLifetimes:
