@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 24
+  controlID: 117
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -379,7 +379,7 @@ MonoBehaviour:
     m_HSlider: 0
     m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
-    m_EnableMouseInput: 0
+    m_EnableMouseInput: 1
     m_EnableSliderZoomHorizontal: 0
     m_EnableSliderZoomVertical: 0
     m_UniformScale: 1
@@ -1116,9 +1116,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -23.258179, y: 8.105298, z: -13.531092}
+    m_Target: {x: 532.9236, y: 639.50385, z: -727.9287}
     speed: 2
-    m_Value: {x: -23.258179, y: 8.105298, z: -13.531092}
+    m_Value: {x: 532.9236, y: 639.50385, z: -727.9287}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1164,13 +1164,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.11232168, y: -0.50413024, z: 0.06631662, w: -0.8537357}
+    m_Target: {x: -0.009296901, y: -0.05187851, z: 0.0004738608, w: -0.99862295}
     speed: 2
-    m_Value: {x: -0.11232022, y: -0.5041237, z: 0.066315755, w: -0.8537246}
+    m_Value: {x: -0.00929606, y: -0.0533757, z: 0.00048779932, w: -0.99853116}
   m_Size:
-    m_Target: 8.558621
+    m_Target: 80.622574
     speed: 2
-    m_Value: 8.558621
+    m_Value: 80.62257
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1242,7 +1242,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 55740
+  m_LastSelectedObjectID: 47508
 --- !u!114 &16
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1282,9 +1282,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 50b80000
-      m_LastClickedID: 0
-      m_ExpandedIDs: 8a70ffff8c71fffff688ffff0e8affff3491fffffe9cffff8cb0ffff2cd5ffffaae3ffff02fbfffff4ffffff
+      m_SelectedIDs: b6ecffff
+      m_LastClickedID: -4938
+      m_ExpandedIDs: b6ecffff62f2ffff82f2ffffa2f2ffff38f6ffff0efbffff94b90000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1356,7 +1356,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/01.Scenes
+    - Assets/02.Scripts/Camera
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1366,16 +1366,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/01.Scenes
+  - Assets/02.Scripts/Camera
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 60}
-    m_SelectedIDs: dab80000
-    m_LastClickedID: 47322
-    m_ExpandedIDs: 0000000024b8000026b8000028b800002ab800002cb800002eb8000030b8000032b8000034b8000036b8000038b800003ab800003cb800003eb8000040b8000042b8000044b8000046b8000048b800006ece000070ce000072ce000000ca9a3b
+    m_SelectedIDs: e6b80000
+    m_LastClickedID: 47334
+    m_ExpandedIDs: 0000000026b8000028b800002ab800002cb800002eb8000030b8000032b8000034b8000036b8000038b800003ab800003cb800003eb8000040b8000042b8000044b8000046b8000048b800004ab800004cb800004eb8000050b8000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1404,7 +1404,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000024b8000026b8000028b800002ab800002cb800002eb8000030b8000032b8000034b8000036b8000038b800003ab800003cb800003eb8000040b8000042b8000044b8000046b8000048b80000
+    m_ExpandedIDs: 0000000026b8000028b800002ab800002cb800002eb8000030b8000032b8000034b8000036b8000038b800003ab800003cb800003eb8000040b8000042b8000044b8000046b8000048b800004ab800004cb800004eb8000050b80000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

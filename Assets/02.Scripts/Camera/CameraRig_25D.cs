@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[ExecuteAlways]
 public sealed class CameraRig_25D : MonoBehaviour
 {
     [Header("References")]
