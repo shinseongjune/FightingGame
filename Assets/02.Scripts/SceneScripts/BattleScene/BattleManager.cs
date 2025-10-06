@@ -7,6 +7,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Transform p2Spawn;
     [SerializeField] private RoundController roundController;
     [SerializeField] private CameraRig_25D cameraRig;
+    [SerializeField] private HPBar hpBar_p1;
+    [SerializeField] private HPBar hpBar_p2;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -39,6 +41,9 @@ public class BattleManager : MonoBehaviour
 
         cameraRig.fighters[0] = p1GO.transform;
         cameraRig.fighters[1] = p2GO.transform;
+
+        hpBar_p1.SetCharacter(p1Prop);
+        hpBar_p2.SetCharacter(p2Prop);
     }
 
     private System.Collections.IEnumerator Co_BeginAfterReady()
