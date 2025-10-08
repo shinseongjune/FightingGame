@@ -9,6 +9,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private CameraRig_25D cameraRig;
     [SerializeField] private HPBar hpBar_p1;
     [SerializeField] private HPBar hpBar_p2;
+    [SerializeField] private DriveBar driveBar_p1;
+    [SerializeField] private DriveBar driveBar_p2;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -44,6 +46,9 @@ public class BattleManager : MonoBehaviour
 
         hpBar_p1.SetCharacter(p1Prop);
         hpBar_p2.SetCharacter(p2Prop);
+
+        driveBar_p1.SetCharacter(p1Prop);
+        driveBar_p2.SetCharacter(p2Prop);
     }
 
     private System.Collections.IEnumerator Co_BeginAfterReady()

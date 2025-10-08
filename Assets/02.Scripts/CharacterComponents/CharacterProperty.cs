@@ -32,6 +32,8 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour, ITicker
 {
+    private TickMaster _tm;
+
     public string characterName;
 
     public PhysicsEntity phys;
@@ -80,6 +82,23 @@ public class CharacterProperty : MonoBehaviour, ITicker
     {
         phys = GetComponent<PhysicsEntity>();
         fsm = GetComponent<CharacterFSM>();
+    }
+
+    private void Start()
+    {
+        isDriveGaugeCharging = true;
+        driveGauge = maxDriveGauge;
+    }
+
+    private void OnEnable()
+    {
+        _tm = TickMaster.Instance;
+        _tm?.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        _tm?.Unregister(this);
     }
 
     public void Tick()
