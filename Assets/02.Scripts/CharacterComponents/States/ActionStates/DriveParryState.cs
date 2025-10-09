@@ -18,7 +18,12 @@ public class DriveParryState : CharacterState
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
 
-        bool ok = TryPlay(property.characterName + "/" + skill.animationClipName);
+        const int JUST = 5;
+        const int HOLD = 18;
+
+        property.BeginParryWindow(JUST, HOLD);
+
+        bool ok = TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryStart));
         if (!ok)
         {
             UnityEngine.Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");
@@ -56,6 +61,8 @@ public class DriveParryState : CharacterState
         property.isSkillCancelable = false;
         property.currentSkill = null;
         property.isDriveGaugeCharging = true;
+
+        property.ClearParryWindow();
 
         ReturnToNeutral();
     }

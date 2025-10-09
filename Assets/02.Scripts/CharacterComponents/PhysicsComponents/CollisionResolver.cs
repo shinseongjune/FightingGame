@@ -1,22 +1,22 @@
-// Assets/02.Scripts/CharacterComponents/PhysicsComponents/CollisionResolver.cs
+ï»¿// Assets/02.Scripts/CharacterComponents/PhysicsComponents/CollisionResolver.cs
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// BoxManager°¡ »Ñ¸®´Â CollisionData(¹Ú½º ½Ö)¸¸À¸·Î
-/// - °ø°İÀÚ/ÇÇ°İÀÚ ÆÇº° (¹Ú½º Å¸ÀÔ ±â¹İ)
-/// - È÷Æ®/°¡µå È®Á¤ ÈÄ, ¼öÆò push¸¦ "°Å¸®/±â°£"À¸·Î ºĞ¹è(velocity ³Ë¹é Á¦°Å)
-/// - ÄÚ³Ê ºĞ¹è(ÇÇ°İÀÚ ¿ì¼± ¡æ ³²Àº °Å¸®¸¸Å­ °ø°İÀÚ ¿ª¹Ğ¸²)
-/// - È÷Æ®/°¡µå ½ºÅÏ, µ¥¹ÌÁö, ³Ë´Ù¿î(·±Ä¡ ¾øÀ½; Trip/PopUpLight¸¸)
-/// ¸¦ Àû¿ëÇÑ´Ù.
+/// BoxManagerê°€ ë¿Œë¦¬ëŠ” CollisionData(ë°•ìŠ¤ ìŒ)ë§Œìœ¼ë¡œ
+/// - ê³µê²©ì/í”¼ê²©ì íŒë³„ (ë°•ìŠ¤ íƒ€ì… ê¸°ë°˜)
+/// - íˆíŠ¸/ê°€ë“œ í™•ì • í›„, ìˆ˜í‰ pushë¥¼ "ê±°ë¦¬/ê¸°ê°„"ìœ¼ë¡œ ë¶„ë°°(velocity ë„‰ë°± ì œê±°)
+/// - ì½”ë„ˆ ë¶„ë°°(í”¼ê²©ì ìš°ì„  â†’ ë‚¨ì€ ê±°ë¦¬ë§Œí¼ ê³µê²©ì ì—­ë°€ë¦¼)
+/// - íˆíŠ¸/ê°€ë“œ ìŠ¤í„´, ë°ë¯¸ì§€, ë„‰ë‹¤ìš´(ëŸ°ì¹˜ ì—†ìŒ; Trip/PopUpLightë§Œ)
+/// ë¥¼ ì ìš©í•œë‹¤.
 /// 
-/// ÀÇÁ¸:
+/// ì˜ì¡´:
 /// - BoxType { Body, Hit, Hurt, Throw, GuardTrigger }
-/// - PhysicsEntity: Position, Velocity, currentBodyBox, SyncTransform(), isGrounded µî
+/// - PhysicsEntity: Position, Velocity, currentBodyBox, SyncTransform(), isGrounded ë“±
 /// - CharacterProperty: isFacingRight, IsGrounded, SetHitstun(int, Vector2), SetBlockstun(int),
-///                      ApplyDamage(float), EnterKnockdown(), currentSkill µî
-/// - StageSetup: bounds.leftX/rightX (¿ù °æ°è)
+///                      ApplyDamage(float), EnterKnockdown(), currentSkill ë“±
+/// - StageSetup: bounds.leftX/rightX (ì›” ê²½ê³„)
 /// - TickMaster.TICK_INTERVAL
 /// </summary>
 [RequireComponent(typeof(PhysicsEntity))]
@@ -40,26 +40,29 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         public Skill_SO skill;
         public bool defenderAir;
 
-        // ¼öÄ¡
+        // ìˆ˜ì¹˜
         public int hitstun;
         public int blockstun;
         public float damage;
 
-        // ¹æÇâ(+1/-1): °ø°İÀÚ ÆäÀÌ½Ì ±âÁØ
+        // ë°©í–¥(+1/-1): ê³µê²©ì í˜ì´ì‹± ê¸°ì¤€
         public float dir;
 
-        // °°Àº ÇÁ·¹ÀÓ¿¡ GuardTrigger¸¦ ¸ÕÀú ¹ŞÀº °æ¿ì Ç¥½Ã
+        // ê°™ì€ í”„ë ˆì„ì— GuardTriggerë¥¼ ë¨¼ì € ë°›ì€ ê²½ìš° í‘œì‹œ
         public bool guardTouch;
+
+        public bool parryAttempt;   // íŒ¨ë¦¬ ìœˆë„ìš°ì— ìˆì—ˆëŠ”ì§€
+        public bool justParry;      // ì €ìŠ¤íŠ¸ íŒ¨ë¦¬ì˜€ëŠ”ì§€
     }
 
-    // °Å¸® ºĞ¹è ¿äÃ»(ÇÇ°İÀÚ ±âÁØÀ¸·Î ÀúÀå; °ø°İÀÚ´Â ¿ª¹Ğ¸²¿ëÀ¸·Î ÇÔ²² ÀÌµ¿)
+    // ê±°ë¦¬ ë¶„ë°° ìš”ì²­(í”¼ê²©ì ê¸°ì¤€ìœ¼ë¡œ ì €ì¥; ê³µê²©ìëŠ” ì—­ë°€ë¦¼ìš©ìœ¼ë¡œ í•¨ê»˜ ì´ë™)
     struct PushJob
     {
         public PhysicsEntity attacker;
         public PhysicsEntity defender;
-        public float dir;           // +1/-1 (°ø°İÀÚ ÆäÀÌ½Ì)
-        public float remainDist;    // ³²Àº ÀÌ°İ °Å¸®(>0)
-        public int framesLeft;      // ³²Àº ÇÁ·¹ÀÓ(>=1)
+        public float dir;           // +1/-1 (ê³µê²©ì í˜ì´ì‹±)
+        public float remainDist;    // ë‚¨ì€ ì´ê²© ê±°ë¦¬(>0)
+        public int framesLeft;      // ë‚¨ì€ í”„ë ˆì„(>=1)
         public int totalFrames;
         public int easingType;      // 0=linear, 1=easeOutCubic, 2=easeInCubic, 3=easeInOutCubic
     }
@@ -89,15 +92,15 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     private const float DefaultAirHitDistance = 0.35f;
     private const int DefaultAirHitFrames = 6;
 
-    private const float PopUpLightVy = 3.5f; // KnockdownMode.PopUpLightÀÏ ¶§¸¸ ¼Ò·® ºÎ¿©
+    private const float PopUpLightVy = 3.5f; // KnockdownMode.PopUpLightì¼ ë•Œë§Œ ì†ŒëŸ‰ ë¶€ì—¬
 
-    // skill.knockbackVelocity¸¦ °Å¸®·Î È¯»êÇÒ ¶§ »ç¿ëÇÒ ÀÓ½Ã ÇÁ·¹ÀÓ ¼ö(¿É¼Ç)
+    // skill.knockbackVelocityë¥¼ ê±°ë¦¬ë¡œ í™˜ì‚°í•  ë•Œ ì‚¬ìš©í•  ì„ì‹œ í”„ë ˆì„ ìˆ˜(ì˜µì…˜)
     private const int VelocityToDistanceFrames = 6;
     #endregion
 
     float InnerRightX => _bounds.rightX - _stage.wallThickness * 0.5f;
     float InnerLeftX => _bounds.leftX + _stage.wallThickness * 0.5f;
-    // === [HITSTOP] Helpers: CollisionResolver ³»ºÎ¿¡ Ãß°¡ ===
+    // === [HITSTOP] Helpers: CollisionResolver ë‚´ë¶€ì— ì¶”ê°€ ===
 
     static int s_lastAppliedFrame = -1;
     static readonly HashSet<int> s_appliedAttackIdsThisFrame = new HashSet<int>();
@@ -129,15 +132,15 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     }
     #endregion
 
-    #region BoxManager ¡æ collect
+    #region BoxManager â†’ collect
     private void OnCollisionFromBoxManager(CollisionData cd)
     {
         if (cd?.boxA == null || cd.boxB == null) return;
 
-        // ³» Ä³¸¯ÅÍ°¡ °ü·ÃµÈ Ãæµ¹¸¸ °ü½É
+        // ë‚´ ìºë¦­í„°ê°€ ê´€ë ¨ëœ ì¶©ëŒë§Œ ê´€ì‹¬
         if (cd.boxA.owner != _me && cd.boxB.owner != _me) return;
 
-        // ½ÖÀ» ºĞ·ùÇÏ°í °ø°İÀÚ/ÇÇ°İÀÚ °áÁ¤
+        // ìŒì„ ë¶„ë¥˜í•˜ê³  ê³µê²©ì/í”¼ê²©ì ê²°ì •
         if (!Classify(cd, out PairKind kind, out var atkBox, out var defBox)) return;
 
         var atk = atkBox.owner;
@@ -148,10 +151,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         var defProp = def.GetComponent<CharacterProperty>();
         if (atkProp == null || defProp == null) return;
 
-        // ¹æÇâ(+1/-1): °ø°İÀÚ ÆäÀÌ½Ì ±âÁØ
+        // ë°©í–¥(+1/-1): ê³µê²©ì í˜ì´ì‹± ê¸°ì¤€
         float dir = atkProp.isFacingRight ? +1f : -1f;
 
-        // ±â¼ú/¼öÄ¡: Skill_SO´Â ¹Ú½º¿¡ sourceSkill ¶Ç´Â °ø°İÀÚ currentSkill¿¡¼­ Ãëµæ
+        // ê¸°ìˆ /ìˆ˜ì¹˜: Skill_SOëŠ” ë°•ìŠ¤ì— sourceSkill ë˜ëŠ” ê³µê²©ì currentSkillì—ì„œ ì·¨ë“
         var skill = atkBox.sourceSkill != null ? atkBox.sourceSkill : atkProp.currentSkill;
         int hitstun = skill != null ? Mathf.Max(0, skill.hitstunDuration) : 0;
         int blockstun = skill != null ? Mathf.Max(0, skill.blockstunDuration) : 0;
@@ -159,7 +162,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         bool defAir = !defProp.phys.isGrounded;
 
-        // GuardTrigger´Â °°Àº ÇÁ·¹ÀÓ ³» guardTouch Ç¥½Ã¿ë
+        // GuardTriggerëŠ” ê°™ì€ í”„ë ˆì„ ë‚´ guardTouch í‘œì‹œìš©
         bool guardTouch = (kind == PairKind.GuardTrigger);
 
         _events.Add(new FrameEvent
@@ -217,10 +220,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         if (_events.Count > 0)
         {
-            // 1) GuardTrigger¸¦ ¸ÕÀú ½ºÄµÇØ¼­, °°Àº (atk,def) ½ÖÀÇ Hit¿¡ guardTouch ÇÃ·¡±×¸¦ Àü´Ş
+            // 1) GuardTriggerë¥¼ ë¨¼ì € ìŠ¤ìº”í•´ì„œ, ê°™ì€ (atk,def) ìŒì˜ Hitì— guardTouch í”Œë˜ê·¸ë¥¼ ì „ë‹¬
             MarkGuardTouches();
 
-            // 2) Throw/Hit Ã³¸®
+            // 2) Throw/Hit ì²˜ë¦¬
             for (int i = 0; i < _events.Count; i++)
             {
                 var ev = _events[i];
@@ -245,14 +248,14 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                         ApplyHitOrBlock(ev);
                         break;
 
-                        // GuardTrigger´Â À§¿¡¼­ guardTouch ¸¶Å·¸¸ ÇÏ°í º° Ã³¸® ¾øÀ½
+                        // GuardTriggerëŠ” ìœ„ì—ì„œ guardTouch ë§ˆí‚¹ë§Œ í•˜ê³  ë³„ ì²˜ë¦¬ ì—†ìŒ
                 }
             }
 
             _events.Clear();
         }
 
-        // 3) ºĞ¹è Å¥ Ã³¸®(¸ğµç PushJobÀ» ÇÑ ÇÁ·¹ÀÓ ºĞ¹è)
+        // 3) ë¶„ë°° í ì²˜ë¦¬(ëª¨ë“  PushJobì„ í•œ í”„ë ˆì„ ë¶„ë°°)
         if (_pushJobs.Count > 0)
         {
             for (int i = _pushJobs.Count - 1; i >= 0; --i)
@@ -277,8 +280,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     #region Apply: Guard mark / Throw / Hit-Block / Push
     private void MarkGuardTouches()
     {
-        // °£´ÜÈ÷: ÀÌ ÇÁ·¹ÀÓ guardTrigger°¡ ´êÀº (atk,def) ¸ñ·ÏÀ» ¸¸µç´Ù.
-        // °°Àº (atk,def)ÀÇ Hit ÀÌº¥Æ®¿¡ guardTouch=true¸¦ OR ½ÃÅ²´Ù.
+        // ê°„ë‹¨íˆ: ì´ í”„ë ˆì„ guardTriggerê°€ ë‹¿ì€ (atk,def) ëª©ë¡ì„ ë§Œë“ ë‹¤.
+        // ê°™ì€ (atk,def)ì˜ Hit ì´ë²¤íŠ¸ì— guardTouch=trueë¥¼ OR ì‹œí‚¨ë‹¤.
         Span<(int atk, int def)> tmp = stackalloc (int, int)[_events.Count];
         int n = 0;
 
@@ -311,7 +314,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     private void ApplyThrow(in FrameEvent ev)
     {
-        // »óÅÂ ÀüÀÌ(±âÁ¸ Throw/BeingThrown ±¸Á¶¿¡ ¸ÂÃã)
+        // ìƒíƒœ ì „ì´(ê¸°ì¡´ Throw/BeingThrown êµ¬ì¡°ì— ë§ì¶¤)
         if (ev.defender == _me)
         {
             var defFSM = ev.defender.GetComponent<CharacterFSM>();
@@ -328,7 +331,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     private void ApplyHitOrBlock(in FrameEvent ev)
     {
-        // ¸ÖÆ¼È÷Æ® Á¦ÇÑ(È÷Æ®¹Ú½º UID ±â¹İ)
+        // ë©€í‹°íˆíŠ¸ ì œí•œ(íˆíŠ¸ë°•ìŠ¤ UID ê¸°ë°˜)
         var hitBox = ev.cd.boxA.type == BoxType.Hit ? ev.cd.boxA : ev.cd.boxB;
         int uid = hitBox.uid;
         int atkId = ev.attacker.GetInstanceID();
@@ -336,20 +339,30 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         int cd = ev.skill != null ? ev.skill.rehitCooldownFrames : 0;
         if (_rehitUntil.TryGetValue((atkId, defId, uid), out int next) && _frame < next)
-            return; // ¾ÆÁ÷ ÀçÈ÷Æ® ±İÁö
+            return; // ì•„ì§ ì¬íˆíŠ¸ ê¸ˆì§€
         _rehitUntil[(atkId, defId, uid)] = _frame + Mathf.Max(1, cd);
 
-        // °¡µå ¿©ºÎ: GuardTrigger Á¢ÃË + ÇÇ°İÀÚ°¡ ½ÇÁ¦·Î °¡µå¸¦ À¯Áö(ÀÔ·Â) ÁßÀÏ ¶§
+        // 1) íŒ¨ë¦¬ ìœˆë„ìš° ì²´í¬
+        bool parry = TryParry(ev, out bool justParry);
+        if (parry)
+        {
+            ApplyParry(ev, justParry);
+            // ë©€í‹°íˆíŠ¸ ë°©ì§€ ë ˆì§€ìŠ¤íŠ¸ë¦¬ì— ë“±ë¡
+            MarkHitThisAttack(ev.atkProp.attackInstanceId, ev.defender.GetInstanceID());
+            return;
+        }
+
+        // ê°€ë“œ ì—¬ë¶€: GuardTrigger ì ‘ì´‰ + í”¼ê²©ìê°€ ì‹¤ì œë¡œ ê°€ë“œë¥¼ ìœ ì§€(ì…ë ¥) ì¤‘ì¼ ë•Œ
         bool blocked = ev.guardTouch && IsHoldingGuard(ev.defProp, ev.atkProp);
 
-        // °ÔÀÌÁö ÃæÀü
+        // ê²Œì´ì§€ ì¶©ì „
         ev.atkProp.ChargeDriveGauge(ev.skill.driveGaugeChargeAmount);
         ev.atkProp.ChargeSAGauge(ev.skill.saGaugeChargeAmount);
 
-        // ½ºÅÏ & µ¥¹ÌÁö
+        // ìŠ¤í„´ & ë°ë¯¸ì§€
         if (blocked)
         {
-            // °¡µå ½Ã
+            // ê°€ë“œ ì‹œ
             if (ev.blockstun > 0)
             {
                 ev.defProp.SetBlockstun(ev.blockstun);
@@ -358,7 +371,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         }
         else
         {
-            // È÷Æ® ½Ã
+            // íˆíŠ¸ ì‹œ
             if (ev.damage > 0f) ev.defProp.ApplyDamage(ev.damage);
             if (ev.hitstun > 0)
             {
@@ -376,28 +389,28 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                 }           
             }
 
-            // È÷Æ®½ºÅ¾
+            // íˆíŠ¸ìŠ¤íƒ‘
             int atkInstance = ev.atkProp.attackInstanceId;
             float damage = ev.damage;
 
-            int frames = CalcHitstopFramesByDamage(damage, false); //TODO: ÃßÈÄ Ä«¿îÅÍ ¿©ºÎ Ã³¸®, ÄŞº¸ ½Ã Àû¿ë x
+            int frames = CalcHitstopFramesByDamage(damage, false); //TODO: ì¶”í›„ ì¹´ìš´í„° ì—¬ë¶€ ì²˜ë¦¬, ì½¤ë³´ ì‹œ ì ìš© x
 
             ApplyHitstopOnce(atkInstance, frames);
 
             if (frames >= 0 && CameraShakeHook.Try(out var sh))
             {
-                // ÇÇÇØ·®À» 0..1·Î Á¤±ÔÈ­(¿¹: 120µ¥¹ÌÁö = 1.0, 60 = 0.5 µî)
+                // í”¼í•´ëŸ‰ì„ 0..1ë¡œ ì •ê·œí™”(ì˜ˆ: 120ë°ë¯¸ì§€ = 1.0, 60 = 0.5 ë“±)
                 float mag = Mathf.Clamp01(damage / 120f);
 
-                // Âª°í ±½°Ô
+                // ì§§ê³  êµµê²Œ
                 sh.Impulse(mag, 0.10f, extraSeed: ev.atkProp.attackInstanceId);
             }
         }
 
-        // ¼öÆò push ºĞ¹è ¿äÃ»(velocity »ç¿ë ¾È ÇÔ)
+        // ìˆ˜í‰ push ë¶„ë°° ìš”ì²­(velocity ì‚¬ìš© ì•ˆ í•¨)
         EnqueuePush(ev, blocked);
 
-        // ³Ë´Ù¿î
+        // ë„‰ë‹¤ìš´
         if (!blocked && ev.skill != null && ev.skill.knockdown.mode != KnockdownMode.None)
         {
             ApplyKnockdown(ev.defender, ev.defProp, ev.skill);
@@ -410,8 +423,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         GetPushSpec(ev, blocked, out dist, out frames, out easing);
         if (dist <= 1e-5f || frames <= 0) return;
 
-        // ÀÌ ¸®Á¹¹ö´Â "³ª(_me)°¡ °ü·ÃµÈ ÀÌº¥Æ®¸¸" ¸ğÀ¸¹Ç·Î,
-        // defender°¡ ³ªÀÏ ¶§¿¡¸¸ ºĞ¹è Å¥¿¡ ¿Ã¸°´Ù. (»ó´ë Ä³¸¯ÅÍµµ ÀÚ±â ¸®Á¹¹ö¿¡¼­ ÀÚÃ¼ Å¥¸¦ °¡Áü)
+        // ì´ ë¦¬ì¡¸ë²„ëŠ” "ë‚˜(_me)ê°€ ê´€ë ¨ëœ ì´ë²¤íŠ¸ë§Œ" ëª¨ìœ¼ë¯€ë¡œ,
+        // defenderê°€ ë‚˜ì¼ ë•Œì—ë§Œ ë¶„ë°° íì— ì˜¬ë¦°ë‹¤. (ìƒëŒ€ ìºë¦­í„°ë„ ìê¸° ë¦¬ì¡¸ë²„ì—ì„œ ìì²´ íë¥¼ ê°€ì§)
         if (ev.defender != _me) return;
 
         _pushJobs.Add(new PushJob
@@ -428,8 +441,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     private void GetPushSpec(in FrameEvent ev, bool blocked, out float dist, out int frames, out int easingType)
     {
-        // Skill_SO¿¡ °Å¸®/±â°£ ÇÊµå°¡ ¾øÀ¸¹Ç·Î ÀÓ½Ã ±âº»°ª »ç¿ë.
-        // ÇÊ¿ä ½Ã skill.knockbackVelocity¸¦ °Å¸®·Î È¯»êÇÏ¿© º¸Á¤.
+        // Skill_SOì— ê±°ë¦¬/ê¸°ê°„ í•„ë“œê°€ ì—†ìœ¼ë¯€ë¡œ ì„ì‹œ ê¸°ë³¸ê°’ ì‚¬ìš©.
+        // í•„ìš” ì‹œ skill.knockbackVelocityë¥¼ ê±°ë¦¬ë¡œ í™˜ì‚°í•˜ì—¬ ë³´ì •.
         easingType = 0;
 
         if (blocked)
@@ -462,7 +475,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         float eNow = Ease(job.easingType, tNow);
         float frac = Mathf.Max(0f, eNow - ePrev);
 
-        // ºĞ¹è ´©Àû ¿ÀÂ÷¸¦ ÁÙÀÌ±â À§ÇÑ ÃÖ¼Ò º¸Àå
+        // ë¶„ë°° ëˆ„ì  ì˜¤ì°¨ë¥¼ ì¤„ì´ê¸° ìœ„í•œ ìµœì†Œ ë³´ì¥
         float linearMin = job.remainDist / job.framesLeft * 0.5f;
         return Mathf.Max(frac * job.remainDist, linearMin);
     }
@@ -483,8 +496,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     }
 
     /// <summary>
-    /// ÇÇ°İÀÚ(defender)¸¦ ¿ì¼± dir ¹æÇâÀ¸·Î ¹Ğ°í, º®À¸·Î ¸·Èù ³ª¸ÓÁö´Â °ø°İÀÚ(attacker)¸¦ ¿ª¹æÇâÀ¸·Î ÀÌµ¿.
-    /// ½ÇÁ¦ ÀÌµ¿(¼ö½ÅÀÚ+°ø°İÀÚ)ÀÇ ÇÕÀ» ¹İÈ¯(= ¼ÒºñµÈ °Å¸®).
+    /// í”¼ê²©ì(defender)ë¥¼ ìš°ì„  dir ë°©í–¥ìœ¼ë¡œ ë°€ê³ , ë²½ìœ¼ë¡œ ë§‰íŒ ë‚˜ë¨¸ì§€ëŠ” ê³µê²©ì(attacker)ë¥¼ ì—­ë°©í–¥ìœ¼ë¡œ ì´ë™.
+    /// ì‹¤ì œ ì´ë™(ìˆ˜ì‹ ì+ê³µê²©ì)ì˜ í•©ì„ ë°˜í™˜(= ì†Œë¹„ëœ ê±°ë¦¬).
     /// </summary>
     private float ApplyCornerSplit(PhysicsEntity attacker, PhysicsEntity defender, float dir, float desired)
     {
@@ -499,7 +512,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         Rect defAabb = GetBodyAABB(defender);
 
-        // ¨ç ³²Àº °ø°£ °è»êÀ» "½Ç³»Ãø ¿§Áö" ±âÁØÀ¸·Î
+        // â‘  ë‚¨ì€ ê³µê°„ ê³„ì‚°ì„ "ì‹¤ë‚´ì¸¡ ì—£ì§€" ê¸°ì¤€ìœ¼ë¡œ
         float defFree = (dir > 0f)
             ? Mathf.Max(0f, InnerRightX - defAabb.xMax)
             : Mathf.Max(0f, defAabb.xMin - InnerLeftX);
@@ -510,7 +523,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             defender.Position += new Vector2(dir * defMove, 0f);
             defender.SyncTransform();
 
-            // ¨è ÀÌµ¿ ÈÄ ÃÖÁ¾ Å¬·¥ÇÁ(°ãÄ§ ¹æÁö¿ë)
+            // â‘¡ ì´ë™ í›„ ìµœì¢… í´ë¨í”„(ê²¹ì¹¨ ë°©ì§€ìš©)
             defAabb = GetBodyAABB(defender);
             if (dir > 0f && defAabb.xMax > InnerRightX)
             {
@@ -543,7 +556,7 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                 attacker.Position += new Vector2(-dir * atkMove, 0f);
                 attacker.SyncTransform();
 
-                // °ø°İÀÚµµ Å¬·¥ÇÁ
+                // ê³µê²©ìë„ í´ë¨í”„
                 atkAabb = GetBodyAABB(attacker);
                 if (dir > 0f && atkAabb.xMin < InnerLeftX)
                 {
@@ -567,13 +580,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     {
         var b = pe.currentBodyBox;
         if (b != null) return b.GetAABB();
-        // ¾ÈÀü °¡Á¤Ä¡
+        // ì•ˆì „ ê°€ì •ì¹˜
         return new Rect(pe.Position.x - 0.25f, pe.Position.y, 0.5f, 1f);
     }
     #endregion
 
     #region Guard / KD helpers
-    // °ø°İÀÚ ±âÁØ "Back/DownBack" À¯Áö ¿©ºÎ ÆÇ´Ü
+    // ê³µê²©ì ê¸°ì¤€ "Back/DownBack" ìœ ì§€ ì—¬ë¶€ íŒë‹¨
     private bool IsHoldingGuard(CharacterProperty defender, CharacterProperty attacker)
     {
         var dir = inputBuffer.LastInput.direction;
@@ -602,10 +615,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     #endregion
 
     #region HitStop
-    /// <summary> °°Àº ÇÁ·¹ÀÓ ³»¿¡¼­ °°Àº °ø°İ(attackInstanceId)¿¡ ´ëÇØ È÷Æ®½ºÅ¾À» 1È¸¸¸ Àû¿ë </summary>
+    /// <summary> ê°™ì€ í”„ë ˆì„ ë‚´ì—ì„œ ê°™ì€ ê³µê²©(attackInstanceId)ì— ëŒ€í•´ íˆíŠ¸ìŠ¤íƒ‘ì„ 1íšŒë§Œ ì ìš© </summary>
     static void ApplyHitstopOnce(int attackInstanceId, int frames)
     {
-        // ÇÁ·¹ÀÓ ¹Ù²î¸é ¼¼Æ® ÃÊ±âÈ­
+        // í”„ë ˆì„ ë°”ë€Œë©´ ì„¸íŠ¸ ì´ˆê¸°í™”
         int f = UnityEngine.Time.frameCount;
         if (f != s_lastAppliedFrame)
         {
@@ -618,22 +631,22 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         s_appliedAttackIdsThisFrame.Add(attackInstanceId);
 
-        // TimeController°¡ ÇÁ·ÎÁ§Æ®¿¡ ÀÌ¹Ì Ãß°¡µÅ ÀÖ´Ù°í °¡Á¤
+        // TimeControllerê°€ í”„ë¡œì íŠ¸ì— ì´ë¯¸ ì¶”ê°€ë¼ ìˆë‹¤ê³  ê°€ì •
         if (TimeController.Instance != null)
             TimeController.Instance.ApplyHitstop(frames);
     }
 
     /// <summary>
-    /// ÇÇÇØ·® ±â¹İ È÷Æ®½ºÅ¾ ÇÁ·¹ÀÓ »êÃâ.
-    /// - ÇÇ°İ ¼º°ø: damage °è¼ö ³ô°Ô
-    /// - Ä«¿îÅÍ¸é +º¸Á¤ (ÀÖÀ¸¸é)
+    /// í”¼í•´ëŸ‰ ê¸°ë°˜ íˆíŠ¸ìŠ¤íƒ‘ í”„ë ˆì„ ì‚°ì¶œ.
+    /// - í”¼ê²© ì„±ê³µ: damage ê³„ìˆ˜ ë†’ê²Œ
+    /// - ì¹´ìš´í„°ë©´ +ë³´ì • (ìˆìœ¼ë©´)
     /// </summary>
     static int CalcHitstopFramesByDamage(float damage, bool isCounter)
     {
         if (damage <= 300) return 0;
 
-        // Æ©´× ÆÄ¶ó¹ÌÅÍ (¿øÇÏ¸é ScriptableObject·Î »©µµ µÊ)
-        const float kHit = 0.5f;   // È÷Æ®: 1 µ¥¹ÌÁö´ç 0.5ÇÁ·¹ÀÓ
+        // íŠœë‹ íŒŒë¼ë¯¸í„° (ì›í•˜ë©´ ScriptableObjectë¡œ ë¹¼ë„ ë¨)
+        const float kHit = 0.5f;   // íˆíŠ¸: 1 ë°ë¯¸ì§€ë‹¹ 0.5í”„ë ˆì„
         const int minHit = 3;
         const int maxFrames = 14;
         const int counterBonus = 2;
@@ -663,6 +676,44 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             s_hitOnceRegistry[attackInstanceId] = set;
         }
         set.Add(defenderUid);
+    }
+
+    // â€œíŒ¨ë¦¬ ê°€ëŠ¥â€ ê¸°ë³¸ ë£°: ë“œë¼ì´ë¸ŒíŒ¨ë¦¬ ìƒíƒœ ë˜ëŠ” íŒ¨ë¦¬ ìœˆë„ìš° í™œì„±, íˆ¬ì²™/ì¡ê¸°ëŠ” ë¬´ì‹œ
+    private bool TryParry(in FrameEvent ev, out bool justParry)
+    {
+        justParry = false;
+        if (ev.defProp == null || ev.atkProp == null) return false;
+        if (ev.skill != null && ev.skill.skillFlag == SkillFlag.DriveReversal) return false; // ì˜ˆ: ì—­ê°€ë“œë¥˜ ì˜ˆì™¸
+        if (ev.cd.boxA.type == BoxType.Throw || ev.cd.boxB.type == BoxType.Throw) return false; // ì¡ê¸° ë¶ˆê°€
+
+        // íŒ¨ë¦¬ ì…ë ¥ ìƒíƒœ(DriveParryState) or íŒ¨ë¦¬ ìœˆë„ìš° í™œì„±
+        bool active = (ev.defProp.characterStateTag == CharacterStateTag.DriveParry) || ev.defProp.IsInParry;
+        if (!active) return false;
+
+        // ë°©í–¥/ë†’ë‚®ì´ ì œí•œì„ ë‘”ë‹¤ë©´ ì—¬ê¸°ì—: (SF6ì‹ìœ¼ë¡œëŠ” ìƒ/í•˜ ê³µìš© ë°©ì–´)
+        // ex) í•˜ë‹¨ë§Œ ê°€ë“œ ê°€ëŠ¥í•œ íŒ¨ë¦¬ë¡œ ì œí•œí•˜ë ¤ë©´ ev.cd.hitLevel ë¹„êµâ€¦
+
+        // ì €ìŠ¤íŠ¸ ì—¬ë¶€
+        justParry = ev.defProp.IsInJustParry;
+
+        return true;
+    }
+
+    // íŒ¨ë¦¬ ì„±ê³µ ì²˜ë¦¬
+    private void ApplyParry(in FrameEvent ev, bool justParry)
+    {
+        // 1) íˆíŠ¸ìŠ¤íƒ‘: ì €ìŠ¤íŠ¸ê°€ ë” í¼(ê³µìˆ˜ ëª¨ë‘ ë©ˆì¶¤)
+        int stop = justParry ? 12 : 8;
+        ApplyHitstopOnce(ev.atkProp.attackInstanceId, stop); // TimeControllerë¡œ ê³µìš© ì ìš©
+
+        // 2) ë°ë¯¸ì§€/ê²½ì§/ë„‰ë°± ë¬´íš¨
+        // (íˆíŠ¸/ë¸”ë¡ ìŠ¤í„´, ë„‰ë‹¤ìš´/ëŸ°ì¹˜ ë“± ì–´ë–¤ ê²ƒë„ ì ìš© ì•ˆ í•¨)
+
+        // 3) ë“œë¼ì´ë¸Œ ê²Œì´ì§€ ë³´ìƒ
+        float gain = justParry ? 120f : 80f; // ë„¤ UI/ê²Œì´ì§€ ìŠ¤ì¼€ì¼ì— ë§ì¶° ì¡°ì ˆ
+        ev.defProp.ChargeDriveGauge(gain);
+
+        //TODO: ì„±ê³µ ì´í™íŠ¸/ì‚¬ìš´ë“œ
     }
 }
 

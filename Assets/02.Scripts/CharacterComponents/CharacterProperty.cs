@@ -78,6 +78,11 @@ public class CharacterProperty : MonoBehaviour, ITicker
     // 공격 중복 충돌 문제 해결용
     public int attackInstanceId;
 
+    public int parryJustEndFrame { get; private set; } = -1;
+    public int parryHoldEndFrame { get; private set; } = -1;
+    public bool IsInJustParry => Time.frameCount <= parryJustEndFrame;
+    public bool IsInParry => Time.frameCount <= parryHoldEndFrame;
+
     private void Awake()
     {
         phys = GetComponent<PhysicsEntity>();
@@ -175,5 +180,18 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public void ApplyDamage(float damage)
     {
         hp = Mathf.Max(0, hp - damage);
+    }
+
+    public void BeginParryWindow(int justFrames, int holdFrames)
+    {
+        int now = Time.frameCount;
+        parryJustEndFrame = now + Mathf.Max(0, justFrames);
+        parryHoldEndFrame = now + Mathf.Max(justFrames, holdFrames);
+    }
+
+    public void ClearParryWindow()
+    {
+        parryJustEndFrame = -1;
+        parryHoldEndFrame = -1;
     }
 }
