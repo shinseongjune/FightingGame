@@ -69,6 +69,11 @@ public abstract class CharacterState
             return false;
         }
 
+        if (matched.skillFlag == SkillFlag.DriveParry)
+        {
+            if (property.parryDisableFrame > 0) return false; // 패리 불능 프레임 중
+        }
+
         // 전이용 컨텍스트 저장
         property.currentSkill = matched;
         switch (matched.skillFlag)
@@ -204,17 +209,21 @@ public abstract class CharacterState
             bool ok = true;
             // currentSkill 일치 요구
             if (conds[i].currentSkill != null && prop.currentSkill != conds[i].currentSkill)
+            {
                 ok = false;
+            }
 
             // 상태 태그 일치 요구
             if (conds[i].currentCharacterState != CharacterStateTag.None &&
                 prop.characterStateTag != conds[i].currentCharacterState)
+            {
                 ok = false;
-
+            }
             // 드라이브 코스트 요구
             if (skill.skillFlag != SkillFlag.None && prop.isExhausted)
+            {
                 ok = false;
-
+            }
             if (ok) return true;
         }
         return false;

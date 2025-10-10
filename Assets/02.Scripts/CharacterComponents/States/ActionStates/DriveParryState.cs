@@ -1,8 +1,14 @@
+using UnityEngine;
+
 public class DriveParryState : CharacterState
 {
     private int driveCost = 100;
-    private int driveTickCost = 33 / 60;
+    private float driveTickCost = 33f;
+    private float TickDt => TickMaster.Instance != null ? TickMaster.TICK_INTERVAL : 1 / 60f;
     private int hitDriveCharge = 100;
+
+    [SerializeField] int minActiveFrames = 6;
+    int _remain;
 
     private Skill_SO skill;
 
@@ -12,8 +18,11 @@ public class DriveParryState : CharacterState
 
     protected override void OnEnter()
     {
+        property.parryDisableFrame = 5;
+        _remain = minActiveFrames;
+
         skill = property.currentSkill;
-        if (skill == null) { Transition("Idle"); return; }
+        if (skill == null) { fsm.RequestTransition("Idle"); return; }
 
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
@@ -26,13 +35,13 @@ public class DriveParryState : CharacterState
         bool ok = TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryStart));
         if (!ok)
         {
-            UnityEngine.Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");
+            Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");
             boxApplier.ClearAllBoxes();
             ReturnToNeutral();
             return;
         }
 
-        property.isInputEnabled = false;
+        property.isInputEnabled = true;
         property.isSkillCancelable = false;
         property.ConsumeDriveGauge(driveCost);
         property.isDriveGaugeCharging = false;
@@ -40,13 +49,15 @@ public class DriveParryState : CharacterState
 
     protected override void OnTick()
     {
-        property.ConsumeDriveGauge(driveTickCost);
+        property.ConsumeDriveGauge(driveTickCost * TickDt);
         if (property.isExhausted)
         {
             fsm.TransitionTo("Idle");
         }
 
-        var d = input?.LastInput.attack ?? AttackKey.None;
+        if (_remain > 0) { _remain--; return; }
+
+        var d = input.LastInput.attack;
 
         if ( (d & (AttackKey.MP | AttackKey.MK)) != (AttackKey.MP | AttackKey.MK) )
         {
@@ -63,8 +74,6 @@ public class DriveParryState : CharacterState
         property.isDriveGaugeCharging = true;
 
         property.ClearParryWindow();
-
-        ReturnToNeutral();
     }
 
     // ---- 충돌 이벤트(히트캔슬/가드캔슬 등) ----

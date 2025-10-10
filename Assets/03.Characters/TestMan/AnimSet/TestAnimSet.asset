@@ -39,3 +39,9 @@ MonoBehaviour:
     clipKey: TestWin
   - key: 21
     clipKey: TestLose
+  - key: 22
+    clipKey: TestParryStart
+  - key: 23
+    clipKey: TestParryLoop
+  - key: 24
+    clipKey: TestParryEnd

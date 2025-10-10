@@ -15,7 +15,7 @@ public class InputBuffer : MonoBehaviour
     private int backHold = 0;
     private int downHold = 0;
 
-    public InputData LastInput { get; private set; }
+    public InputData LastInput;
 
     public bool captureFromDevice = true;          // 하드웨어 입력 캡처 on/off
     public bool respectCharacterInputLock = true;  // isInputEnabled=false면 강제로 중립 노출
@@ -114,12 +114,12 @@ public class InputBuffer : MonoBehaviour
     private AttackKey ReadAttackKey()
     {
         AttackKey key = AttackKey.None;
-        if (inputActions.Player.LP.WasPressedThisFrame()) key |= AttackKey.LP;
-        if (inputActions.Player.MP.WasPressedThisFrame()) key |= AttackKey.MP;
-        if (inputActions.Player.HP.WasPressedThisFrame()) key |= AttackKey.HP;
-        if (inputActions.Player.LK.WasPressedThisFrame()) key |= AttackKey.LK;
-        if (inputActions.Player.MK.WasPressedThisFrame()) key |= AttackKey.MK;
-        if (inputActions.Player.HK.WasPressedThisFrame()) key |= AttackKey.HK;
+        if (inputActions.Player.LP.IsPressed()) key |= AttackKey.LP;
+        if (inputActions.Player.MP.IsPressed()) key |= AttackKey.MP;
+        if (inputActions.Player.HP.IsPressed()) key |= AttackKey.HP;
+        if (inputActions.Player.LK.IsPressed()) key |= AttackKey.LK;
+        if (inputActions.Player.MK.IsPressed()) key |= AttackKey.MK;
+        if (inputActions.Player.HK.IsPressed()) key |= AttackKey.HK;
         return key;
     }
 

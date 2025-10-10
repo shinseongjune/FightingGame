@@ -7,6 +7,11 @@ public class CharacterFSM : MonoBehaviour
     private BoxPresetApplier boxPresetApplier;
 
     private CharacterState currentState;
+
+    private bool _isTransitioning;            // 전이 중 재진입 방지
+    private string _pendingKey;               // 대기 중 전이 키(한 번만 처리)
+    private bool _hasPending;                 // 대기 여부
+
     public CharacterState Current => currentState;
 
     // 상태 풀링: "Idle", "Walk_Forward", "Hit" 등 키로 전이
@@ -31,6 +36,14 @@ public class CharacterFSM : MonoBehaviour
     {
         // 상태 틱(프레임 수 증가 포함)
         currentState?.Tick();
+
+        if (_hasPending && !_isTransitioning)
+        {
+            var key = _pendingKey;
+            _pendingKey = null;
+            _hasPending = false;
+            DoTransition(key);
+        }
     }
 
     /// <summary>
@@ -83,5 +96,42 @@ public class CharacterFSM : MonoBehaviour
     public T GetState<T>(string key) where T : CharacterState
     {
         return statePool.TryGetValue(key, out var s) ? s as T : null;
+    }
+
+    public void RequestTransition(string key)
+    {
+        if (string.IsNullOrEmpty(key)) return;
+
+        // 동일 상태 재요청 무시
+        if (Current != null && Current == statePool[key]) return;
+
+        // 마지막 요청 덮어쓰기(최신 상태만 반영)
+        _pendingKey = key;
+        _hasPending = true;
+    }
+
+    private void DoTransition(string key)
+    {
+        if (Current != null && Current == statePool[key]) return;   // 동일상태 전이 무시
+
+        if (_isTransitioning) return; // 이중진입 방지
+        _isTransitioning = true;
+
+        try
+        {
+            if (!statePool.TryGetValue(key, out var nextState) || nextState == null)
+            {
+                return;
+            }
+
+            // OnExit/OnEnter 내에서 Transition을 직접 부르지 말 것!
+            currentState?.Exit();
+            currentState = nextState;
+            currentState?.Enter();
+        }
+        finally
+        {
+            _isTransitioning = false;
+        }
     }
 }

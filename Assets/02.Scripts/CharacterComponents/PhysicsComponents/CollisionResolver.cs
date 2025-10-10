@@ -713,7 +713,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         float gain = justParry ? 120f : 80f; // 네 UI/게이지 스케일에 맞춰 조절
         ev.defProp.ChargeDriveGauge(gain);
 
-        //TODO: 성공 이펙트/사운드
+        // 이펙트
+        if (FxService.Instance != null) FxService.Instance.Spawn("DriveParryImpact", ev.cd.hitPoint);
+
+        //TODO: 성공 사운드
     }
 }
 

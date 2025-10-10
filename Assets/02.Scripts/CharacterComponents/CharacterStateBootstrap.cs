@@ -32,6 +32,11 @@ public class CharacterStateBootstrap : MonoBehaviour
         fsm.RegisterState("BeingThrown", new BeingThrownState(fsm));
         fsm.RegisterState("ForcedAnimation", new ForcedAnimationState(fsm));
 
+        fsm.RegisterState("DriveImpact", new DriveImpactState(fsm));
+        fsm.RegisterState("DriveRush", new DriveRushState(fsm));
+        fsm.RegisterState("DriveParry", new DriveParryState(fsm));
+        fsm.RegisterState("DriveReversal", new DriveReversalState(fsm));
+
         fsm.ForceSetState("Idle");
     }
 }

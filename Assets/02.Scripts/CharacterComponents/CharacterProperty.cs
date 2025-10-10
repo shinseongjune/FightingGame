@@ -83,6 +83,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public bool IsInJustParry => Time.frameCount <= parryJustEndFrame;
     public bool IsInParry => Time.frameCount <= parryHoldEndFrame;
 
+    public int parryDisableFrame = 0;
+
     private void Awake()
     {
         phys = GetComponent<PhysicsEntity>();
@@ -108,6 +110,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public void Tick()
     {
+        if (fsm.Current != fsm.GetState<DriveParryState>("DriveParry")) parryDisableFrame = Mathf.Max(0, parryDisableFrame - 1);
+
         if (driveGauge <= 0)
         {
             isExhausted = true;
