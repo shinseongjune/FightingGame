@@ -7,12 +7,14 @@ public class CharacterFSM : MonoBehaviour
     private BoxPresetApplier boxPresetApplier;
 
     private CharacterState currentState;
+    private CharacterState prevState;
 
     private bool _isTransitioning;            // 전이 중 재진입 방지
     private string _pendingKey;               // 대기 중 전이 키(한 번만 처리)
     private bool _hasPending;                 // 대기 여부
 
     public CharacterState Current => currentState;
+    public CharacterState Previous => prevState;
 
     // 상태 풀링: "Idle", "Walk_Forward", "Hit" 등 키로 전이
     private readonly Dictionary<string, CharacterState> statePool = new();
@@ -59,6 +61,8 @@ public class CharacterFSM : MonoBehaviour
         // 상태별 박스 초기화(히트/허트/트리거 등)
         boxPresetApplier?.ClearAllBoxes();
 
+        prevState = currentState;
+
         // Exit -> 교체 -> Enter
         currentState?.Exit();
         currentState = nextState;
@@ -74,6 +78,8 @@ public class CharacterFSM : MonoBehaviour
 
         boxPresetApplier?.ClearAllBoxes();
 
+        prevState = currentState;
+
         currentState?.Exit();
         currentState = nextState;
         currentState.Enter();
@@ -88,6 +94,8 @@ public class CharacterFSM : MonoBehaviour
             return;
 
         boxPresetApplier?.ClearAllBoxes();
+
+        prevState = currentState;
 
         currentState = nextState;
         currentState.Enter();
@@ -123,6 +131,8 @@ public class CharacterFSM : MonoBehaviour
             {
                 return;
             }
+
+            prevState = currentState;
 
             // OnExit/OnEnter 내에서 Transition을 직접 부르지 말 것!
             currentState?.Exit();

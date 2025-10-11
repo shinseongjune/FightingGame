@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class DriveParryState : CharacterState
 {
+    enum ParryPhase { Start, Loop, End }
+    ParryPhase _phase;
+
     private int driveCost = 100;
     private float driveTickCost = 33f;
     private float TickDt => TickMaster.Instance != null ? TickMaster.TICK_INTERVAL : 1 / 60f;
@@ -32,7 +35,10 @@ public class DriveParryState : CharacterState
 
         property.BeginParryWindow(JUST, HOLD);
 
-        bool ok = TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryStart));
+        _phase = ParryPhase.Start;
+        property.BeginParryWindow(JUST, HOLD);
+
+        bool ok = TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryStart), OnParryStartComplete);
         if (!ok)
         {
             Debug.LogWarning($"[Skill] Animation not found for '{skill.skillName}' : '{skill.animationClipName}'");
@@ -74,6 +80,8 @@ public class DriveParryState : CharacterState
         property.isDriveGaugeCharging = true;
 
         property.ClearParryWindow();
+
+        RequestNaturalExit();
     }
 
     // ---- 충돌 이벤트(히트캔슬/가드캔슬 등) ----
@@ -97,6 +105,27 @@ public class DriveParryState : CharacterState
     // ---- 중립 복귀 ----
     private void ReturnToNeutral()
     {
-        Transition("Idle");
+        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Idle));
+    }
+
+    void OnParryStartComplete()
+    {
+        if (_phase != ParryPhase.Start) return;
+        EnterParryLoop();
+    }
+
+    void EnterParryLoop()
+    {
+        _phase = ParryPhase.Loop;
+        // 루프 재생
+        TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryLoop), null, loop: true);
+    }
+
+    void RequestNaturalExit()
+    {
+        if (_phase == ParryPhase.End) return;
+        _phase = ParryPhase.End;
+        // End는 단발성
+        TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryEnd), ReturnToNeutral, loop: false);
     }
 }

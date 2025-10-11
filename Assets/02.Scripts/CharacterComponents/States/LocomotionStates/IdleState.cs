@@ -13,7 +13,11 @@ public class IdleState : CharacterState
         phys.mode = PhysicsMode.Normal;
         phys.isGravityOn = true;
         phys.SetPose(CharacterStateTag.Idle);
-        Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Idle));
+
+        if (fsm.Previous != fsm.GetState<DriveParryState>("DriveParry"))
+        {
+            Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.Idle));
+        }
     }
 
     protected override void OnTick()
