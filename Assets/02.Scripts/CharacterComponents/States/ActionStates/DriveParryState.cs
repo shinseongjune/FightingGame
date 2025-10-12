@@ -55,6 +55,27 @@ public class DriveParryState : CharacterState
 
     protected override void OnTick()
     {
+        if (_phase == ParryPhase.Loop)
+        {
+            if (property.IsParryLocked)
+            {
+                // 고정 구간: 입력만 버퍼, 스킬 캔슬/이탈 금지
+                property.isInputEnabled = false;
+                property.isSkillCancelable = false;
+                // 여기서는 단순 대기
+                return;
+            }
+            else
+            {
+                // 해제됨: 정상 입력/캔슬 허용
+                property.isInputEnabled = true;
+                property.isSkillCancelable = true;
+
+                // 패리 유지 입력 해제/게이지 소진/기타 조건으로 자연 종료라면:
+                // RequestNaturalExit();
+            }
+        }
+
         property.ConsumeDriveGauge(driveTickCost * TickDt);
         if (property.isExhausted)
         {

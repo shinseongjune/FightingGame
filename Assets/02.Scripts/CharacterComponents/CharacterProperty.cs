@@ -84,6 +84,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public bool IsInParry => Time.frameCount <= parryHoldEndFrame;
 
     public int parryDisableFrame = 0;
+    public int parryLockEndFrame { get; private set; } = -1;
+    public bool IsParryLocked => Time.frameCount <= parryLockEndFrame;
 
     private void Awake()
     {
@@ -197,5 +199,15 @@ public class CharacterProperty : MonoBehaviour, ITicker
     {
         parryJustEndFrame = -1;
         parryHoldEndFrame = -1;
+    }
+
+    public void BeginParryLockByBlockstun(int blockstunFrames)
+    {
+        // blockstunFrames == 0 이면 즉시 해제되는 효과
+        parryLockEndFrame = Time.frameCount + Mathf.Max(0, blockstunFrames);
+    }
+    public void ClearParryLock()
+    {
+        parryLockEndFrame = -1;
     }
 }

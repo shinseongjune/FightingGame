@@ -706,17 +706,36 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         int stop = justParry ? 12 : 8;
         ApplyHitstopOnce(ev.atkProp.attackInstanceId, stop); // TimeController로 공용 적용
 
-        // 2) 데미지/경직/넉백 무효
-        // (히트/블록 스턴, 넉다운/런치 등 어떤 것도 적용 안 함)
+        if (justParry)
+        {
+            // 패리 락 없음
+            ev.defProp.ClearParryLock();
 
-        // 3) 드라이브 게이지 보상
-        float gain = justParry ? 120f : 80f; // 네 UI/게이지 스케일에 맞춰 조절
+            // 가시적으로 ‘즉각’ 체감: 패리 상태에 곧바로 캔슬 허용
+            ev.defProp.isSkillCancelable = true;
+        }
+        else // 일반 패리만 '블록스턴만큼 고정'
+        {
+            // ev.blockstun 은 위에서 스킬로부터 계산된 값 사용
+            ev.defProp.BeginParryLockByBlockstun(ev.blockstun);
+        }
+
+            // 2) 데미지/경직/넉백 무효
+            // (히트/블록 스턴, 넉다운/런치 등 어떤 것도 적용 안 함)
+
+            // 3) 드라이브 게이지 보상
+            float gain = justParry ? 120f : 80f; // 네 UI/게이지 스케일에 맞춰 조절
         ev.defProp.ChargeDriveGauge(gain);
 
         // 이펙트
         if (FxService.Instance != null) FxService.Instance.Spawn("DriveParryImpact", ev.cd.hitPoint);
 
         //TODO: 성공 사운드
+
+        if (justParry && TimeController.Instance != null)
+        {
+            TimeController.Instance.ApplySlowMotion(0.2f, 0.8f);
+        }
     }
 }
 
