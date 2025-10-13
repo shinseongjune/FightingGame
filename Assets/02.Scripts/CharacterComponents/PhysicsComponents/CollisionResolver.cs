@@ -728,7 +728,10 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         ev.defProp.ChargeDriveGauge(gain);
 
         // 이펙트
-        if (FxService.Instance != null) FxService.Instance.Spawn("DriveParryImpact", ev.cd.hitPoint);
+        int right = ev.defProp.isFacingRight ? 1 : -1;
+        Quaternion rot = Quaternion.identity;
+        rot.eulerAngles = new Vector3(right > 0 ? 0f : 180f, 0f, 0f);
+        if (FxService.Instance != null) FxService.Instance.Spawn("DriveParryHit", ev.cd.hitPoint, rot);
 
         //TODO: 성공 사운드
 

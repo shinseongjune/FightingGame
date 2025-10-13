@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class DriveImpactState : CharacterState
 {
     private int driveCost = 100;
@@ -33,6 +35,13 @@ public class DriveImpactState : CharacterState
         property.superArmorCount = 3;
         property.ConsumeDriveGauge(driveCost);
         property.isDriveGaugeCharging = false;
+
+        // ÀÌÆåÆ®
+        int right = property.isFacingRight ? 1 : -1;
+        Quaternion rot = Quaternion.identity;
+        rot.eulerAngles = new Vector3(0f, 0f, right > 0 ? 0f : 180f);
+        if (FxService.Instance != null) FxService.Instance.Spawn("DriveImpactBase", fsm.transform.position, rot);
+
     }
 
     protected override void OnTick()

@@ -98,10 +98,75 @@ public sealed class FxService : MonoBehaviour
         fx.Play(life, _ => ReturnToPool(key, fx));
     }
 
-    public void SpawnAt(Transform target, string key, Vector3 localOffset, float lifetimeOverride = -1f)
+    // 기존 Spawn은 그대로 두되, 핸들을 돌려주는 버전과 Attach 버전 추가
+    public FxInstance SpawnPersistent(string key, Vector3 pos, Quaternion? rot = null, Transform parent = null)
     {
-        Spawn(key, Vector3.zero, Quaternion.identity, lifetimeOverride, null, target);
-        var inst = target.GetChild(target.childCount - 1); // 막 붙은 애
-        inst.localPosition = localOffset;
+        if (!library.TryGet(key, out var entry)) return null;
+
+        var fx = GetOrCreateInstance(key);
+        if (parent != null) fx.transform.SetParent(parent, worldPositionStays: false);
+        fx.transform.position = parent ? Vector3.zero : pos;
+        fx.transform.rotation = rot ?? Quaternion.identity;
+        fx.transform.localScale = Vector3.one;
+
+        // lifetime -1f => 수동 종료 전까지 유지
+        fx.Play(-1f, _ => ReturnToPool(key, fx));
+        return fx;
+    }
+
+    public FxInstance SpawnAttached(string key, Transform parent, Vector3 localOffset, Quaternion? localRot = null)
+    {
+        var inst = SpawnPersistent(key, Vector3.zero, Quaternion.identity, parent);
+        if (inst == null) return null;
+        inst.transform.localPosition = localOffset;
+        inst.transform.localRotation = localRot ?? Quaternion.identity;
+        return inst;
+    }
+
+    public FxInstance SpawnAt(Transform target, string key, Vector3 localOffset, float lifetimeOverride = -1f)
+    {
+        if (!library.TryGet(key, out var entry)) return null;
+
+        var fx = GetOrCreateInstance(key);
+        fx.transform.SetParent(target, worldPositionStays: false);
+        fx.transform.localPosition = localOffset;
+        fx.transform.localRotation = Quaternion.identity;
+        fx.transform.localScale = Vector3.one;
+
+        float life = lifetimeOverride >= 0f ? lifetimeOverride : entry.defaultLifetime;
+        fx.Play(life, _ => ReturnToPool(key, fx));
+        return fx;
+    }
+
+    private FxInstance GetOrCreateInstance(string key)
+    {
+        if (!library.TryGet(key, out var entry)) return null;
+        if (!pools.TryGetValue(key, out var q))
+        {
+            q = new Queue<FxInstance>(entry.prewarm);
+            pools[key] = q;
+
+            // 풀 루트
+            var root = new GameObject($"FXPool_{key}").transform;
+            root.SetParent(transform, false);
+            poolRoots[key] = root;
+
+            // 프리웜
+            for (int i = 0; i < entry.prewarm; i++)
+            {
+                var go = Instantiate(entry.prefab, root);
+                go.SetActive(false);
+                q.Enqueue(go.GetComponent<FxInstance>() ?? go.AddComponent<FxInstance>());
+            }
+        }
+
+        FxInstance fx;
+        if (q.Count > 0) fx = q.Dequeue();
+        else
+        {
+            var go = Instantiate(entry.prefab, poolRoots[key]);
+            fx = go.GetComponent<FxInstance>() ?? go.AddComponent<FxInstance>();
+        }
+        return fx;
     }
 }

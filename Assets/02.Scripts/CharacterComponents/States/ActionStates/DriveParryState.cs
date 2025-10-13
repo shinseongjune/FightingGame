@@ -15,6 +15,8 @@ public class DriveParryState : CharacterState
 
     private Skill_SO skill;
 
+    private FxInstance _parryLoopFx;
+
     public DriveParryState(CharacterFSM f) : base(f) { }
 
     public override CharacterStateTag? StateTag => CharacterStateTag.DriveParry;
@@ -51,6 +53,12 @@ public class DriveParryState : CharacterState
         property.isSkillCancelable = false;
         property.ConsumeDriveGauge(driveCost);
         property.isDriveGaugeCharging = false;
+
+        // 이펙트
+        int right = property.isFacingRight ? 1 : -1;
+        Quaternion rot = Quaternion.identity;
+        rot.eulerAngles = new Vector3(right > 0 ? 0f : 180f, 0f, 0f);
+        if (FxService.Instance != null) FxService.Instance.Spawn("DriveParryBase", fsm.transform.position, rot);
     }
 
     protected override void OnTick()
@@ -102,6 +110,12 @@ public class DriveParryState : CharacterState
 
         property.ClearParryWindow();
 
+        if (_parryLoopFx != null)
+        {
+            _parryLoopFx.Despawn();
+            _parryLoopFx = null;
+        }
+
         RequestNaturalExit();
     }
 
@@ -140,12 +154,35 @@ public class DriveParryState : CharacterState
         _phase = ParryPhase.Loop;
         // 루프 재생
         TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryLoop), null, loop: true);
+
+        // 루프 이펙트
+        if (FxService.Instance != null)
+        {
+            // 캐릭터 루트에 붙이되, 필요하면 본(예: 가슴/손) Transform을 노출해 그쪽에 붙여도 좋음
+            var facingRight = property.isFacingRight;
+            var localRot = Quaternion.Euler(facingRight ? 0f : 180f, 0f, 0f);
+
+            // 위치는 취향대로. 살짝 위쪽에 띄우는 예시
+            _parryLoopFx = FxService.Instance.SpawnAttached(
+                key: "DriveParryBase",
+                parent: fsm.transform,
+                localOffset: new Vector3(0f, 1.0f, 0f),
+                localRot: localRot
+            );
+        }
     }
 
     void RequestNaturalExit()
     {
         if (_phase == ParryPhase.End) return;
         _phase = ParryPhase.End;
+
+        if (_parryLoopFx != null)
+        {
+            _parryLoopFx.Despawn();
+            _parryLoopFx = null;
+        }
+
         // End는 단발성
         TryPlay(property.characterName + "/" + animCfg.GetClipKey(AnimKey.ParryEnd), ReturnToNeutral, loop: false);
     }

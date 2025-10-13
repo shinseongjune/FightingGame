@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 736ca06e2c7c31b4a99821604241b36d, type: 3}
+  m_Name: Test Parry Hit Effect Entry
+  m_EditorClassIdentifier: 
+  key: DriveParryHit
+  prefab: {fileID: 5807450774426568277, guid: 423f7f55778319b469064610835c379f, type: 3}
+  defaultLifetime: 1
+  prewarm: 4
