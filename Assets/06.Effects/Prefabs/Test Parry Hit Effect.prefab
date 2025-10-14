@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5492579710549564808}
   - component: {fileID: 4825536471262832703}
   - component: {fileID: 1470489225561135728}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Test Parry Hit Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}

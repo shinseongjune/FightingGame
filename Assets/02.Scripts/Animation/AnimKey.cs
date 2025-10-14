@@ -17,6 +17,7 @@ public enum AnimKey
     PreBattle,      // 연출 전용
     Win,            // 연출 전용
     Lose,
+    DriveImpact,    // 드라이브 임팩트
     ParryStart, ParryLoop, ParryEnd, // 드라이브 패리
     // 추후: DashF, DashB, Knockdown 등
 }

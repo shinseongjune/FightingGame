@@ -40,8 +40,10 @@ MonoBehaviour:
   - key: 21
     clipKey: TestLose
   - key: 22
-    clipKey: TestParryStart
+    clipKey: TestDriveImpact
   - key: 23
-    clipKey: TestParryLoop
+    clipKey: TestDriveParryStart
   - key: 24
-    clipKey: TestParryEnd
+    clipKey: TestDriveParryLoop
+  - key: 25
+    clipKey: TestDriveParryEnd

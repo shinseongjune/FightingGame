@@ -2797,6 +2797,7 @@ MonoBehaviour:
   fsm: {fileID: 0}
   characterStateTag: 0
   allSkills:
+  - {fileID: 11400000, guid: 1454df90b66a42a40b60344bbcf2cea5, type: 2}
   - {fileID: 11400000, guid: fbe594ae03a37f747a692a52c53432df, type: 2}
   - {fileID: 11400000, guid: 84ff5488c64116640932061430766fc1, type: 2}
   - {fileID: 11400000, guid: 7fb24bdacce2ee3409d18188cf5e0e64, type: 2}
@@ -2824,6 +2825,7 @@ MonoBehaviour:
   pendingBlockstunFrames: 0
   pendingKnockback: {x: 0, y: 0}
   attackInstanceId: 0
+  parryDisableFrame: 0
 --- !u!114 &7833108731215444914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2861,6 +2863,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxBufferSize: 30
+  LastInput:
+    direction: 0
+    attack: 0
+    backCharge: 0
+    downCharge: 0
+    isUsed: 0
   captureFromDevice: 1
   respectCharacterInputLock: 1
   enqueueNeutralWhenLocked: 1
