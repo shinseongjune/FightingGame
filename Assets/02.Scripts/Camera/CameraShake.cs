@@ -9,7 +9,7 @@ public sealed class CameraShake : MonoBehaviour
 
     [Header("Strength")]
     [SerializeField] private float maxYOffset = 0.35f;   // 상하 흔들림 크기
-    [SerializeField] private float maxXOffset = 0.08f;   // 좌우는 조금만
+    [SerializeField] private float maxXOffset = 0f;      // 좌우는 0
 
     [Header("Dynamics")]
     [SerializeField] private float decayPerSec = 30f;    // 빨리 감쇠
@@ -73,8 +73,8 @@ public sealed class CameraShake : MonoBehaviour
 
                 float p = trauma * trauma;
 
-                // 좌우는 살짝, 상하는 바쁘게
-                float nx = HashSin(seed + 11, t * noiseFreqX);
+                // 좌우는 0, 상하는 바쁘게
+                float nx = 0; //HashSin(seed + 11, t * noiseFreqX);
                 float ny = HashSin(seed + 37, t * noiseFreqY);
 
                 Vector2 offset = new Vector2(nx * maxXOffset * p,

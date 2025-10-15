@@ -86,7 +86,7 @@ public static class InputRecognizer
     private static int FindAttackIndex(InputData[] inputs, InputData attackCmd)
     {
         for (int i = inputs.Length - 1; i >= 0; --i)
-            if (!inputs[i].isUsed && (inputs[i].attack & attackCmd.attack) != 0) return i;
+            if (!inputs[i].isUsed && (inputs[i].attack & attackCmd.attack) == attackCmd.attack) return i;
         return -1;
     }
 
