@@ -13,6 +13,7 @@ public enum AnimKey
     HitAir,         // 공중 피격
     Knockdown,
     HardKnockdown,
+    KnockdownGround,// 다운 상태에서 바닥에 닿는 모션
     WakeUp,         // 기상
     PreBattle,      // 연출 전용
     Win,            // 연출 전용

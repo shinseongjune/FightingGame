@@ -50,8 +50,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f3887f9eb1ac194e89816ff50c8e377
+    m_Address: TestMan/TestWakeUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fdc2595572d788449526a8c76300d0a
     m_Address: Character/TestMan2/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34d0fbc31686df5428b50bba3ae40b8c
+    m_Address: TestMan2/TestKnockdown
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -92,6 +102,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b437eaca0039814386de955ff317e29
     m_Address: TestMan2/TestWin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b4a8902993de514db8ff1f2b151e953
+    m_Address: TestMan/TestKnockdownGround
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6529e1fb0e1288b4595634648c5edfb3
+    m_Address: TestMan2/TestKnockdownGround
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -215,6 +235,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e84d38d6cc5b06e4ab1ea14e7c8d3339
+    m_Address: TestMan2/TestWakeUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e97de911f8685a143a18ec1c09f2f656
     m_Address: TestMan/TestLose
     m_ReadOnly: 0
@@ -232,6 +257,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f9cfab29ff042384481ac67084967704
     m_Address: TestMan2/TestFall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa5d448d5367014498d6a756dc6c5c05
+    m_Address: TestMan/TestKnockdown
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

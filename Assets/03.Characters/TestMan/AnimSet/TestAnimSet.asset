@@ -34,16 +34,24 @@ MonoBehaviour:
   - key: 13
     clipKey: TestHitGround
   - key: 19
-    clipKey: TestPreBattle
+    clipKey: TestWakeUp
   - key: 20
-    clipKey: TestWin
+    clipKey: TestPreBattle
   - key: 21
-    clipKey: TestLose
+    clipKey: TestWin
   - key: 22
-    clipKey: TestDriveImpact
+    clipKey: TestLose
   - key: 23
-    clipKey: TestDriveParryStart
+    clipKey: TestDriveImpact
   - key: 24
-    clipKey: TestDriveParryLoop
+    clipKey: TestDriveParryStart
   - key: 25
+    clipKey: TestDriveParryLoop
+  - key: 26
     clipKey: TestDriveParryEnd
+  - key: 16
+    clipKey: TestKnockdown
+  - key: 17
+    clipKey: TestKnockdown
+  - key: 18
+    clipKey: TestKnockdownGround

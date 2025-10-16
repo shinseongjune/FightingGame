@@ -59,7 +59,7 @@ MonoBehaviour:
     airHitDurationFrames: 6
     easingType: 0
   knockdown:
-    mode: 0
+    mode: 2
     popUpApexHeight: 0.5
     downFrames: 40
     slideDistance: 0

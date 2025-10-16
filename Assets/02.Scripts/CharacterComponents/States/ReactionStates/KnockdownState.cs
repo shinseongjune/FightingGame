@@ -6,6 +6,8 @@ public class KnockdownState : CharacterState
     [SerializeField] int downFrames = 60; // 누운 시간
     int remain;
 
+    bool wasGrounded;
+
     public KnockdownState(CharacterFSM f) : base(f) { }
     public override CharacterStateTag? StateTag => CharacterStateTag.Knockdown;
 
@@ -25,8 +27,21 @@ public class KnockdownState : CharacterState
 
     protected override void OnTick()
     {
-        if (--remain <= 0)
-            Transition("WakeUp");
+        if (!phys.isGrounded)
+        {
+            return;
+        }
+        else
+        {
+            if (!wasGrounded)
+            {
+                Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.KnockdownGround));
+            }
+            if (--remain <= 0)
+                Transition("WakeUp");
+        }
+
+        wasGrounded = phys.isGrounded;
     }
 
     protected override void OnExit() { }
@@ -36,6 +51,8 @@ public class HardKnockdownState : CharacterState
 {
     [SerializeField] int downFrames = 90;
     int remain;
+
+    bool wasGrounded;
 
     public HardKnockdownState(CharacterFSM f) : base(f) { }
     public override CharacterStateTag? StateTag => CharacterStateTag.HardKnockdown;
@@ -55,8 +72,21 @@ public class HardKnockdownState : CharacterState
 
     protected override void OnTick()
     {
-        if (--remain <= 0)
-            Transition("WakeUp");
+        if (!phys.isGrounded)
+        {
+            return;
+        }
+        else
+        {
+            if (!wasGrounded)
+            {
+                Play(property.characterName + "/" + animCfg.GetClipKey(AnimKey.KnockdownGround));
+            }
+            if (--remain <= 0)
+                Transition("WakeUp");
+        }
+
+        wasGrounded = phys.isGrounded;
     }
 
     protected override void OnExit() { }

@@ -36,8 +36,16 @@ MonoBehaviour:
   - key: 13
     clipKey: TestHitGround
   - key: 19
-    clipKey: TestPreBattle
+    clipKey: TestWakeUp
   - key: 20
-    clipKey: TestWin
+    clipKey: TestPreBattle
   - key: 21
+    clipKey: TestWin
+  - key: 22
     clipKey: TestLose
+  - key: 16
+    clipKey: TestKnockdown
+  - key: 17
+    clipKey: TestKnockdown
+  - key: 18
+    clipKey: TestKnockdownGround
