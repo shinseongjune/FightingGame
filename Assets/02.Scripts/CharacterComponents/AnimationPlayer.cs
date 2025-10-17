@@ -132,4 +132,25 @@ public class AnimationPlayer : MonoBehaviour
             graph.Evaluate(0);
         }
     }
+
+    // 디버그용 API
+    public void SetFrame(int frame)
+    {
+        if (currentClip == null) return;
+        frame = Mathf.Clamp(frame, 0, ClipLengthFrames);
+        currentTimeSec = Mathf.Min(currentClip.length, frame / clipFps);
+        if (clipPlayable.IsValid())
+        {
+            clipPlayable.SetTime(currentTimeSec);
+            graph.Evaluate(0); // 즉시 평가
+        }
+    }
+
+    public void SetNormalized(float t)
+    {
+        if (currentClip == null) return;
+        t = Mathf.Clamp01(t);
+        int f = Mathf.RoundToInt(t * ClipLengthFrames);
+        SetFrame(f);
+    }
 }

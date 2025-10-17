@@ -23,6 +23,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterProperty))]
 public sealed class CollisionResolver : MonoBehaviour, ITicker
 {
+    public bool enableResolve = true; // 디버그용
+
     #region Types
     enum PairKind { None, Hit, Throw, GuardTrigger }
 
@@ -216,6 +218,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     #region Tick (deterministic)
     public void Tick()
     {
+        if (!enableResolve) return;
+
         _frame++;
 
         if (_events.Count > 0)
