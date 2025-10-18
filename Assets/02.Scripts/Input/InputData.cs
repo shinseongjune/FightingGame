@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public enum Direction
 {
@@ -30,8 +31,10 @@ public struct InputData
 {
     public Direction direction;
     public AttackKey attack;
-    public int backCharge;
-    public int downCharge;
+    [HideInInspector] public int backCharge;
+    [HideInInspector] public int downCharge;
 
-    public bool isUsed;
+    [HideInInspector] public bool isUsed;
+
+    [HideInInspector] public long tick;
 }

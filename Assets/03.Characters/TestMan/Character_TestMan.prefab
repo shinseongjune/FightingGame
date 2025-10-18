@@ -2684,6 +2684,7 @@ GameObject:
   - component: {fileID: 2214678341692705477}
   - component: {fileID: 1230523323767490591}
   - component: {fileID: 7207402052335562193}
+  - component: {fileID: -9210745552656042573}
   m_Layer: 6
   m_Name: Character_TestMan
   m_TagString: Untagged
@@ -2869,9 +2870,11 @@ MonoBehaviour:
     backCharge: 0
     downCharge: 0
     isUsed: 0
+    tick: 0
   captureFromDevice: 1
   respectCharacterInputLock: 1
   enqueueNeutralWhenLocked: 1
+  useArbiterSource: 0
 --- !u!114 &2128112782071567512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2896,6 +2899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0ef77a03297ba4d8fbbb16a6ed9a1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableResolve: 1
 --- !u!114 &1230523323767490591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2970,6 +2974,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95d2aae1a5858c84d958e6f83381c33b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-9210745552656042573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97b75ac29b6d9c240a51b2d1558156d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerType: 0
+  inputBuffer: {fileID: 0}
+  character: {fileID: 0}
+  aiMacro: {fileID: 0}
+  replaySource: {fileID: 0}
+  replayLoop: 1
 --- !u!1 &4821643885564524650
 GameObject:
   m_ObjectHideFlags: 0

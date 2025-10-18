@@ -9,6 +9,7 @@ public class PlayerLoadout
     public string costumeId;      // 선택: 코스튬 키
     public string controlSchemeId;// 선택: 입력 스킴 키
     public bool isCpu;            // PvCPU 등에서 사용
+    public bool isDummy;          // 더미 플레이어용
 }
 
 [Serializable]

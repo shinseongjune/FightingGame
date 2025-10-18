@@ -11,6 +11,8 @@ public class TickMaster : Singleton<TickMaster>
 
     private readonly HashSet<ITicker> pendingRemove = new();
 
+    public long CurrentTick { get; private set; }
+
     public bool IsReady { get; private set; }
 
     protected override bool ShouldPersistAcrossScenes() => false;
@@ -60,6 +62,8 @@ public class TickMaster : Singleton<TickMaster>
         while (tickTimer >= TICK_INTERVAL && ticksThisFrame < maxTicksPerFrame)
         {
             tickTimer -= TICK_INTERVAL;
+
+            CurrentTick++;
 
             // ½ÇÁ¦ Æ½ È£Ãâ
             for (int i = 0; i < tickers.Count; i++)

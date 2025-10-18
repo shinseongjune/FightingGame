@@ -21,6 +21,9 @@ public class InputBuffer : MonoBehaviour
     public bool respectCharacterInputLock = true;  // isInputEnabled=false면 강제로 중립 노출
     public bool enqueueNeutralWhenLocked = true;   // 잠금 시에도 중립을 큐에 넣어 타임라인 전진
 
+    public bool useArbiterSource = false;
+    public InputArbiter arbiter;
+
     private void Awake()
     {
         inputActions = GameManager.Instance.actions;
@@ -31,50 +34,69 @@ public class InputBuffer : MonoBehaviour
     public void Tick()
     {
         // 0) 입력 캡처 off면: 외부 주입만 사용(아무 것도 하지 않음)
-        if (!captureFromDevice)
+        if (!captureFromDevice && !useArbiterSource)
             return;
 
-        Vector2 move = inputActions.Player.Move.ReadValue<Vector2>();
-        Direction dir = ToDirection(move);
-        AttackKey attack = ReadAttackKey();
+        // 1) 원시 스냅샷 확보
+        InputData snap;
+        if (useArbiterSource && arbiter != null)
+        {
+            // Arbiter를 통해 스냅샷 획득 (direction/attack만 중요)
+            snap = arbiter.Resolve();
+        }
+        else
+        {
+            // 기존 로컬 입력 경로 유지
+            Vector2 move = inputActions.Player.Move.ReadValue<Vector2>();
+            Direction dir = ToDirection(move);
+            AttackKey attack = ReadAttackKey();
 
-        // 1) 캐릭터 입력 잠금 존중 → 강제로 중립/무공격
+            snap = new InputData
+            {
+                direction = dir,
+                attack = attack,
+                backCharge = 0,
+                downCharge = 0
+            };
+        }
+
+        // 2) 캐릭터 입력 락 처리
         bool locked = respectCharacterInputLock && character != null && !character.isInputEnabled;
         if (locked)
         {
-            dir = Direction.Neutral;
-            attack = AttackKey.None;
+            snap.direction = Direction.Neutral;
+            snap.attack = AttackKey.None;
             backHold = 0; downHold = 0;
+
+            // ★ 틱 스탬프
+            snap.tick = (TickMaster.Instance != null) ? TickMaster.Instance.CurrentTick : 0;
 
             if (!enqueueNeutralWhenLocked)
             {
-                // 버퍼를 전진시키지 않음 → 완전 정지
-                LastInput = new InputData { direction = dir, attack = attack, backCharge = 0, downCharge = 0 };
-                previousInput = LastInput;
+                LastInput = snap;
+                previousInput = snap;
                 return;
             }
         }
         else
         {
-            // 차지 누적
-            if (ContainsBack(dir) && ContainsBack(previousInput.direction)) backHold++;
+            // 3) hold 계산 (기존 로직 유지)
+            if (ContainsBack(snap.direction) && ContainsBack(previousInput.direction)) backHold++;
             else backHold = 0;
-            if (ContainsDown(dir) && ContainsDown(previousInput.direction)) downHold++;
+
+            if (ContainsDown(snap.direction) && ContainsDown(previousInput.direction)) downHold++;
             else downHold = 0;
         }
 
-        var input = new InputData
-        {
-            direction = dir,
-            attack = attack,
-            backCharge = backHold,
-            downCharge = downHold
-        };
+        // 4) tick 스탬프 + charge 반영
+        snap.tick = (TickMaster.Instance != null) ? TickMaster.Instance.CurrentTick : 0;
+        snap.backCharge = backHold;
+        snap.downCharge = downHold;
 
-        previousInput = input;
-        LastInput = input;
+        previousInput = snap;
+        LastInput = snap;
 
-        inputQueue.Enqueue(input);
+        inputQueue.Enqueue(snap);
         while (inputQueue.Count > maxBufferSize) inputQueue.Dequeue();
     }
 
@@ -126,6 +148,9 @@ public class InputBuffer : MonoBehaviour
     // 외부 주입(네트워크/AI용)
     public void PushExternal(InputData input, bool enqueue = true)
     {
+        if (input.tick == 0 && TickMaster.Instance != null)
+            input.tick = TickMaster.Instance.CurrentTick;
+
         LastInput = input;
         previousInput = input;
         if (enqueue)
@@ -140,5 +165,7 @@ public class InputBuffer : MonoBehaviour
         inputQueue.Clear();
         previousInput = default;
         LastInput = default;
+        backHold = 0;
+        downHold = 0;
     }
 }

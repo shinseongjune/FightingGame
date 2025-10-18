@@ -10,6 +10,7 @@ public enum GameMode
     Story,
     PvCPU,
     OnlinePvP,
+    Training,
 }
 
 public enum PlayerSlotId
