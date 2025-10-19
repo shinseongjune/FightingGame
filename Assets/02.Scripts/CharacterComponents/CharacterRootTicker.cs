@@ -9,9 +9,6 @@ public class CharacterRootTicker : MonoBehaviour, ITicker
     BoxPresetApplier boxApplier;
     CollisionResolver resolver;
 
-    // 필요하다면 PhysicsEntity나 기타도 참조
-    PhysicsEntity phys;
-
     private TickMaster tickMaster;
 
     void Awake()
@@ -21,7 +18,6 @@ public class CharacterRootTicker : MonoBehaviour, ITicker
         anim = GetComponent<AnimationPlayer>();
         boxApplier = GetComponent<BoxPresetApplier>();
         resolver = GetComponent<CollisionResolver>();
-        phys = GetComponent<PhysicsEntity>();
     }
 
     void OnEnable()
@@ -60,7 +56,35 @@ public class CharacterRootTicker : MonoBehaviour, ITicker
         // 5) 충돌 처리(본인 관점 우선순위 필터링 등)
         resolver?.Tick();
 
-        // 6) (선택) 물리 후처리/디버그 훅
-        // phys?.PostTick();
+        TryAutoFaceWhenBothGrounded();
+    }
+
+    void TryAutoFaceWhenBothGrounded()
+    {
+        var me = GetComponent<CharacterProperty>();
+        if (me == null) return;
+        var myPhys = GetComponent<PhysicsEntity>();
+        if (myPhys == null) return;
+
+        // 상대 찾기(2인 가정)
+        CharacterProperty enemy = null;
+        foreach (var c in GameObject.FindObjectsByType<CharacterProperty>(FindObjectsSortMode.None))
+            if (c != me) { enemy = c; break; }
+        if (enemy == null) return;
+
+        var enPhys = enemy.GetComponent<PhysicsEntity>();
+        if (enPhys == null) return;
+
+        // 1) 양측 모두 지상일 때만
+        if (!(myPhys.isGrounded && enPhys.isGrounded)) return;
+
+        // 3) 히스테리시스(동일/근접 X에서 좌우 튀는 것 방지)
+        const float swapThreshold = 0.05f; // 스테이지 유닛 기준, 필요시 0.1~0.2
+        float dx = enPhys.Position.x - myPhys.Position.x;
+        if (Mathf.Abs(dx) < swapThreshold) return;
+
+        bool meShouldFaceRight = dx > 0f;
+
+        me.SetFacing(meShouldFaceRight);
     }
 }

@@ -16,7 +16,6 @@ public abstract class CharacterState
 
     // Components
     protected readonly CharacterProperty property;
-    protected CharacterProperty enemy;
     protected readonly PhysicsEntity phys;
     protected readonly AnimationPlayer anim;
     protected readonly BoxPresetApplier boxApplier;
@@ -141,16 +140,6 @@ public abstract class CharacterState
 
     public void Tick()
     {
-        if (enemy == null)
-        {
-            var chars = GameObject.FindObjectsByType<CharacterProperty>(FindObjectsSortMode.InstanceID);
-            foreach (var character in chars)
-            {
-                if (character == property) continue;
-                enemy = character;
-            }
-        }
-
         OnTick();
         elapsedFrames++;
     }
