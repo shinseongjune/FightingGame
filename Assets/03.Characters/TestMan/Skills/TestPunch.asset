@@ -30,10 +30,11 @@ MonoBehaviour:
       backCharge: 0
       downCharge: 0
       isUsed: 0
+      tick: 0
     isStrict: 0
     maxFrameGap: 4
   damageOnHit: 300
-  hitstunDuration: 12
+  hitstunDuration: 60
   blockstunDuration: 4
   push:
     hitDistance: 0.45

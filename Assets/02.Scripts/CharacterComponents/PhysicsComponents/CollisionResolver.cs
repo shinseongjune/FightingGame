@@ -376,7 +376,12 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         else
         {
             // 히트 시
-            if (ev.damage > 0f) ev.defProp.ApplyDamage(ev.damage);
+            if (ev.damage > 0f)
+            {
+                int attackerId = (ev.attacker != null) ? ev.attacker.GetInstanceID() : 0;
+                float finalDamage = ev.defProp.RegisterComboAndScaleDamage(attackerId, ev.damage);
+                ev.defProp.ApplyDamage(finalDamage);
+            }
             if (ev.hitstun > 0)
             {
                 ev.defProp.SetHitstun(ev.hitstun, Vector2.zero);

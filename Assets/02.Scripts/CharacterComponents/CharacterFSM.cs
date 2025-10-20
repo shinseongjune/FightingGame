@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static Codice.CM.Common.CmCallContext;
 
 [RequireComponent(typeof(BoxPresetApplier))]
 public class CharacterFSM : MonoBehaviour
 {
     private BoxPresetApplier boxPresetApplier;
+    private CharacterProperty property;
 
     private CharacterState currentState;
     private CharacterState prevState;
@@ -22,6 +24,7 @@ public class CharacterFSM : MonoBehaviour
     private void Awake()
     {
         boxPresetApplier = GetComponent<BoxPresetApplier>();
+        property = GetComponent<CharacterProperty>();
     }
 
     /// <summary>
@@ -67,6 +70,8 @@ public class CharacterFSM : MonoBehaviour
         currentState?.Exit();
         currentState = nextState;
         currentState.Enter();
+
+        property.NotifyStateEnterForCombo(Current?.StateTag);
     }
 
     /// <summary>
@@ -83,6 +88,8 @@ public class CharacterFSM : MonoBehaviour
         currentState?.Exit();
         currentState = nextState;
         currentState.Enter();
+
+        property.NotifyStateEnterForCombo(Current?.StateTag);
     }
 
     /// <summary>
@@ -99,6 +106,8 @@ public class CharacterFSM : MonoBehaviour
 
         currentState = nextState;
         currentState.Enter();
+
+        property?.NotifyStateEnterForCombo(Current?.StateTag);
     }
 
     public T GetState<T>(string key) where T : CharacterState
@@ -138,6 +147,8 @@ public class CharacterFSM : MonoBehaviour
             currentState?.Exit();
             currentState = nextState;
             currentState?.Enter();
+
+            property.NotifyStateEnterForCombo(Current?.StateTag);
         }
         finally
         {

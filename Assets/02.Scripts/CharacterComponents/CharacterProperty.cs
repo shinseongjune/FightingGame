@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -87,6 +88,106 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public int parryLockEndFrame { get; private set; } = -1;
     public bool IsParryLocked => Time.frameCount <= parryLockEndFrame;
 
+    #region === Combo (Defender-Centric) ===
+    [Header("=== Combo (Defender-Centric) ===")]
+    [Tooltip("히트 간 최대 허용 프레임(지나면 콤보 드랍)")]
+    public int comboKeepFrames = 120;   // 60fps 기준 2초
+
+    [Tooltip("n번째 히트에 곱해질 데미지 배율(인덱스: 1히트=0)")]
+    public float[] comboDamageTable = new float[] {
+        1.00f, 0.90f, 0.85f, 0.80f, 0.75f,
+        0.70f, 0.65f, 0.60f, 0.55f, 0.50f,
+        0.45f, 0.40f, 0.35f, 0.30f, 0.25f, 0.20f
+    };
+
+    [Tooltip("데미지 스케일 최소 바닥치")]
+    public float comboDamageFloor = 0.20f;
+
+    // 콤보 상태(피격자 관점)
+    [NonSerialized] public int currentComboCount = 0;   // 현재까지 맞은 히트 수
+    [NonSerialized] public float currentComboDamage = 0f; // 누적 데미지(HUD용)
+    [NonSerialized] public int currentComboStartFrame = -1;
+    [NonSerialized] public int currentComboDropFrame = -1;
+    [NonSerialized] public int lastAttackerId = 0;      // 공격자 InstanceID
+
+    static readonly HashSet<CharacterStateTag> NeutralTagsForComboDrop = new()
+    {
+        CharacterStateTag.Idle,
+        CharacterStateTag.Crouch,
+        CharacterStateTag.Guarding,
+        CharacterStateTag.Jump_Up,
+        CharacterStateTag.Jump_Forward,
+        CharacterStateTag.Jump_Backward,
+        CharacterStateTag.Walk_Forward,
+        CharacterStateTag.Walk_Backward,
+        CharacterStateTag.Dash_Forward,
+        CharacterStateTag.Dash_Backward,
+
+    };
+
+    public void ResetCombo()
+    {
+        currentComboCount = 0;
+        currentComboDamage = 0f;
+        currentComboStartFrame = -1;
+        currentComboDropFrame = -1;
+        lastAttackerId = 0;
+    }
+
+    public void ForceDropCombo() => ResetCombo();
+
+    public bool IsComboBreakingNeutral(CharacterStateTag? tag)
+        => tag.HasValue && NeutralTagsForComboDrop.Contains(tag.Value);
+
+    /// <summary> FSM 상태 진입 시 외부에서 호출: 뉴트럴이면 즉시 콤보 드랍 </summary>
+    public void NotifyStateEnterForCombo(CharacterStateTag? tag)
+    {
+        if (IsComboBreakingNeutral(tag))
+            ForceDropCombo();
+    }
+
+    /// <summary>
+    /// 히트 시 반드시 호출. 공격자 기준 동일/유예 내 판단 → 콤보 갱신 후 스케일링 데미지 반환.
+    /// </summary>
+    public float RegisterComboAndScaleDamage(int attackerInstanceId, float baseDamage)
+    {
+        int now = Time.frameCount;
+        bool sameAttacker = (attackerInstanceId == lastAttackerId);
+        bool keepWindow = (now <= currentComboDropFrame);
+
+        if (!sameAttacker || !keepWindow || currentComboCount <= 0)
+        {
+            // 새 콤보 시작
+            currentComboCount = 1;
+            currentComboDamage = 0f;
+            currentComboStartFrame = now;
+            lastAttackerId = attackerInstanceId;
+        }
+        else
+        {
+            // 콤보 연속
+            currentComboCount++;
+        }
+
+        // 다음 히트를 기다릴 유예 프레임 갱신
+        currentComboDropFrame = now + Mathf.Max(1, comboKeepFrames);
+        // n히트 스케일
+        int idx = Mathf.Clamp(currentComboCount - 1, 0, comboDamageTable.Length - 1);
+        float scale = (comboDamageTable.Length > 0) ? comboDamageTable[idx] : 1f;
+        scale = Mathf.Max(comboDamageFloor, scale);
+        float scaled = baseDamage * scale;
+        currentComboDamage += Mathf.Max(0f, scaled);
+
+        //TODO: 임시 콤보 로그. 추후 제대로된 HUD 연동 필요
+        if (currentComboCount >= 2)
+        {
+            Debug.Log($"[{name}] Combo x{currentComboCount} | Total Damage: {currentComboDamage:F1}");
+        }
+
+        return scaled;
+    }
+    #endregion
+
     private void Awake()
     {
         phys = GetComponent<PhysicsEntity>();
@@ -112,7 +213,10 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public void Tick()
     {
-        if (fsm.Current != fsm.GetState<DriveParryState>("DriveParry")) parryDisableFrame = Mathf.Max(0, parryDisableFrame - 1);
+        if (fsm.Current != fsm.GetState<DriveParryState>("DriveParry"))
+        {
+            parryDisableFrame = Mathf.Max(0, parryDisableFrame - 1);
+        }
 
         if (driveGauge <= 0)
         {
@@ -126,6 +230,12 @@ public class CharacterProperty : MonoBehaviour, ITicker
         if (isExhausted || isDriveGaugeCharging)
         {
             ChargeDriveGauge(driveGaugeTickChargeAmount);
+        }
+
+        // 콤보 유예 시간 만료 시 자동 드랍
+        if (currentComboCount > 0 && Time.frameCount > currentComboDropFrame)
+        {
+            ResetCombo();
         }
     }
 
