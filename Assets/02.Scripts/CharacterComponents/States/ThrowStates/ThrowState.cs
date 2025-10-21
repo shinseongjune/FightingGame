@@ -1,12 +1,16 @@
-// ThrowStates.cs
+ï»¿// ThrowStates.cs
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-/// <summary> ½ÃÀüÀÚ(°ø°İÀÚ) ÂÊ Àâ±â »óÅÂ </summary>
+/// <summary> ì‹œì „ì(ê³µê²©ì) ìª½ ì¡ê¸° ìƒíƒœ </summary>
 public class ThrowState : CharacterState
 {
-    PhysicsEntity target;      // ÀâÈù ´ë»ó
-    Vector2 holdOffset = new Vector2(0.6f, 0.9f); // ½ÃÀüÀÚ ±âÁØ ºÙÀâ´Â À§Ä¡
+    PhysicsEntity target;      // ì¡íŒ ëŒ€ìƒ
+    Vector2 holdOffset = new Vector2(0.6f, 0.9f); // ì‹œì „ì ê¸°ì¤€ ë¶™ì¡ëŠ” ìœ„ì¹˜
+
+    bool didImpact, didRelease;
+
+    private Skill_SO _skill;
 
     public void SetTarget(PhysicsEntity t) => target = t;
 
@@ -15,28 +19,93 @@ public class ThrowState : CharacterState
 
     protected override void OnEnter()
     {
-        property.isInputEnabled = false;
-        phys.mode = PhysicsMode.Kinematic;   // ¿¬Ãâ µ¿¾È ·çÆ® Á¦¾î
-        phys.isGravityOn = false;
+        // íœë”© ì»¨í…ìŠ¤íŠ¸ì—ì„œ ë¨¼ì € êº¼ë‚´ì„œ ìºì‹œ
+        var ctx = property.ConsumePendingThrow();
+        _skill = ctx.has ? ctx.skill : property.currentSkill;
 
+        // ë§ˆì§€ë§‰ ì•ˆì „ë§: ê¸°ë³¸ ì¡ê¸° ìŠ¤í‚¬ë¡œ ëŒ€ì²´(ì—ì…‹ í•˜ë‚˜ ì§ë ¬í™”í•´ë‘ëŠ” ê±¸ ì¶”ì²œ)
+        if (_skill == null)
+        {
+            ReturnToNeutralPose(); return; 
+        }
+
+        var cfg = _skill.throwCfg;
+        property.isInputEnabled = false;
+        phys.mode = PhysicsMode.Kinematic;
+        phys.isGravityOn = false;
 
         if (target != null)
         {
-            target.mode = PhysicsMode.Carried;
-            target.followTarget = phys;
-            var signX = property.isFacingRight ? 1f : -1f;
-            target.followOffset = new Vector2(holdOffset.x * signX, holdOffset.y);
+            if (cfg.useAttachFollow)
+            {
+                var anchor = property.GetThrowAnchor(cfg.holdAnchorIndex);
+                var signX = property.isFacingRight ? 1f : -1f;
+
+                if (anchor != null)
+                    target.AttachTo(anchor, Vector2.zero);
+                else
+                    target.AttachTo(phys, new Vector2(holdOffset.x * signX, holdOffset.y));
+            }
+            else
+            {
+                // attach ìƒëµ â€” ëŒ€ì‹  ì´ˆê¸° ìœ„ì¹˜ë¥¼ ì• ë‹ˆ ê¸°ì¤€ìœ¼ë¡œ ì¼íšŒì„± ë§ì¶¤
+                // í•„ìš”í•˜ë©´ ë£¨íŠ¸ ì •ë ¬
+                var defPhys = target.GetComponent<PhysicsEntity>();
+                if (defPhys != null)
+                {
+                    // ì‹œì „ì ê¸°ì¤€ìœ¼ë¡œ ì‚´ì§ ë¶™ì´ê¸° ì •ë„ë§Œ
+                    float signX = property.isFacingRight ? 1f : -1f;
+                    defPhys.Position = phys.Position + new Vector2(0.5f * signX, 0);
+                    defPhys.Velocity = Vector2.zero;
+                    defPhys.mode = PhysicsMode.Kinematic;
+                }
+            }
         }
 
-        if (!TryPlay(property.characterName + "/" + property.currentSkill.throwAnimationClipName, ReturnToNeutralPose))
-        {
-            // ¿¬Ãâ ½ÃÀÛÁ¶Â÷ ¸øÇÏ¸é ±ú²ıÇÏ°Ô º¹±Í
-            ReturnToNeutralPose();
-            return;
-        }
+        TryPlay(property.characterName + "/" + _skill.throwAnimationClipName, ReturnToNeutralPose);
     }
 
-    protected override void OnTick() { }
+    protected override void OnTick()
+    {
+        var skill = _skill;
+        if (skill == null || target == null) return;
+
+        int f = anim.CurrentTickFrame; // AnimationPlayer ì´ë¯¸ ì§€ì›
+        var cfg = skill.throwCfg;
+        var defProp = target.GetComponent<CharacterProperty>();
+        if (defProp == null) return;
+
+        // ì„íŒ©íŠ¸ í”„ë ˆì„: ë°ë¯¸ì§€/ê²Œì´ì§€/ì½¤ë³´
+        if (!didImpact && f >= cfg.impactFrame)
+        {
+            didImpact = true;
+            if (cfg.damage > 0f)
+            {
+                int attackerId = property.phys != null ? property.phys.GetInstanceID() : 0;
+                float finalDamage = defProp.RegisterComboAndScaleDamage(attackerId, cfg.damage);
+                defProp.ApplyDamage(finalDamage);
+            }
+            // ì½¤ë³´ ìœ ì˜ˆ ì—°ì¥ (ì—°ì¶œ ê¸¸ë©´ ë” ëŠ˜ë¦°ë‹¤)
+            defProp.ExtendComboWindow(Mathf.Max(18, cfg.comboLockFrames));
+        }
+
+        // ë¦´ë¦¬ì¦ˆ í”„ë ˆì„: ì†ì—ì„œ ë†“ê³  ë°œì‚¬
+        if (!didRelease && f >= cfg.releaseFrame)
+        {
+            didRelease = true;
+            var signX = property.isFacingRight ? 1f : -1f;
+            var v = new Vector2(cfg.launchVelocity.x * signX, cfg.launchVelocity.y);
+
+            // ì¶©ëŒ ë³µêµ¬ + ë°œì‚¬
+            target.ReleaseFromCarry(true, v);
+
+            // í”¼ê²©ì í›„ì† ìƒíƒœ (BeingThrown ì€ onComplete ì—ì„œ Knockdown, í˜¹ì€ ë°”ë¡œ ë‹¤ìš´ì„ ì›í•˜ë©´ ì—¬ê¸°ì„œ)
+            if (cfg.hardKnockdown && defProp.fsm.Current is BeingThrownState)
+            {
+                // ê·¸ëƒ¥ BeingThrown ìœ ì§€ í›„ onCompleteì—ì„œ ë‹¤ìš´ ì „ì´(ì•„ë˜ì—ì„œ ì½œë°± ì¶”ê°€)
+            }
+        }
+    }
 
     protected override void OnExit()
     {
@@ -45,57 +114,62 @@ public class ThrowState : CharacterState
         phys.isGravityOn = true;
 
         if (target != null)
-        {
-            target.mode = PhysicsMode.Normal;
-            target.followTarget = null;
-        }
+            target.ReleaseFromCarry(true, Vector2.zero);
     }
 }
 
-/// <summary> ÇÇ°İÀÚ(ÀâÈù ÂÊ) »óÅÂ </summary>
+/// <summary> í”¼ê²©ì(ì¡íŒ ìª½) ìƒíƒœ </summary>
 public class BeingThrownState : CharacterState
 {
+    private Skill_SO _skill;
     CharacterProperty thrower;
 
-    public void SetTrower(CharacterProperty c) => thrower = c;
+    public void SetThrower(CharacterProperty c) => thrower = c;
 
     public BeingThrownState(CharacterFSM f) : base(f) { }
     public override CharacterStateTag? StateTag => CharacterStateTag.BeingThrown;
 
     protected override void OnEnter()
     {
+        var ctx = property.ConsumePendingThrow();
+        if (ctx.has && ctx.throwerProp != null)
+        {
+            thrower = ctx.throwerProp; // ì›ë˜ SetThrowerê°€ í•˜ë˜ ì¼
+                                       // í•„ìš”í•˜ë©´ ì—¬ê¸°ì„œ ë°”ë¡œ SetFacing, ë¬´ì /ì¶©ëŒ í”Œë˜ê·¸, ì• ë‹ˆ ì„ íƒ ë¶„ê¸° ë“±
+            _skill = ctx.skill;
+            property.SetFacing(!thrower.isFacingRight);
+        }
+        else
+        {
+            // ì•ˆì „ì¥ì¹˜: ì—†ìœ¼ë©´ ì¦‰ì‹œ ì¤‘ë¦½/ë‹¤ìš´ ë“±ìœ¼ë¡œ ë³µê·€
+            fsm.TransitionTo("Knockdown");
+            return;
+        }
+
         property.isInputEnabled = false;
-        phys.mode = PhysicsMode.Carried; // ThrowState¿¡¼­ followTarget ¼¼ÆÃ
+        phys.mode = PhysicsMode.Carried;
         phys.isGravityOn = false;
 
-        if (thrower == null || thrower.currentSkill == null)
-        {
-            // ¾ÈÀü º¹±¸
-            phys.mode = PhysicsMode.Normal;
-            phys.isGravityOn = true;
-            Transition("Knockdown");
-            return;
-        }
+        // ì‹œì „ìë¥¼ ë°”ë¼ë³´ê²Œ í•˜ê³  ì‹¶ë‹¤ë©´:
+        //if (thrower != null) property.SetFacing(!thrower.isFacingRight);
 
-        if (!TryPlay(property.characterName + "/" + thrower.currentSkill.beingThrownAnimationClipName))
+        // â˜… onCompleteë¡œ í™•ì‹¤íˆ ì¢…ë£Œ(ë‹¤ìš´ ì „ì´) â˜…
+        if (thrower == null || _skill == null ||
+            !TryPlay(thrower.characterName + "/" + _skill.beingThrownAnimationClipName,
+                     () => fsm.TransitionTo("Knockdown")))
         {
-            // Å¬¸³ÀÌ ¾ø¾îµµ ÃÖ¼ÒÇÑ »óÅÂ°¡ ±»Áö ¾Êµµ·Ï
             phys.mode = PhysicsMode.Normal;
             phys.isGravityOn = true;
-            Transition("Knockdown");
-            return;
+            fsm.TransitionTo("Knockdown");
         }
-        phys.Velocity = Vector2.zero;
     }
 
     protected override void OnTick() { }
 
-    // ´øÁ®Áø µÚ(ThrowState¿¡¼­ Carried ÇØÁ¦) °øÁß¿¡ ¶° ÀÖÀ¸¹Ç·Î ³«ÇÏ/´Ù¿îÀ¸·Î ÀÌ¾îÁü
+    // ë˜ì ¸ì§„ ë’¤(ThrowStateì—ì„œ Carried í•´ì œ) ê³µì¤‘ì— ë–  ìˆìœ¼ë¯€ë¡œ ë‚™í•˜/ë‹¤ìš´ìœ¼ë¡œ ì´ì–´ì§
     protected override void OnExit()
     {
         property.isInputEnabled = true;
-        // mode/Áß·ÂÀº ½ÃÀüÀÚ ÂÊ¿¡¼­ ÇØÁ¦ ½ÃÁ¡¿¡ Á¶Á¤
-
-        Transition("Knockdown");
+        // mode/ì¤‘ë ¥ì€ ì‹œì „ì ìª½ì—ì„œ í•´ì œ ì‹œì ì— ì¡°ì •
     }
 }

@@ -125,6 +125,61 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     };
 
+    public List<Transform> throwHoldOffsets = new(); // 손/팔 본 등
+    public Transform GetThrowAnchor(int index)
+    {
+        if (throwHoldOffsets != null && index >= 0 && index < throwHoldOffsets.Count)
+            return throwHoldOffsets[index];
+        return null;
+    }
+
+    // 콤보 유예 프레임 연장 (잡기 연출 동안 콤보가 끊기지 않도록)
+    public void ExtendComboWindow(int extraFrames)
+    {
+        if (currentComboCount > 0)
+            currentComboDropFrame = Mathf.Max(currentComboDropFrame, Time.frameCount + Mathf.Max(1, extraFrames));
+    }
+
+    // (선택) 캐릭터/기술별 투척무적
+    public bool isThrowInvincible;
+    private int throwInvincibleEndFrame = -1;
+    public void GrantThrowInvincible(int frames)
+    {
+        isThrowInvincible = true;
+        throwInvincibleEndFrame = Time.frameCount + Mathf.Max(0, frames);
+    }
+    public void ClearThrowInvincible()
+    {
+        isThrowInvincible = false;
+        throwInvincibleEndFrame = -1;
+    }
+
+    public bool IsThrowableNow()
+    {
+        // 공중 금지
+        if (!phys.isGrounded) return false;
+
+        // 상태 태그 기반 금지 (원하는 만큼 추가)
+        switch (characterStateTag)
+        {
+            case CharacterStateTag.Hit:
+            case CharacterStateTag.Guarding:
+            case CharacterStateTag.Knockdown:
+            case CharacterStateTag.BeingThrown:
+            case CharacterStateTag.Throw:
+            case CharacterStateTag.Jump_Up:
+            case CharacterStateTag.Jump_Forward:
+            case CharacterStateTag.Jump_Backward:
+                return false;
+        }
+
+        // 전역/기술 무적
+        if (isInvincible || isThrowInvincible) return false;
+        if (throwInvincibleEndFrame >= 0 && Time.frameCount <= throwInvincibleEndFrame) return false;
+
+        return true;
+    }
+
     public void ResetCombo()
     {
         currentComboCount = 0;
@@ -319,5 +374,36 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public void ClearParryLock()
     {
         parryLockEndFrame = -1;
+    }
+
+    public struct PendingThrowContext
+    {
+        public CharacterProperty throwerProp;
+        public PhysicsEntity targetPhys;     // 시전자 쪽에만 의미
+        public Skill_SO skill;               // 선택
+        public bool has;
+    }
+
+    public PendingThrowContext pendingThrow;
+
+    public void SetPendingThrowFromAttacker(PhysicsEntity target, Skill_SO s)
+    {
+        pendingThrow.targetPhys = target;
+        pendingThrow.skill = s;
+        pendingThrow.has = true;
+    }
+
+    public void SetPendingThrowFromDefender(CharacterProperty thrower, Skill_SO s)
+    {
+        pendingThrow.throwerProp = thrower;
+        pendingThrow.skill = s;
+        pendingThrow.has = true;
+    }
+
+    public PendingThrowContext ConsumePendingThrow()
+    {
+        var c = pendingThrow;
+        pendingThrow = default; // has=false
+        return c;
     }
 }

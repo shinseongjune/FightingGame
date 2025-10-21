@@ -68,6 +68,8 @@ public class PhysicsEntity : MonoBehaviour
     // 내부: 이전에 등록했던 기본 허트박스 추적용
     private readonly List<BoxComponent> _registeredDefaultHurt = new();
 
+    public Transform followTransform;
+
     void Awake()
     {
         property = GetComponent<CharacterProperty>();
@@ -186,10 +188,24 @@ public class PhysicsEntity : MonoBehaviour
         receiveHits = false;
     }
 
+    public void AttachTo(Transform t, Vector2 offset)
+    {
+        mode = PhysicsMode.Carried;
+        followTransform = t;
+        followTarget = null;
+        followOffset = offset;
+        isGravityOn = false;
+        Velocity = Vector2.zero;
+        isGrounded = false;
+        collisionsEnabled = false;
+        receiveHits = false;
+    }
+
     public void ReleaseFromCarry(bool reenableCollisions, Vector2 launchVelocity)
     {
         mode = PhysicsMode.Normal;
         followTarget = null;
+        followTransform = null; // ★추가★
         isGravityOn = true;
         Velocity = launchVelocity;
         collisionsEnabled = reenableCollisions;

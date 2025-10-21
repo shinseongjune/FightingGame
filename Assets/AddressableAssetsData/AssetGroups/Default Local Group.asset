@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e229b31623cc734d8e29282e9264bc5
+    m_Address: TestMan/TestThrowLaunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4f4c2fe1d6f5db84db554f8c7b1813fd
     m_Address: TestMan/TestCrouchHit
     m_ReadOnly: 0
@@ -107,6 +112,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b4a8902993de514db8ff1f2b151e953
     m_Address: TestMan/TestKnockdownGround
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fa1637a73934434a8dece05a591343d
+    m_Address: TestMan2/TestThrown
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -170,8 +180,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7f296bbb591ebf4fa21c59bad27dd20
+    m_Address: TestMan/TestThrow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a8195ca873700cb42a273c735d7d22f2
     m_Address: Character/TestMan/0
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af9a5278cf49b3247a6cab3c755d59da
+    m_Address: TestMan2/TestThrow
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -207,6 +227,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cde2e82c6e3e3604a8b450033f3501d0
     m_Address: TestMan2/TestCrouchGuard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4bb8983ad81da348bb7ab967d0b7c8d
+    m_Address: TestMan/TestThrown
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

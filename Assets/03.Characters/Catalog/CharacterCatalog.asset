@@ -19,6 +19,9 @@ MonoBehaviour:
     extraClipKeys:
     - TestPunch
     - TestPunch2
+    - TestThrow
+    - TestThrowLaunch
+    - TestThrown
   - characterName: TestMan2
     colorCount: 1
     animSet: {fileID: 11400000, guid: eb40ba13dc586e54b83f09e6b3b6cbae, type: 2}

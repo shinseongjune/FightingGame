@@ -81,6 +81,35 @@ public class KnockdownProfile
     public bool techable = true;
 }
 
+[Serializable]
+public struct ThrowTimeline
+{
+    [Tooltip("피격자 데미지/게이지 적용 프레임(애니 기준 틱 프레임)")]
+    public int impactFrame;
+
+    [Tooltip("피격자를 손에서 놓는 프레임(릴리즈)")]
+    public int releaseFrame;
+
+    [Tooltip("릴리즈 시 최종 발사 속도 (시전자 기준 좌우 부호 적용됨)")]
+    public Vector2 launchVelocity;
+
+    [Tooltip("투척 데미지")]
+    public float damage;
+
+    [Tooltip("릴리즈 이후 다운 여부/히트스턴 프레임 등 필요시 확장")]
+    public int postHitstunFrames;
+    public bool hardKnockdown;
+
+    [Tooltip("따라갈 앵커 인덱스 (CharacterProperty.throwHoldOffsets)")]
+    public int holdAnchorIndex;
+
+    [Tooltip("잡기 연출 동안 콤보 유예를 최소 몇 프레임 보장할지")]
+    public int comboLockFrames;
+
+    [Tooltip("잡기 동안 대상 위치를 본(Transform)에 Attach할지 여부")]
+    public bool useAttachFollow;
+}
+
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
 public class Skill_SO : ScriptableObject
 {
@@ -126,6 +155,9 @@ public class Skill_SO : ScriptableObject
 
     [Header("드라이브 정보")]
     public SkillFlag skillFlag;
+
+    [Header("Throw Timeline")]
+    public ThrowTimeline throwCfg;
 
     //TODO: hit effect, 그냥 이펙트들 등등
 }

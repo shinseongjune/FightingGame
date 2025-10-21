@@ -2798,6 +2798,7 @@ MonoBehaviour:
   fsm: {fileID: 0}
   characterStateTag: 0
   allSkills:
+  - {fileID: 11400000, guid: 476610c941eef5346a3f7148197c1f0b, type: 2}
   - {fileID: 11400000, guid: 1454df90b66a42a40b60344bbcf2cea5, type: 2}
   - {fileID: 11400000, guid: fbe594ae03a37f747a692a52c53432df, type: 2}
   - {fileID: 11400000, guid: 84ff5488c64116640932061430766fc1, type: 2}
@@ -2827,6 +2828,27 @@ MonoBehaviour:
   pendingKnockback: {x: 0, y: 0}
   attackInstanceId: 0
   parryDisableFrame: 0
+  comboKeepFrames: 120
+  comboDamageTable:
+  - 1
+  - 0.9
+  - 0.85
+  - 0.8
+  - 0.75
+  - 0.7
+  - 0.65
+  - 0.6
+  - 0.55
+  - 0.5
+  - 0.45
+  - 0.4
+  - 0.35
+  - 0.3
+  - 0.25
+  - 0.2
+  comboDamageFloor: 0.2
+  throwHoldOffsets: []
+  isThrowInvincible: 0
 --- !u!114 &7833108731215444914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2962,6 +2984,7 @@ MonoBehaviour:
   immovablePushbox: 0
   followTarget: {fileID: 0}
   followOffset: {x: 0, y: 0}
+  followTransform: {fileID: 0}
 --- !u!114 &7207402052335562193
 MonoBehaviour:
   m_ObjectHideFlags: 0

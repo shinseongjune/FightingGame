@@ -167,6 +167,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         // GuardTrigger는 같은 프레임 내 guardTouch 표시용
         bool guardTouch = (kind == PairKind.GuardTrigger);
 
+        if (kind == PairKind.Throw)
+        {
+            // 공중/스턴/다운/무적/기상 등 투척 불가 처리
+            if (defProp == null || !defProp.IsThrowableNow())
+                return; // 투척 이벤트 적재 안함
+        }
+
         _events.Add(new FrameEvent
         {
             kind = kind,
@@ -318,19 +325,23 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     private void ApplyThrow(in FrameEvent ev)
     {
-        // 상태 전이(기존 Throw/BeingThrown 구조에 맞춤)
-        if (ev.defender == _me)
-        {
-            var defFSM = ev.defender.GetComponent<CharacterFSM>();
-            defFSM?.TransitionTo("BeingThrown");
-            (defFSM?.Current as BeingThrownState)?.SetTrower(ev.attacker.property);
-        }
-        else if (ev.attacker == _me)
-        {
-            var atFSM = ev.attacker.GetComponent<CharacterFSM>();
-            atFSM?.TransitionTo("Throw");
-            (atFSM?.Current as ThrowState)?.SetTarget(ev.defender);
-        }
+        // 0) Null 방어
+        if (ev.attacker == null || ev.defender == null) return;
+
+        // 1) 컨텍스트 선주입(전이 전에!)
+        var skill = ev.skill ?? ev.atkProp?.currentSkill;
+        ev.atkProp?.SetPendingThrowFromAttacker(ev.defender, skill);
+        ev.defProp?.SetPendingThrowFromDefender(ev.attacker.property, skill);
+
+        // 2) 양쪽 모두 전이
+        var defFSM = ev.defender.GetComponent<CharacterFSM>();
+        defFSM?.TransitionTo("BeingThrown");      // OnEnter에서 ConsumePendingThrow()
+
+        var atkFSM = ev.attacker.GetComponent<CharacterFSM>();
+        atkFSM?.TransitionTo("Throw");            // OnEnter에서 ConsumePendingThrow()
+
+        // 3) 콤보 유예 보장
+        ev.defProp?.ExtendComboWindow(skill != null ? Mathf.Max(18, skill.throwCfg.comboLockFrames) : 18);
     }
 
     private void ApplyHitOrBlock(in FrameEvent ev)

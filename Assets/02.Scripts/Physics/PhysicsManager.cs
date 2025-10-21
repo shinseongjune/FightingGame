@@ -84,9 +84,10 @@ public class PhysicsManager : Singleton<PhysicsManager>, ITicker
                     break;
 
                 case PhysicsMode.Carried:
-                    if (e.followTarget != null)
+                    if (e.followTransform != null)
+                        e.Position = (Vector2)e.followTransform.position + e.followOffset;
+                    else if (e.followTarget != null)
                         e.Position = e.followTarget.Position + e.followOffset;
-                    // 중력/이동/착지 무시
                     break;
             }
 
