@@ -1,5 +1,5 @@
-﻿// BoxDebugRendererGL.cs
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -190,7 +190,9 @@ public class BoxDebugRendererGL : MonoBehaviour
             // Body/Hurt 기본박스도 보여주고 싶다면 추가 수집
             if (drawBody || drawHurt)
             {
-                var ents = FindObjectsByType<PhysicsEntity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                var ents = BoxManager.Instance != null
+    ? BoxManager.Instance.activeBoxes.Where(b => b && b.owner != null).Select(b => b.owner).Distinct().ToArray()
+    : System.Array.Empty<PhysicsEntity>();
                 foreach (var e in ents)
                 {
                     if (e == null) continue;
@@ -207,7 +209,9 @@ public class BoxDebugRendererGL : MonoBehaviour
         // 2) 비플레이/프리팹/혹은 preferBoxManager=false
         if (currentPoseOnly)
         {
-            var ents = FindObjectsByType<PhysicsEntity>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var ents = BoxManager.Instance != null
+    ? BoxManager.Instance.activeBoxes.Where(b => b && b.owner != null).Select(b => b.owner).Distinct().ToArray()
+    : System.Array.Empty<PhysicsEntity>();
             foreach (var e in ents)
             {
                 if (e == null || e.property == null) continue;
@@ -220,7 +224,9 @@ public class BoxDebugRendererGL : MonoBehaviour
         }
         else
         {
-            var all = FindObjectsByType<BoxComponent>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var all = (Application.isPlaying && BoxManager.Instance != null)
+    ? BoxManager.Instance.activeBoxes.Where(b => b != null).ToArray()
+    : System.Array.Empty<BoxComponent>();
             foreach (var b in all) if (b != null && b.owner != null && Filter(b)) dst.Add(b);
         }
     }

@@ -2685,6 +2685,7 @@ GameObject:
   - component: {fileID: 1230523323767490591}
   - component: {fileID: 7207402052335562193}
   - component: {fileID: -9210745552656042573}
+  - component: {fileID: 8470048051448592775}
   m_Layer: 6
   m_Name: Character_TestMan
   m_TagString: Untagged
@@ -2801,6 +2802,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 476610c941eef5346a3f7148197c1f0b, type: 2}
   - {fileID: 11400000, guid: 1454df90b66a42a40b60344bbcf2cea5, type: 2}
   - {fileID: 11400000, guid: fbe594ae03a37f747a692a52c53432df, type: 2}
+  - {fileID: 11400000, guid: 013f4d4fa60a40549a484a327962b14a, type: 2}
   - {fileID: 11400000, guid: 84ff5488c64116640932061430766fc1, type: 2}
   - {fileID: 11400000, guid: 7fb24bdacce2ee3409d18188cf5e0e64, type: 2}
   currentSkill: {fileID: 0}
@@ -3015,6 +3017,21 @@ MonoBehaviour:
   aiMacro: {fileID: 0}
   replaySource: {fileID: 0}
   replayLoop: 1
+--- !u!114 &8470048051448592775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4757513319682869059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a73eefb2556e7fc42976986ea43c84e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sockets:
+  - name: Right Hand
+    tr: {fileID: 8622790804481584065}
 --- !u!1 &4821643885564524650
 GameObject:
   m_ObjectHideFlags: 0
@@ -3877,7 +3894,8 @@ Transform:
   m_LocalPosition: {x: -0, y: -0.0006303016, z: -0.0016106805}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8622790804481584065}
   m_Father: {fileID: 390304425978405181}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1610411245129608014
@@ -4745,6 +4763,37 @@ Transform:
   - {fileID: 7817650911281218643}
   m_Father: {fileID: 6956267904458420023}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8454741406645454897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8622790804481584065}
+  m_Layer: 6
+  m_Name: Right Hand
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8622790804481584065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8454741406645454897}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.60801214, y: 1.25, z: -0.02200003}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2585972248874712514}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &8478214433707745132
 GameObject:
   m_ObjectHideFlags: 0

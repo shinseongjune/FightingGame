@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class BoxPresetApplier : MonoBehaviour
 {
@@ -95,7 +96,7 @@ public class BoxPresetApplier : MonoBehaviour
     private void SpawnBox(BoxLifetime life, int lifeIndex)
     {
         if (life.incrementAttackInstance)
-            property.attackInstanceId++;
+            property.attackInstanceId = CharacterProperty.NextAttackInstanceId();
 
         // 박스 생성부: 타입/사이즈/오프셋 등은 프로젝트 규약에 맞춰 작성
         var go = new GameObject($"Box_{life.type}");

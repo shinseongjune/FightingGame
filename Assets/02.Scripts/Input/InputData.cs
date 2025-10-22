@@ -31,8 +31,8 @@ public struct InputData
 {
     public Direction direction;
     public AttackKey attack;
-    [HideInInspector] public int backCharge;
-    [HideInInspector] public int downCharge;
+    public int backCharge;
+    public int downCharge;
 
     [HideInInspector] public bool isUsed;
 

@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class SkillPerformState : CharacterState
 {
     private Skill_SO skill;
@@ -11,6 +13,8 @@ public class SkillPerformState : CharacterState
     // 필요하면 Skill_SO에 창(window) 데이터를 넣어와도 됨.
     private int cancelStartFrame = 0;   // 예: 0이면 즉시 불가
     private int cancelEndFrame = 999; // 충분히 크게
+
+    private int _lastSpawnCheckedFrame = -1;
 
     public SkillPerformState(CharacterFSM f) : base(f) { }
 
@@ -33,7 +37,7 @@ public class SkillPerformState : CharacterState
             property.isRushCanceled = false;
         }
 
-        property.attackInstanceId++;
+        property.attackInstanceId = CharacterProperty.NextAttackInstanceId();
 
         finished = false;
 
@@ -69,11 +73,25 @@ public class SkillPerformState : CharacterState
 
         wasGrounded = phys.isGrounded;
 
-        // 1) 캔슬 타이밍 열기(프레임 기반 샘플)
+        // 캔슬 타이밍 열기(프레임 기반 샘플)
         int f = anim.CurrentClipFrame;
         property.isSkillCancelable = (f >= cancelStartFrame && f <= cancelEndFrame);
 
-        // 2) 히트캔슬 or 일반 캔슬 입력
+        // 투사체 스폰 처리(한 프레임에 여러 개도 처리)
+        if (skill != null && skill.spawnsProjectiles && skill.projectileSpawns != null)
+        {
+            for (int i = 0; i < skill.projectileSpawns.Length; ++i)
+            {
+                var ev = skill.projectileSpawns[i];
+                if (ev.frame > _lastSpawnCheckedFrame && ev.frame <= f)
+                {
+                    SpawnProjectile(ev);
+                }
+            }
+            _lastSpawnCheckedFrame = f;
+        }
+
+        // 히트캔슬 or 일반 캔슬 입력
         if (!finished && property.isSkillCancelable)
         {
             if (TryStartSkill())     // 입력 인식되면 다음 스킬로 캔슬
@@ -132,5 +150,35 @@ public class SkillPerformState : CharacterState
         { Transition("Crouch"); return; }
 
         Transition("Idle");
+    }
+
+    private void SpawnProjectile(ProjectileSpawnEvent ev)
+    {
+        if (ev.prefab == null) return;
+
+        // 소켓 찾기
+        Transform spawnTr = null;
+        var sockets = go.GetComponent<CharacterSockets>();
+        if (sockets != null && !string.IsNullOrEmpty(ev.socketName))
+            spawnTr = sockets.Find(ev.socketName);
+
+        Vector3 basePos = (spawnTr != null ? spawnTr.position : tr.position);
+        Quaternion rot = Quaternion.identity;
+
+        var projGo = Object.Instantiate(ev.prefab, basePos + ev.localOffset, rot);
+        var proj = projGo.GetComponent<ProjectileController>();
+        if (proj == null)
+        {
+            Debug.LogWarning("[Projectile] Prefab에 ProjectileController가 필요합니다.");
+            Object.Destroy(projGo);
+            return;
+        }
+
+        // 초기화
+        proj.Init(property, ev, property.isFacingRight, skill);
+
+        // (선택) 오브젝트 관리
+        if (property.projectiles != null)
+            property.projectiles.Add(projGo);
     }
 }

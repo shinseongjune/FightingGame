@@ -153,6 +153,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         var defProp = def.GetComponent<CharacterProperty>();
         if (atkProp == null || defProp == null) return;
 
+        var atkProjCtrl = atkProp.GetComponent<ProjectileController>();
+        if (atkProjCtrl != null && atkProjCtrl.OwnerProp == defProp)
+        {
+            // 내가 쏜 투사체가 나(혹은 소유자)를 치면 무시
+            return;
+        }
+
         // 방향(+1/-1): 공격자 페이싱 기준
         float dir = atkProp.isFacingRight ? +1f : -1f;
 
@@ -386,10 +393,34 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         }
         else
         {
+            var atkProj = ev.atkProp != null ? ev.atkProp.GetComponent<ProjectileController>() : null;
+            if (atkProj != null)
+            {
+                if (!atkProj.CanHit(ev.defProp))
+                {
+                    // 이 프레임은 같은 대상 재히트 금지
+                    // (푸시/가드스파크 등도 스킵하려면 여기서 return; 혹은 아래 로직 분기)
+                    return;
+                }
+            }
+
             // 히트 시
             if (ev.damage > 0f)
             {
-                int attackerId = (ev.attacker != null) ? ev.attacker.GetInstanceID() : 0;
+                // ── 투사체 소유자 기준으로 콤보 귀속 ──
+                int attackerId = 0;
+
+                if (atkProj != null && atkProj.OwnerProp != null)
+                {
+                    // 투사체 오브젝트가 아니라, “투사체 소유자 캐릭터”로 콤보 묶기
+                    attackerId = atkProj.OwnerProp.gameObject.GetInstanceID();
+                }
+                else
+                {
+                    // 평범한 근접공격 등 투사체가 아닐 때는 기존대로
+                    attackerId = (ev.attacker != null) ? ev.attacker.GetInstanceID() : 0;
+                }
+
                 float finalDamage = ev.defProp.RegisterComboAndScaleDamage(attackerId, ev.damage);
                 ev.defProp.ApplyDamage(finalDamage);
             }
@@ -434,6 +465,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         if (!blocked && ev.skill != null && ev.skill.knockdown.mode != KnockdownMode.None)
         {
             ApplyKnockdown(ev.defender, ev.defProp, ev.skill);
+        }
+
+        var attackProj = ev.atkProp.GetComponent<ProjectileController>();
+        if (attackProj != null)
+        {
+            if (!blocked) attackProj.OnDealtHit(ev.defProp);
+            else attackProj.OnBlocked(ev.defProp);
         }
     }
 

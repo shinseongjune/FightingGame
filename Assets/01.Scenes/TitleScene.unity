@@ -715,12 +715,14 @@ MonoBehaviour:
       costumeId: 
       controlSchemeId: 
       isCpu: 0
+      isDummy: 0
     p2:
       playerId: 2
       characterId: 
       costumeId: 
       controlSchemeId: 
       isCpu: 0
+      isDummy: 0
     roundsToWin: 2
     roundTimerSec: 99
   lastResult:

@@ -66,10 +66,8 @@ public class CharacterRootTicker : MonoBehaviour, ITicker
         var myPhys = GetComponent<PhysicsEntity>();
         if (myPhys == null) return;
 
-        // 상대 찾기(2인 가정)
-        CharacterProperty enemy = null;
-        foreach (var c in GameObject.FindObjectsByType<CharacterProperty>(FindObjectsSortMode.None))
-            if (c != me) { enemy = c; break; }
+        // 상대 찾기
+        CharacterProperty enemy = BattleManager.I != null ? BattleManager.I.GetOpponentOf(me) : null;
         if (enemy == null) return;
 
         var enPhys = enemy.GetComponent<PhysicsEntity>();

@@ -170,6 +170,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a14bcfaa6febdcd4aad9446e1d8aca54
+    m_Address: TestMan/TestHadokenLaunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a4d87e2fb6276164882f6c3a0af039d3
     m_Address: TestMan/TestPunch2
     m_ReadOnly: 0

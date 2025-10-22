@@ -110,6 +110,37 @@ public struct ThrowTimeline
     public bool useAttachFollow;
 }
 
+[Serializable]
+public struct ProjectileSpawnEvent
+{
+    [Tooltip("이 애니메이션 프레임(clip.frameRate 기준)에 스폰")]
+    public int frame;
+
+    [Tooltip("스폰할 프리팹(ProjectileController가 달려있어야 함)")]
+    public GameObject prefab;
+
+    [Tooltip("캐릭터 소켓 이름(없으면 빈 문자열)")]
+    public string socketName;
+
+    [Tooltip("소켓(또는 루트) 기준 로컬 오프셋")]
+    public Vector3 localOffset;
+
+    [Tooltip("초기 속도(캐릭터 페이싱을 기준으로 좌우 반전 처리됨)")]
+    public Vector2 initialVelocity;
+
+    [Tooltip("중력 스케일(0이면 중력 없음)")]
+    public float gravityScale;
+
+    [Tooltip("생존 시간(초). 0 이하면 무한, 별도 조건으로 제거")]
+    public float lifeTimeSec;
+
+    [Tooltip("투사체가 사용할 Skill(히트 수치/박스 타임라인 포함). 없으면 시전자 currentSkill을 사용")]
+    public Skill_SO projectileSkill;
+
+    [Tooltip("히트 시 파괴할지 여부")]
+    public bool destroyOnHit;
+}
+
 [CreateAssetMenu(fileName = "New Skill", menuName = "SO/Skill")]
 public class Skill_SO : ScriptableObject
 {
@@ -158,6 +189,10 @@ public class Skill_SO : ScriptableObject
 
     [Header("Throw Timeline")]
     public ThrowTimeline throwCfg;
+
+    [Header("Projectile")]
+    public bool spawnsProjectiles;
+    public ProjectileSpawnEvent[] projectileSpawns;
 
     //TODO: hit effect, 그냥 이펙트들 등등
 }

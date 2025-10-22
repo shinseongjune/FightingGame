@@ -33,6 +33,12 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour, ITicker
 {
+    private static int _attackInstanceSeq = 1; // 0은 피하고, match 시작 시 1부터
+    public static int NextAttackInstanceId()
+    {
+        return unchecked(++_attackInstanceSeq);
+    }
+
     private TickMaster _tm;
 
     public string characterName;
@@ -268,7 +274,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public void Tick()
     {
-        if (fsm.Current != fsm.GetState<DriveParryState>("DriveParry"))
+        if (fsm?.Current != fsm?.GetState<DriveParryState>("DriveParry"))
         {
             parryDisableFrame = Mathf.Max(0, parryDisableFrame - 1);
         }

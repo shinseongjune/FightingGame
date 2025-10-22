@@ -1,7 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager I { get; private set; }
+
+    [Header("Active Fighters (only real players, no projectiles)")]
+    public CharacterProperty player1;   // P1
+    public CharacterProperty player2;   // P2
+
     [SerializeField] private Transform stageRoot;
     [SerializeField] private Transform p1Spawn;
     [SerializeField] private Transform p2Spawn;
@@ -18,9 +25,39 @@ public class BattleManager : MonoBehaviour
 
     private void Awake()
     {
+        if (I != null && I != this) { Destroy(gameObject); return; }
+        I = this;
+
         Time.timeScale = 1f;
         GameManager.Instance.actions.Player.Enable();
         GameManager.Instance.actions.Select.Disable();
+    }
+
+    // === 등록/해제 ===
+    public void RegisterFighter(CharacterProperty prop, int slot /* 1 or 2 */)
+    {
+        if (prop == null) return;
+        if (slot == 1) player1 = prop;
+        else player2 = prop;
+    }
+    public void UnregisterFighter(CharacterProperty prop)
+    {
+        if (player1 == prop) player1 = null;
+        if (player2 == prop) player2 = null;
+    }
+
+    // === 조회 헬퍼 ===
+    public CharacterProperty GetOpponentOf(CharacterProperty me)
+    {
+        if (me == null) return null;
+        if (player1 == me) return player2;
+        return player1;
+    }
+
+    public IEnumerable<CharacterProperty> EnumerateFighters()
+    {
+        if (player1 != null) yield return player1;
+        if (player2 != null) yield return player2;
     }
 
     void Start()
@@ -37,6 +74,10 @@ public class BattleManager : MonoBehaviour
 
         var p1Prop = p1GO.GetComponent<CharacterProperty>();
         var p2Prop = p2GO.GetComponent<CharacterProperty>();
+
+        RegisterFighter(p1Prop, 1);
+        RegisterFighter(p2Prop, 2);
+
         p1Prop?.SpawnAt(p1Spawn.position, true);
         p2Prop?.SpawnAt(p2Spawn.position, false);
 
