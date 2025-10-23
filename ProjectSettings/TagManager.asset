@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI_Back
+    uniqueID: 1333773837
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

@@ -153,6 +153,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         var defProp = def.GetComponent<CharacterProperty>();
         if (atkProp == null || defProp == null) return;
 
+        if (defProp.isInvincible) return;
+
         var atkProjCtrl = atkProp.GetComponent<ProjectileController>();
         if (atkProjCtrl != null && atkProjCtrl.OwnerProp == defProp)
         {

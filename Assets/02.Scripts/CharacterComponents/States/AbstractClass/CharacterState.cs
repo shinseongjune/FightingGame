@@ -217,4 +217,9 @@ public abstract class CharacterState
         }
         return false;
     }
+
+    public virtual void OnForceTerminate()
+    {
+        // TODO: 파티클/ 사운드 등 정리
+    }
 }

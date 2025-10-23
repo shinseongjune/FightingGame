@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public enum CharacterStateTag
 {
@@ -116,6 +117,13 @@ public class CharacterProperty : MonoBehaviour, ITicker
     [NonSerialized] public int currentComboDropFrame = -1;
     [NonSerialized] public int lastAttackerId = 0;      // 공격자 InstanceID
 
+    public bool HasStoodUpAfterKnockdown { get; private set; }  // 정착 완료 신호
+    bool _postRoundSettle;                                      // 정착 모드 플래그
+    float _settleFallSpeed;                                     // 강제 낙하 목표속도
+    float _snapEps;                                             // 지면 스냅 오차
+    bool _autoStandOnLand;                                      // 착지 시 자동 기상
+    public bool IsPostRoundSettling { get; private set; }
+
     static readonly HashSet<CharacterStateTag> NeutralTagsForComboDrop = new()
     {
         CharacterStateTag.Idle,
@@ -132,6 +140,69 @@ public class CharacterProperty : MonoBehaviour, ITicker
     };
 
     public List<Transform> throwHoldOffsets = new(); // 손/팔 본 등
+
+    public void BeginPostRoundSettle(float fastFallY, float snapEps)
+    {
+        IsPostRoundSettling = true;
+        _postRoundSettle = true;
+        _autoStandOnLand = true;
+        _settleFallSpeed = Mathf.Abs(fastFallY);
+        _snapEps = Mathf.Max(0.001f, snapEps);
+        HasStoodUpAfterKnockdown = false;
+
+        isInputEnabled = false;
+        fsm?.CancelAllBufferedRequests();
+
+        if (phys != null)
+        {
+            phys.mode = PhysicsMode.Normal;
+            phys.isGravityOn = true;
+
+            if (!phys.isGrounded)
+            {
+                var v = phys.Velocity;
+                if (v.y > -_settleFallSpeed) v.y = -_settleFallSpeed;
+                v.x *= 0.4f;
+                phys.Velocity = v;
+            }
+        }
+    }
+
+    public void TickPostRoundSettle()
+    {
+        if (!_postRoundSettle || phys == null) return;
+
+        // 지면 스냅(지면과 매우 가까우면 박자 맞춰 딱 서게)
+        if (!phys.isGrounded && phys.Position.y <= _snapEps)
+        {
+            phys.Position.y = 0;
+            phys.Velocity.y = 0;
+            phys.isGrounded = true;
+        }
+
+        // 착지 순간 처리
+        if (phys.isGrounded)
+        {
+            // 넉다운/히트/공중상태 등 무엇이든 → 서 있는 상태로 정리
+            if (_autoStandOnLand)
+            {
+                ForceStandUpImmediately();
+                _autoStandOnLand = false;
+                HasStoodUpAfterKnockdown = true; // ★ 정착 완료 신호
+            }
+        }
+    }
+
+    public void ForceStandUpImmediately()
+    {
+        if (fsm == null) return;
+
+        // 만약 Knockdown/BeingThrown/Hitstun 같은 반응 계열이면 강제 종료
+        fsm.ForceExitReactionStates(); // 없으면 아래처럼 상태 전이 직접 구현
+
+        fsm.RequestTransition("WakeUp");
+    }
+
     public Transform GetThrowAnchor(int index)
     {
         if (throwHoldOffsets != null && index >= 0 && index < throwHoldOffsets.Count)
@@ -274,6 +345,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public void Tick()
     {
+        TickPostRoundSettle();
+
         if (fsm?.Current != fsm?.GetState<DriveParryState>("DriveParry"))
         {
             parryDisableFrame = Mathf.Max(0, parryDisableFrame - 1);

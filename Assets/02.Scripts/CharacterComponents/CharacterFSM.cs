@@ -155,4 +155,32 @@ public class CharacterFSM : MonoBehaviour
             _isTransitioning = false;
         }
     }
+
+    public void ForceExitReactionStates()
+    {
+        // 상태 키/태그는 프로젝트에 맞게 조정
+        TryAbortIfCurrentIs("HitGroundState");
+        TryAbortIfCurrentIs("HitAirState");
+        TryAbortIfCurrentIs("KnockdownState");
+        TryAbortIfCurrentIs("HardKnockdownState");
+        TryAbortIfCurrentIs("BeingThrownState");
+        TryAbortIfCurrentIs("BlockstunState");
+        // 등등…
+    }
+
+    void TryAbortIfCurrentIs(string stateKey)
+    {
+        if (Current?.Name == stateKey)
+        {
+            Current?.OnForceTerminate(); // 없으면 그냥 Exit()
+            TransitionTo("Idle");
+        }
+    }
+
+    public void CancelAllBufferedRequests()
+    {
+        _isTransitioning = false;
+        _pendingKey = null;
+        _hasPending = false;
+    }
 }

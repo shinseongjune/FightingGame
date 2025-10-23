@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,6 +39,12 @@ public class RoundController : MonoBehaviour, ITicker
 
     bool inited;
 
+    [SerializeField] float settleFastFallY = 12f;  // 공중이면 이 속도로 빠르게 내려오게
+    [SerializeField] float groundSnapEps = 0.08f;  // 지면 스냅 허용 오차
+    [SerializeField] int maxSettleTicks = 180;     // 안전장치(3초 @60fps)
+
+    bool _postRoundSettling;
+
     // ====== 공개 API ======
     public void BindFighters(CharacterProperty p1Prop, CharacterProperty p2Prop)
     {
@@ -68,7 +75,7 @@ public class RoundController : MonoBehaviour, ITicker
         NextRound();
     }
 
-    private System.Collections.IEnumerator Co_DeferBegin()
+    private IEnumerator Co_DeferBegin()
     {
         yield return WaitFor.TickMasterReady();
         BeginMatch();
@@ -154,6 +161,7 @@ public class RoundController : MonoBehaviour, ITicker
 
         // 입력/물리 잠금 + 준비 연출
         LockInputsAndPhysics(true);
+        SetInvincibleBoth(true);
         PlayRoundIntroIfAny();
 
         OnRoundStart?.Invoke(roundIndex);
@@ -169,6 +177,7 @@ public class RoundController : MonoBehaviour, ITicker
         // 둘 다 뉴트럴로
         ForceIdleBoth();
 
+        SetInvincibleBoth(false);
         phase = Phase.Fighting;
     }
 
@@ -185,15 +194,71 @@ public class RoundController : MonoBehaviour, ITicker
 
         // 입력/물리 잠금 + KO/승리 연출
         LockInputsAndPhysics(true);
+        SetInvincibleBoth(true);
+        //DespawnAllProjectiles();
+
+        _postRoundSettling = true;
+        StartCoroutine(WaitForBothIdleThenPose(winnerSlot));
+    }
+
+    IEnumerator WaitForBothIdleThenPose(int winnerSlot)
+    {
+        // KO 직후 빠른 낙하 + 자동기상 모드 지시 (한 번만)
+        p1?.BeginPostRoundSettle(settleFastFallY, groundSnapEps);
+        p2?.BeginPostRoundSettle(settleFastFallY, groundSnapEps);
+
+        int guardTicks = 0;
+        while (!(IsIdleAndGrounded(p1) && IsIdleAndGrounded(p2)) && guardTicks++ < maxSettleTicks)
+            yield return null;
+
+        _postRoundSettling = false;
+
+        // ★ 여기서만 포즈 진입 허용
         PlayKoOrWinPose(winnerSlot);
 
+        // KO 프리즈/타이머도 포즈 시작 시점에만
         postFreezeRemain = Mathf.Max(0, R.koFreezeTicks);
+    }
+
+    bool IsIdleAndGrounded(CharacterProperty prop)
+    {
+        if (prop == null) return true;
+        // Idle 태그/키는 프로젝트에 맞게 교체
+        bool isIdle = prop.fsm?.Current.StateTag == CharacterStateTag.Idle
+                   || prop.fsm?.Current.Name == "IdleState";
+        return prop.phys.isGrounded && isIdle;
+    }
+
+    IEnumerator SettleBothThenPose(int winnerSlot)
+    {
+        // ★ 각 캐릭터에게 “정착 모드” 지시
+        if (p1 != null) p1.BeginPostRoundSettle(settleFastFallY, groundSnapEps);
+        if (p2 != null) p2.BeginPostRoundSettle(settleFastFallY, groundSnapEps);
+
+        // ★ 둘 다 "착지 완료 + 기상 완료" 대기
+        int guardTicks = 0;
+        while (!(IsSettled(p1) && IsSettled(p2)) && guardTicks++ < maxSettleTicks)
+            yield return null; // 다음 프레임
+
+        // ★ 정착 완료 → 포즈 재생으로 전환
+        PlayKoOrWinPose(winnerSlot);
+
+        // KO 연출 타이머 등 기존 PostRound 진행
+        postFreezeRemain = Mathf.Max(0, R.koFreezeTicks);
+    }
+
+    bool IsSettled(CharacterProperty prop)
+    {
+        if (prop == null) return true;
+        return prop.phys.isGrounded && prop.HasStoodUpAfterKnockdown; // ★ 아래 2) 참고
     }
 
     void EndMatch()
     {
         phase = Phase.MatchEnd;
         LockInputsAndPhysics(true);
+        SetInvincibleBoth(true);
+        //DespawnAllProjectiles();
 
         int winner = (p1RoundsWon > p2RoundsWon) ? 1 :
                      (p2RoundsWon > p1RoundsWon) ? 2 : 0;
@@ -328,5 +393,18 @@ public class RoundController : MonoBehaviour, ITicker
         var forced = fsm.GetComponent<ForcedAnimationStateBridge>();
         
         if (forced) forced.PlayOnce(clipKey);
+    }
+
+    void SetInvincibleBoth(bool v)
+    {
+        if (p1 != null) p1.isInvincible = v;
+        if (p2 != null) p2.isInvincible = v;
+    }
+
+    void DespawnAllProjectiles()
+    {
+        var projs = FindObjectsByType<ProjectileController>(FindObjectsSortMode.None);
+        foreach (var prj in projs)
+            prj.Despawn();
     }
 }
