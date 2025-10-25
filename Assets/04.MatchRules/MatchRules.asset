@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MatchRules
   m_EditorClassIdentifier: 
   data:
-    roundTimerSeconds: 10
+    roundTimerSeconds: 30
     winTarget: 2
     preRoundFreezeTicks: 45
     koFreezeTicks: 60

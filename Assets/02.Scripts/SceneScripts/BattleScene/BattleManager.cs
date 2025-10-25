@@ -18,6 +18,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private HPBar hpBar_p2;
     [SerializeField] private DriveBar driveBar_p1;
     [SerializeField] private DriveBar driveBar_p2;
+    [SerializeField] private SABar saBar_p1;
+    [SerializeField] private SABar saBar_p2;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -71,7 +73,6 @@ public class BattleManager : MonoBehaviour
         p1GO = CharacterLibrary.Instance.Instantiate(p1Key, p1Spawn.position, p1Spawn.rotation);
         p2GO = CharacterLibrary.Instance.Instantiate(p2Key, p2Spawn.position, p2Spawn.rotation);
 
-
         var p1Prop = p1GO.GetComponent<CharacterProperty>();
         var p2Prop = p2GO.GetComponent<CharacterProperty>();
 
@@ -95,6 +96,8 @@ public class BattleManager : MonoBehaviour
         driveBar_p1.SetCharacter(p1Prop);
         driveBar_p2.SetCharacter(p2Prop);
 
+        saBar_p1.SetCharacter(p1Prop);
+        saBar_p2.SetCharacter(p2Prop);
     }
 
     private System.Collections.IEnumerator Co_BeginAfterReady()
