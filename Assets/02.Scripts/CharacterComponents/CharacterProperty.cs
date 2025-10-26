@@ -116,6 +116,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     [NonSerialized] public int currentComboStartFrame = -1;
     [NonSerialized] public int currentComboDropFrame = -1;
     [NonSerialized] public int lastAttackerId = 0;      // 공격자 InstanceID
+    public Action OnComboChanged;
 
     public bool HasStoodUpAfterKnockdown { get; private set; }  // 정착 완료 신호
     bool _postRoundSettle;                                      // 정착 모드 플래그
@@ -264,6 +265,8 @@ public class CharacterProperty : MonoBehaviour, ITicker
         currentComboStartFrame = -1;
         currentComboDropFrame = -1;
         lastAttackerId = 0;
+
+        OnComboChanged?.Invoke();
     }
 
     public void ForceDropCombo() => ResetCombo();
@@ -310,11 +313,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
         float scaled = baseDamage * scale;
         currentComboDamage += Mathf.Max(0f, scaled);
 
-        //TODO: 임시 콤보 로그. 추후 제대로된 HUD 연동 필요
-        if (currentComboCount >= 2)
-        {
-            Debug.Log($"[{name}] Combo x{currentComboCount} | Total Damage: {currentComboDamage:F1}");
-        }
+        OnComboChanged?.Invoke();
 
         return scaled;
     }

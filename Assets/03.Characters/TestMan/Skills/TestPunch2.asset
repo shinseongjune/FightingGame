@@ -30,21 +30,25 @@ MonoBehaviour:
       backCharge: 0
       downCharge: 0
       isUsed: 0
+      tick: 0
     - direction: 7
       attack: 0
       backCharge: 0
       downCharge: 0
       isUsed: 0
+      tick: 0
     - direction: 3
       attack: 0
       backCharge: 0
       downCharge: 0
       isUsed: 0
+      tick: 0
     - direction: 0
       attack: 1
       backCharge: 0
       downCharge: 0
       isUsed: 0
+      tick: 0
     isStrict: 0
     maxFrameGap: 15
   damageOnHit: 800
@@ -65,8 +69,8 @@ MonoBehaviour:
     slideDistance: 0
     slideDurationFrames: 8
     techable: 1
-  driveGaugeChargeAmount: 0
-  saGaugeChargeAmount: 0
+  driveGaugeChargeAmount: 30
+  saGaugeChargeAmount: 45
   hitLevel: 0
   animationClipName: TestPunch2
   boxLifetimes:
@@ -81,3 +85,15 @@ MonoBehaviour:
   throwAnimationClipName: 
   beingThrownAnimationClipName: 
   skillFlag: 0
+  throwCfg:
+    impactFrame: 0
+    releaseFrame: 0
+    launchVelocity: {x: 0, y: 0}
+    damage: 0
+    postHitstunFrames: 0
+    hardKnockdown: 0
+    holdAnchorIndex: 0
+    comboLockFrames: 0
+    useAttachFollow: 0
+  spawnsProjectiles: 0
+  projectileSpawns: []

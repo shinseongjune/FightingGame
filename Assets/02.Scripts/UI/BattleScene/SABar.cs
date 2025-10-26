@@ -26,7 +26,14 @@ public class SABar : MonoBehaviour
         {
             int textValue = Mathf.FloorToInt(character.saGauge / 100);
             text.text = $"{textValue:0}";
-            slider.value = character.saGauge % 100 / 100;
+            if (textValue == 3)
+            {
+                slider.value = 1f;
+            }
+            else
+            {
+                slider.value = character.saGauge % 100 / 100;
+            }
         }
     }
 }

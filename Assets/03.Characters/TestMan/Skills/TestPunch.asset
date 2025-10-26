@@ -51,8 +51,8 @@ MonoBehaviour:
     slideDistance: 0
     slideDurationFrames: 8
     techable: 1
-  driveGaugeChargeAmount: 0
-  saGaugeChargeAmount: 0
+  driveGaugeChargeAmount: 10
+  saGaugeChargeAmount: 15
   hitLevel: 0
   animationClipName: TestPunch
   boxLifetimes:
@@ -67,3 +67,15 @@ MonoBehaviour:
   throwAnimationClipName: 
   beingThrownAnimationClipName: 
   skillFlag: 0
+  throwCfg:
+    impactFrame: 0
+    releaseFrame: 0
+    launchVelocity: {x: 0, y: 0}
+    damage: 0
+    postHitstunFrames: 0
+    hardKnockdown: 0
+    holdAnchorIndex: 0
+    comboLockFrames: 0
+    useAttachFollow: 0
+  spawnsProjectiles: 0
+  projectileSpawns: []

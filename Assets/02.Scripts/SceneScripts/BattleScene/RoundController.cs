@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class RoundController : MonoBehaviour, ITicker
 {
+    [SerializeField] WinMarks winMarks;
+
     private TickMaster _tm;
 
     public event Action<int> OnRoundStart;        // roundIndex (1..)
@@ -72,6 +74,8 @@ public class RoundController : MonoBehaviour, ITicker
         inited = true;
 
         TickMaster.Instance.Register(this);
+
+        winMarks?.Init(roundsToWin);
         NextRound();
     }
 
@@ -167,6 +171,8 @@ public class RoundController : MonoBehaviour, ITicker
         OnRoundStart?.Invoke(roundIndex);
         OnTimerChanged?.Invoke(remainTime);
         OnRoundCountChanged?.Invoke(p1RoundsWon, p2RoundsWon);
+
+        winMarks?.UpdateWinCount(p1RoundsWon, p2RoundsWon);
     }
 
     void StartFighting()

@@ -20,6 +20,8 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private DriveBar driveBar_p2;
     [SerializeField] private SABar saBar_p1;
     [SerializeField] private SABar saBar_p2;
+    [SerializeField] private Combos combos_p1;
+    [SerializeField] private Combos combos_p2;
 
     GameObject stageGO, p1GO, p2GO;
 
@@ -98,6 +100,11 @@ public class BattleManager : MonoBehaviour
 
         saBar_p1.SetCharacter(p1Prop);
         saBar_p2.SetCharacter(p2Prop);
+
+        combos_p1.BindCharacter(p1Prop);
+        combos_p2.BindCharacter(p2Prop);
+        combos_p1.Init();
+        combos_p2.Init();
     }
 
     private System.Collections.IEnumerator Co_BeginAfterReady()
