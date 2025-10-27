@@ -59,8 +59,6 @@ public class CharacterFSM : MonoBehaviour
         if (!statePool.TryGetValue(key, out var nextState) || nextState == null)
             return;
 
-        if (currentState == nextState) return;
-
         // 상태별 박스 초기화(히트/허트/트리거 등)
         boxPresetApplier?.ClearAllBoxes();
 
@@ -79,7 +77,7 @@ public class CharacterFSM : MonoBehaviour
     /// </summary>
     public void TransitionTo(CharacterState nextState)
     {
-        if (nextState == null || currentState == nextState) return;
+        if (nextState == null) return;
 
         boxPresetApplier?.ClearAllBoxes();
 
@@ -129,7 +127,7 @@ public class CharacterFSM : MonoBehaviour
 
     private void DoTransition(string key)
     {
-        if (Current != null && Current == statePool[key]) return;   // 동일상태 전이 무시
+        if (Current != null) return;   // 동일상태 전이 무시
 
         if (_isTransitioning) return; // 이중진입 방지
         _isTransitioning = true;

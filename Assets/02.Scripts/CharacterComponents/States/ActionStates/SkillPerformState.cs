@@ -57,7 +57,6 @@ public class SkillPerformState : CharacterState
             return;
         }
 
-        property.isInputEnabled = false;
         property.isSkillCancelable = false;
         property.isDriveGaugeCharging = false;
 
@@ -102,7 +101,6 @@ public class SkillPerformState : CharacterState
     protected override void OnExit()
     {
         // 상태 빠져나갈 때 입력 잠금 해제
-        property.isInputEnabled = true;
         property.isSkillCancelable = false;
         property.currentSkill = null;
         property.isDriveGaugeCharging = true;

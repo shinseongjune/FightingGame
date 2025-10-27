@@ -328,6 +328,10 @@ public class RoundController : MonoBehaviour, ITicker
         // 필요하면 박스/리졸버 초기화도 추가
         var bpa1 = p1.GetComponent<BoxPresetApplier>(); bpa1?.ClearAllBoxes();
         var bpa2 = p2.GetComponent<BoxPresetApplier>(); bpa2?.ClearAllBoxes();
+
+        // 드라이브 게이지 초기화
+        p1.ResetDriveForNewRound();
+        p2.ResetDriveForNewRound();
     }
 
     void ForceIdleBoth()

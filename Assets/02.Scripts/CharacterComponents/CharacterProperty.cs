@@ -484,4 +484,11 @@ public class CharacterProperty : MonoBehaviour, ITicker
         pendingThrow = default; // has=false
         return c;
     }
+
+    public void ResetDriveForNewRound()
+    {
+        isExhausted = false;
+        driveGauge = maxDriveGauge;
+        isDriveGaugeCharging = true;
+    }
 }

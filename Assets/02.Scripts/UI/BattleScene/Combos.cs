@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Combos : MonoBehaviour
 {
-    private CharacterProperty property;
+    [SerializeField] private CharacterProperty property;
     private TextMeshProUGUI text;
 
     private void Awake()

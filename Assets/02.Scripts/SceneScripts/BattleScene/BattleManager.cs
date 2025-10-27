@@ -101,8 +101,8 @@ public class BattleManager : MonoBehaviour
         saBar_p1.SetCharacter(p1Prop);
         saBar_p2.SetCharacter(p2Prop);
 
-        combos_p1.BindCharacter(p1Prop);
-        combos_p2.BindCharacter(p2Prop);
+        combos_p1.BindCharacter(p2Prop);
+        combos_p2.BindCharacter(p1Prop);
         combos_p1.Init();
         combos_p2.Init();
     }
