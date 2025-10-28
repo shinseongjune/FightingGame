@@ -46,6 +46,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public PhysicsEntity phys;
     public CharacterFSM fsm;
+    public InputBuffer input;
 
     public CharacterStateTag characterStateTag;
 
@@ -323,6 +324,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     {
         phys = GetComponent<PhysicsEntity>();
         fsm = GetComponent<CharacterFSM>();
+        input = GetComponent<InputBuffer>();
     }
 
     private void Start()

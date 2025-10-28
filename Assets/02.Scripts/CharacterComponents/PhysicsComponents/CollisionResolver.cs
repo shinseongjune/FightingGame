@@ -28,6 +28,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
     #region Types
     enum PairKind { None, Hit, Throw, GuardTrigger }
 
+    enum GuardIntent { None, Stand, Crouch }
+
     struct FrameEvent
     {
         public PairKind kind;
@@ -153,14 +155,21 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         var defProp = def.GetComponent<CharacterProperty>();
         if (atkProp == null || defProp == null) return;
 
-        if (defProp.isInvincible) return;
+        // --- [무적류 선제 필터] ---
+        // 1) 전신 무적
+        if (defProp != null && defProp.isInvincible) return;
 
-        var atkProjCtrl = atkProp.GetComponent<ProjectileController>();
-        if (atkProjCtrl != null && atkProjCtrl.OwnerProp == defProp)
+        // 2) 대공 무적: 공중 공격(점프공격/공중기) 무효
+        if (defProp != null && defProp.isAirInvincible)
         {
-            // 내가 쏜 투사체가 나(혹은 소유자)를 치면 무시
-            return;
+            bool isAirAtk = atkBox.IsAirAttack;
+            if (isAirAtk) return;
         }
+
+        // 3) 투사체 무적: 공격이 투사체라면 무효
+        var atkProjCtrl = atk.GetComponent<ProjectileController>();
+        if (defProp != null && defProp.isProjectileInvincible && atkProjCtrl != null)
+            return;
 
         // 방향(+1/-1): 공격자 페이싱 기준
         float dir = atkProp.isFacingRight ? +1f : -1f;
@@ -178,9 +187,15 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         if (kind == PairKind.Throw)
         {
-            // 공중/스턴/다운/무적/기상 등 투척 불가 처리
-            if (defProp == null || !defProp.IsThrowableNow())
-                return; // 투척 이벤트 적재 안함
+            // 타겟 공중/지상 조건 검사
+            bool defAirNow = !defProp.phys.isGrounded;
+            var throwBox = atkBox; // kind==Throw면 attacker=Throw 박스
+
+            if (throwBox.throwTarget == ThrowTarget.AirOnly && !defAirNow) return;
+            if (throwBox.throwTarget == ThrowTarget.GroundOnly && defAirNow) return;
+
+            // 기존: IsThrowableNow() 체크
+            if (defProp == null || !defProp.IsThrowableNow()) return;
         }
 
         _events.Add(new FrameEvent
@@ -376,8 +391,43 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             return;
         }
 
-        // 가드 여부: GuardTrigger 접촉 + 피격자가 실제로 가드를 유지(입력) 중일 때
-        bool blocked = ev.guardTouch && IsHoldingGuard(ev.defProp, ev.atkProp);
+        // --- [슈퍼아머] ---
+        // 아머가 있으면 히트스톱과 피해만 적용, 히트 전환/경직/넉다운/상태변화 없음
+        if (ev.defProp != null && ev.defProp.superArmorCount > 0)
+        {
+            ev.defProp.superArmorCount = Mathf.Max(0, ev.defProp.superArmorCount - 1);
+
+            // 드라이브/SA 게이지는 평소대로 공격자에게 충전
+            ev.atkProp.ChargeDriveGauge(ev.skill.driveGaugeChargeAmount);
+            ev.atkProp.ChargeSAGauge(ev.skill.saGaugeChargeAmount);
+
+            // 데미지 적용(콤보 스케일 포함)
+            if (ev.damage > 0f)
+            {
+                var atkProj = ev.atkProp != null ? ev.atkProp.GetComponent<ProjectileController>() : null;
+                int attackerId = (atkProj != null && atkProj.OwnerProp != null)
+                    ? atkProj.OwnerProp.gameObject.GetInstanceID()
+                    : (ev.attacker != null ? ev.attacker.GetInstanceID() : 0);
+
+                float finalDamage = ev.defProp.RegisterComboAndScaleDamage(attackerId, ev.damage);
+                ev.defProp.ApplyDamage(finalDamage);
+            }
+
+            // 양측 히트스톱(공격자/피격자 모두) – 네 기존 헬퍼 사용
+            int hs = CalcHitstopFramesByDamage(ev.damage, isCounter: false);
+            ApplyHitstopOnce(ev.attacker.property.attackInstanceId, hs);
+
+            // TODO: 특수 “아머 흡수” 이펙트/사운드 훅
+            // Fx.SpawnArmorAbsorb(ev.cd.hitPoint, ev.dir);
+
+            return; // 여기서 종료(히트 전환/가드 전환 없음)
+        }
+
+        // 가드 의도
+        var guardIntent = GetGuardIntent(ev.defProp, ev.atkProp);
+
+        // 가드 성공 여부: GuardTrigger 접촉 + 의도 + 공격 높이/공중 여부
+        bool blocked = ev.guardTouch && IsBlockedByGuard(guardIntent, (ev.cd.boxA.type == BoxType.Hit ? ev.cd.boxA : ev.cd.boxB));
 
         // 게이지 충전
         ev.atkProp.ChargeDriveGauge(ev.skill.driveGaugeChargeAmount);
@@ -799,6 +849,39 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         {
             TimeController.Instance.ApplySlowMotion(0.2f, 0.8f);
         }
+    }
+
+    // 공격자 기준 “Back/DownBack” 유지 여부 + 서/앉 구분
+    private GuardIntent GetGuardIntent(CharacterProperty defender, CharacterProperty attacker)
+    {
+        if (defender == null) return GuardIntent.None;
+
+        // 공격자 기준으로 입력 방향을 환산하고 싶다면 여기서 좌우 뒤집기 로직을 넣을 수 있음.
+        var dir = defender.input?.LastInput.direction ?? Direction.Neutral;
+        if (dir == Direction.Back) return GuardIntent.Stand;
+        if (dir == Direction.DownBack) return GuardIntent.Crouch;
+        return GuardIntent.None;
+    }
+
+    private static bool IsBlockedByGuard(GuardIntent intent, BoxComponent hitBox)
+    {
+        if (intent == GuardIntent.None || hitBox == null) return false;
+
+        bool isAirAttack = hitBox.IsAirAttack;
+
+        switch (intent)
+        {
+            case GuardIntent.Stand:
+                // 4,5: 서가드 = 상/중 막힘, Low는 반드시 맞음
+                if (isAirAttack) return true; // 공중공격은 서가드로 막힘 (SF 계열 일반 규칙)
+                return hitBox.hitHeight != HitHeight.Low;
+
+            case GuardIntent.Crouch:
+                // 6,7: 앉가드 = 상/하 막힘, 중단/공중공격은 반드시 맞음
+                if (isAirAttack) return false; // 공중공격은 앉가드로 못막음
+                return hitBox.hitHeight != HitHeight.Middle;
+        }
+        return false;
     }
 }
 

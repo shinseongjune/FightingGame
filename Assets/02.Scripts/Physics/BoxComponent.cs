@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public enum BoxType { Body, Hit, Hurt, Throw, GuardTrigger }
+public enum ThrowTarget { Any, GroundOnly, AirOnly }
 
 public class BoxComponent : MonoBehaviour
 {
@@ -10,6 +11,15 @@ public class BoxComponent : MonoBehaviour
     public PhysicsEntity owner;
     public Skill_SO sourceSkill;
     public int uid;
+
+    public HitHeight hitHeight = HitHeight.Middle;
+
+    /// <summary>히트박스가 “공중 공격”으로 간주되는가? 기본: 소유자가 공중에 있으면 공중공격</summary>
+    public bool isAirAttackOverride = false; // 필요시 프리셋에서 강제 지정
+    public bool IsAirAttack => isAirAttackOverride || (owner != null && !owner.isGrounded);
+
+    // 투척 타겟 조건(Throw 박스일 때만 사용)
+    public ThrowTarget throwTarget = ThrowTarget.GroundOnly;
 
     public Rect GetAABB()
     {
