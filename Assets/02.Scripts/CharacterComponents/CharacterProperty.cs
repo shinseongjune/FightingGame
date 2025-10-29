@@ -34,6 +34,9 @@ public enum CharacterStateTag
 
 public class CharacterProperty : MonoBehaviour, ITicker
 {
+    private readonly Dictionary<int, Dictionary<string, Transform>> _boneCacheByProp
+        = new Dictionary<int, Dictionary<string, Transform>>();
+
     private static int _attackInstanceSeq = 1; // 0은 피하고, match 시작 시 1부터
     public static int NextAttackInstanceId()
     {
@@ -47,6 +50,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public PhysicsEntity phys;
     public CharacterFSM fsm;
     public InputBuffer input;
+    private Animator anim;
 
     public CharacterStateTag characterStateTag;
 
@@ -325,6 +329,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
         phys = GetComponent<PhysicsEntity>();
         fsm = GetComponent<CharacterFSM>();
         input = GetComponent<InputBuffer>();
+        anim = GetComponent<Animator>();
     }
 
     private void Start()
@@ -492,5 +497,69 @@ public class CharacterProperty : MonoBehaviour, ITicker
         isExhausted = false;
         driveGauge = maxDriveGauge;
         isDriveGaugeCharging = true;
+    }
+
+    /// <summary>
+    /// 본 이름으로 Transform을 찾는다. 실패 시 null 반환.
+    /// 우선순위: Animator 본(Humanoid면 HumanBodyBones 이름도 지원) → 자식 전체 재귀 탐색
+    /// 결과는 캐싱된다.
+    /// </summary>
+    public Transform ResolveBoneTransform(string boneName)
+    {
+        if (string.IsNullOrEmpty(boneName)) return null;
+
+        int id = GetInstanceID();
+        if (!_boneCacheByProp.TryGetValue(id, out var map))
+        {
+            map = new Dictionary<string, Transform>(StringComparer.Ordinal);
+            _boneCacheByProp[id] = map;
+        }
+
+        if (map.TryGetValue(boneName, out var cached) && cached != null)
+            return cached;
+
+        Transform found = null;
+
+        // 1) Animator에서 직접 찾기 (Humanoid면 HumanBodyBones도 허용)
+        var animator = anim;
+        if (animator != null)
+        {
+            // a) HumanBodyBones 이름으로 온 경우 (예: "RightHand")
+            if (animator.isHuman && Enum.TryParse<HumanBodyBones>(boneName, true, out var hbb))
+            {
+                try { found = animator.GetBoneTransform(hbb); } catch { /* 무시 */ }
+            }
+
+            // b) 트랜스폼 이름으로 재귀 탐색
+            if (found == null && animator.transform != null)
+                found = FindChildRecursive(animator.transform, boneName);
+        }
+
+        // 2) Animator가 없거나 실패 → 루트에서 재귀 탐색
+        if (found == null)
+            found = FindChildRecursive(transform, boneName);
+
+        map[boneName] = found; // null이라도 캐시하여 과도한 탐색 방지
+        return found;
+    }
+
+    /// <summary>스킨 교체/리셋 시 캐시를 비우고 싶을 때 호출</summary>
+    public void ClearBoneCache()
+    {
+        _boneCacheByProp.Remove(GetInstanceID());
+    }
+
+    private Transform FindChildRecursive(Transform root, string targetName)
+    {
+        if (root == null) return null;
+        if (root.name == targetName) return root;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            var c = root.GetChild(i);
+            var r = FindChildRecursive(c, targetName);
+            if (r != null) return r;
+        }
+        return null;
     }
 }

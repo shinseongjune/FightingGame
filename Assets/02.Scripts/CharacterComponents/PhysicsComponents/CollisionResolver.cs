@@ -437,6 +437,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         if (blocked)
         {
             // 가드 시
+            EmitGuardVfx(ev);
+
             if (ev.blockstun > 0)
             {
                 ev.defProp.SetBlockstun(ev.blockstun);
@@ -508,6 +510,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                 // 짧고 굵게
                 sh.Impulse(mag, 0.10f, extraSeed: ev.atkProp.attackInstanceId);
             }
+
+            EmitHitVfx(ev, damage);
         }
 
         // 수평 push 분배 요청(velocity 사용 안 함)
@@ -882,6 +886,47 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
                 return hitBox.hitHeight != HitHeight.Middle;
         }
         return false;
+    }
+
+    private static void EmitFx(string key, Vector3 worldPos, Quaternion rot)
+    {
+        if (string.IsNullOrEmpty(key) || FxService.Instance == null) return;
+        FxService.Instance.Spawn(key, worldPos, rot);
+    }
+
+    private static string SkillOrDefault_Hit(Skill_SO skill, float damage, bool air)
+    {
+        var k = skill != null ? skill.hitVfxKey : null;
+        return string.IsNullOrEmpty(k) ? FxDefaults.Hit(damage, air) : k;
+    }
+    private static string SkillOrDefault_Guard(Skill_SO skill /*, hitHeight 등 필요시*/)
+    {
+        var k = skill != null ? skill.guardVfxKey : null;
+        return string.IsNullOrEmpty(k) ? FxDefaults.Guard() : k;
+    }
+
+    private static Quaternion FaceByDefender(CharacterProperty def)
+    {
+        var e = Vector3.zero;
+        e.y = def != null && def.isFacingRight ? 0f : 180f;
+        return Quaternion.Euler(e);
+    }
+
+    // === 가드 분기 처리 끝에 ===
+    void EmitGuardVfx(in FrameEvent ev)
+    {
+        var atkSkill = ev.atkProp?.currentSkill;
+        string key = SkillOrDefault_Guard(atkSkill /*, hitHeight*/);
+        EmitFx(key, ev.cd.hitPoint, FaceByDefender(ev.defProp));
+    }
+
+    // === 히트 분기 처리(히트스톱/셰이크 직후)에 ===
+    void EmitHitVfx(in FrameEvent ev, float damage)
+    {
+        var atkSkill = ev.atkProp?.currentSkill;
+        bool air = !ev.defProp.phys.isGrounded;
+        string key = SkillOrDefault_Hit(atkSkill, damage, air);
+        EmitFx(key, ev.cd.hitPoint, FaceByDefender(ev.defProp));
     }
 }
 

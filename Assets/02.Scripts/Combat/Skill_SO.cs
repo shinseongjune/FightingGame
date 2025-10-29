@@ -194,5 +194,22 @@ public class Skill_SO : ScriptableObject
     public bool spawnsProjectiles;
     public ProjectileSpawnEvent[] projectileSpawns;
 
-    //TODO: hit effect, 그냥 이펙트들 등등
+    [Header("VFX Keys (optional; empty -> use defaults)")]
+    public string startVfxKey;   // 기술 시작시 (예: 베기 오라)
+    public string hitVfxKey;     // 이 기술이 적중할 때 (개별 기술 전용 스파크)
+    public string guardVfxKey;   // 이 기술이 가드될 때 (개별 기술 전용 스파크)
+
+    [Header("Mid-Skill FX Cues (frame-based)")]
+    public List<FxCue> fxCues = new(); // 애니메이션/프레임에 맞춰 중간 이펙트 트리거 (잡기용 포함)
+
+    [System.Serializable]
+    public struct FxCue
+    {
+        public string key;           // 라이브러리 키
+        public int frame;            // 상태 진행 frame(틱) 기준 (0 시작)
+        public string attachBone;    // 비우면 월드좌표
+        public Vector3 offset;       // 본/루트 기준 오프셋
+        public bool follow;          // true면 본/루트에 따라감
+        public bool worldSpace;      // true면 월드, false면 로컬
+    }
 }

@@ -222,4 +222,44 @@ public abstract class CharacterState
     {
         // TODO: 파티클/ 사운드 등 정리
     }
+
+    protected void TryPlayStartVfx(Skill_SO skill)
+    {
+        if (FxService.Instance == null) return;
+        var key = string.IsNullOrEmpty(skill?.startVfxKey) ? FxDefaults.Start() : skill.startVfxKey;
+        if (!string.IsNullOrEmpty(key))
+            FxService.Instance.Spawn(key, fsm.transform.position, FacingRotation());
+    }
+
+    // 상태 프레임 카운터는 각 상태가 갖고 있다 가정 (없다면 int stateFrame; 증가)
+    protected void ProcessSkillFxCues(Skill_SO skill, int stateFrame, Transform root, System.Func<string, Transform> boneResolver)
+    {
+        if (FxService.Instance == null || skill == null || skill.fxCues == null) return;
+        // 프레임 정합성: 같은 프레임에서 한 번만 발사 (중복 방지)
+        // 각 상태에 HashSet<int> firedFrames; 를 두고 관리해도 됨.
+        foreach (var cue in skill.fxCues)
+        {
+            if (cue.frame != stateFrame) continue;
+            var t = root;
+            if (!string.IsNullOrEmpty(cue.attachBone) && boneResolver != null)
+            {
+                var bone = boneResolver(cue.attachBone);
+                if (bone != null) t = bone;
+            }
+            var pos = cue.worldSpace ? (t.position + (cue.follow ? t.TransformVector(cue.offset) : cue.offset))
+                                     : t.TransformPoint(cue.offset);
+
+            var rot = FacingRotation(); // 좌우 반전 고려 (네 프로젝트 규약)
+            if (!string.IsNullOrEmpty(cue.key))
+                FxService.Instance.Spawn(cue.key, pos, rot, -1, null, cue.follow ? t : null);
+        }
+    }
+
+    protected Quaternion FacingRotation()
+    {
+        // 피격자 기준이 아니라 "내 기준" 좌우. 필요 시 CharacterProperty.isFacingRight 참조
+        var e = Vector3.zero;
+        e.y = property.isFacingRight ? 0f : 180f;
+        return Quaternion.Euler(e);
+    }
 }

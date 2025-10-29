@@ -1,10 +1,12 @@
 ﻿// ThrowStates.cs
+using log4net.Util;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 /// <summary> 시전자(공격자) 쪽 잡기 상태 </summary>
 public class ThrowState : CharacterState
 {
+    private int _frame;
     PhysicsEntity target;      // 잡힌 대상
     Vector2 holdOffset = new Vector2(0.6f, 0.9f); // 시전자 기준 붙잡는 위치
 
@@ -19,6 +21,8 @@ public class ThrowState : CharacterState
 
     protected override void OnEnter()
     {
+        _frame = 0;
+
         // 펜딩 컨텍스트에서 먼저 꺼내서 캐시
         var ctx = property.ConsumePendingThrow();
         _skill = ctx.has ? ctx.skill : property.currentSkill;
@@ -63,6 +67,7 @@ public class ThrowState : CharacterState
         }
 
         TryPlay(property.characterName + "/" + _skill.throwAnimationClipName, ReturnToNeutralPose);
+        TryPlayStartVfx(_skill);
     }
 
     protected override void OnTick()
@@ -105,6 +110,9 @@ public class ThrowState : CharacterState
                 // 그냥 BeingThrown 유지 후 onComplete에서 다운 전이(아래에서 콜백 추가)
             }
         }
+
+        ProcessSkillFxCues(_skill, _frame, fsm.transform, property.ResolveBoneTransform);
+        _frame++;
     }
 
     protected override void OnExit()

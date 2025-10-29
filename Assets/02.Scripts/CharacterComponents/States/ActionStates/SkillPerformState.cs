@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SkillPerformState : CharacterState
 {
+    private int _frame;
     private Skill_SO skill;
     private bool finished;
 
@@ -31,6 +32,8 @@ public class SkillPerformState : CharacterState
 
     protected override void OnEnter()
     {
+        _frame = 0;
+
         if (property.isRushCanceled)
         {
             isRushCanceled = true;
@@ -61,6 +64,8 @@ public class SkillPerformState : CharacterState
         property.isDriveGaugeCharging = false;
 
         wasGrounded = phys.isGrounded;
+
+        TryPlayStartVfx(skill);
     }
 
     protected override void OnTick()
@@ -96,6 +101,9 @@ public class SkillPerformState : CharacterState
             if (TryStartSkill())     // 입력 인식되면 다음 스킬로 캔슬
                 return;
         }
+
+        ProcessSkillFxCues(skill, _frame, fsm.transform, property.ResolveBoneTransform);
+        _frame++;
     }
 
     protected override void OnExit()
