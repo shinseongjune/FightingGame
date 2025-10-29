@@ -22,6 +22,11 @@ public sealed class TitlePreloader : MonoBehaviour
 
     public GameObject loadingPanel;
 
+    private void Awake()
+    {
+        VolumeSettings.Load();
+    }
+
     private async void Start()
     {
         // 자동 시작이 싫다면 Start를 비우고, 외부에서 BeginPreload()를 호출하게 바꿔도 됩니다.

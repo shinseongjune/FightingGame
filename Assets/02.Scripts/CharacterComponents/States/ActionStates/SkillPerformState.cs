@@ -66,6 +66,7 @@ public class SkillPerformState : CharacterState
         wasGrounded = phys.isGrounded;
 
         TryPlayStartVfx(skill);
+        FireSkillStartSFX(skill);
     }
 
     protected override void OnTick()
@@ -103,6 +104,7 @@ public class SkillPerformState : CharacterState
         }
 
         ProcessSkillFxCues(skill, _frame, fsm.transform, property.ResolveBoneTransform);
+        ProcessSfxCues(skill, _frame);
         _frame++;
     }
 

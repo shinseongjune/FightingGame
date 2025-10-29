@@ -259,7 +259,43 @@ public abstract class CharacterState
     {
         // 피격자 기준이 아니라 "내 기준" 좌우. 필요 시 CharacterProperty.isFacingRight 참조
         var e = Vector3.zero;
-        e.y = property.isFacingRight ? 0f : 180f;
+        e.y = property.isFacingRight ? 90f : 270f;
         return Quaternion.Euler(e);
+    }
+
+    protected void FireSkillStartSFX(Skill_SO s)
+    {
+        var key = string.IsNullOrEmpty(s.startSfxKey) ? SfxDefaults.Start() : s.startSfxKey;
+        SoundService.Instance?.PlayAttached(key, tr); // 캐릭터 기준
+    }
+
+    protected void ProcessSfxCues(Skill_SO s, int currentFrame)
+    {
+        if (s.sfxCues == null) return;
+        for (int i = 0; i < s.sfxCues.Count; ++i)
+        {
+            var cue = s.sfxCues[i];
+            if (cue.frame != currentFrame) continue;
+
+            Transform follow = tr;
+            Vector3 pos = tr.position;
+
+            if (!string.IsNullOrEmpty(cue.attachBone))
+            {
+                var bone = property.ResolveBoneTransform(cue.attachBone);
+                if (bone != null)
+                {
+                    if (cue.worldSpace) pos = bone.position + cue.offset;
+                    follow = cue.follow ? bone : null;
+                }
+            }
+            var key = cue.key;
+            if (string.IsNullOrEmpty(key)) continue;
+
+            if (follow != null && cue.follow)
+                SoundService.Instance?.PlayAttached(key, follow, cue.volumeMul <= 0 ? 1f : cue.volumeMul, cue.pitchMul <= 0 ? 1f : cue.pitchMul);
+            else
+                SoundService.Instance?.PlayAt(key, pos, cue.volumeMul <= 0 ? 1f : cue.volumeMul, cue.pitchMul <= 0 ? 1f : cue.pitchMul);
+        }
     }
 }

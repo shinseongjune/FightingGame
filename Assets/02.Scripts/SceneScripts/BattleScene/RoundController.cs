@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class RoundController : MonoBehaviour, ITicker
@@ -47,6 +48,9 @@ public class RoundController : MonoBehaviour, ITicker
 
     bool _postRoundSettling;
 
+    [SerializeField] AudioClip bgmClip;
+    [SerializeField] AudioMixerGroup bgmGroup;
+
     // ====== 공개 API ======
     public void BindFighters(CharacterProperty p1Prop, CharacterProperty p2Prop)
     {
@@ -66,6 +70,8 @@ public class RoundController : MonoBehaviour, ITicker
             StartCoroutine(Co_DeferBegin());
             return;
         }
+
+        StartMatchBGM();
 
         R = rulesSO != null ? rulesSO.data : MatchRulesData.Default;
         roundsToWin = Mathf.Max(1, R.winTarget);
@@ -173,6 +179,8 @@ public class RoundController : MonoBehaviour, ITicker
         OnRoundCountChanged?.Invoke(p1RoundsWon, p2RoundsWon);
 
         winMarks?.UpdateWinCount(p1RoundsWon, p2RoundsWon);
+
+        OnRoundStartSFX();
     }
 
     void StartFighting()
@@ -205,6 +213,11 @@ public class RoundController : MonoBehaviour, ITicker
 
         _postRoundSettling = true;
         StartCoroutine(WaitForBothIdleThenPose(winnerSlot));
+
+        if (winnerSlot != 0)
+        {
+            OnKO(winnerSlot);
+        }
     }
 
     IEnumerator WaitForBothIdleThenPose(int winnerSlot)
@@ -416,5 +429,21 @@ public class RoundController : MonoBehaviour, ITicker
         var projs = FindObjectsByType<ProjectileController>(FindObjectsSortMode.None);
         foreach (var prj in projs)
             prj.Despawn();
+    }
+
+    void OnRoundStartSFX()
+    {
+        SoundService.Instance?.PlayKey(SfxDefaults.RoundStart());
+    }
+
+    void OnKO(int winnerSlot)
+    {
+        SoundService.Instance?.PlayKey(SfxDefaults.KO());
+        // 승리/패배 보이스/징글 분리하고 싶으면 캐릭터별 키 체계로 확장 가능
+    }
+
+    void StartMatchBGM()
+    {
+        SoundService.Instance?.PlayBGM(bgmClip, bgmGroup, targetVolume: 1f, immediate: false);
     }
 }

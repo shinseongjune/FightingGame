@@ -212,4 +212,25 @@ public class Skill_SO : ScriptableObject
         public bool follow;          // true면 본/루트에 따라감
         public bool worldSpace;      // true면 월드, false면 로컬
     }
+
+    [Header("SFX (Skill Start / onHit / onGuard)")]
+    public string startSfxKey;
+    public string hitSfxKey;
+    public string guardSfxKey;
+
+    [Header("Mid-Skill SFX Cues (frame-based)")]
+    public List<SfxCue> sfxCues = new();
+
+    [System.Serializable]
+    public struct SfxCue
+    {
+        public string key;           // 라이브러리 키
+        public int frame;            // 발화 프레임(0기준)
+        public string attachBone;    // 붙일 본 (없으면 null/빈문자)
+        public Vector3 offset;
+        public bool follow;          // true면 본 추적
+        public bool worldSpace;      // true면 월드 좌표
+        public float pitchMul;       // 1=기본, 0.8~1.2 권장
+        public float volumeMul;      // 1=기본
+    }
 }

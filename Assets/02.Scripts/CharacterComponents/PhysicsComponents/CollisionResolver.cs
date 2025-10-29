@@ -366,6 +366,8 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
         // 3) 콤보 유예 보장
         ev.defProp?.ExtendComboWindow(skill != null ? Mathf.Max(18, skill.throwCfg.comboLockFrames) : 18);
+
+        SoundService.Instance?.PlayAt(SfxDefaults.ThrowImpact(), ev.defender.transform.position);
     }
 
     private void ApplyHitOrBlock(in FrameEvent ev)
@@ -438,6 +440,11 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
         {
             // 가드 시
             EmitGuardVfx(ev);
+
+            var guardKey = string.IsNullOrEmpty(ev.skill?.guardSfxKey)
+               ? SfxDefaults.Guard()
+               : ev.skill.guardSfxKey;
+            SoundService.Instance?.PlayAt(guardKey, ev.defender.transform.position);
 
             if (ev.blockstun > 0)
             {
@@ -512,6 +519,12 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             }
 
             EmitHitVfx(ev, damage);
+
+            var sfxKey = string.IsNullOrEmpty(ev.skill?.hitSfxKey)
+             ? SfxDefaults.Hit(damage, air: !ev.defender.isGrounded)
+             : ev.skill.hitSfxKey;
+
+            SoundService.Instance?.PlayAt(sfxKey, ev.defender.transform.position);
         }
 
         // 수평 push 분배 요청(velocity 사용 안 함)
