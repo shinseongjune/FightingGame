@@ -12,4 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5854542c6df0c429dec8d9700d1d87, type: 3}
   m_Name: Test Audio Library_SO
   m_EditorClassIdentifier: 
-  entries: []
+  entries:
+  - {fileID: 11400000, guid: 2bb6a3cc896bece41ac0e85615ee8115, type: 2}
+  - {fileID: 11400000, guid: 277842c2ae6d3094688ed7a2452978f6, type: 2}
+  - {fileID: 11400000, guid: 4ca77b7ad6f614f429f27310995bbda8, type: 2}
+  - {fileID: 11400000, guid: 0d30a6f7079755d4ebbeaaee14c82219, type: 2}
+  - {fileID: 11400000, guid: 8a3c4a09002a45242afaaff0a707a2a7, type: 2}
+  - {fileID: 11400000, guid: bfb597182f019054eab155b0bc57f7ba, type: 2}
+  - {fileID: 11400000, guid: baf128ad263deb04ab199f1c9403edc5, type: 2}
+  - {fileID: 11400000, guid: 9971999b26d9eeb4a803e75d11a7032e, type: 2}
+  - {fileID: 11400000, guid: 30a640c068768374b8289c28c72412f5, type: 2}
+  - {fileID: 11400000, guid: 88c1e1442717cbc46b1af9fdc4004f16, type: 2}
+  - {fileID: 11400000, guid: a4e91892b2e616345bcdbc6e9ca95d66, type: 2}
+  - {fileID: 11400000, guid: 866e2d97fdef2ff4faa2d18d29a90eb0, type: 2}
+  - {fileID: 11400000, guid: 10c305a6a70150e4fa984c6befdb7639, type: 2}

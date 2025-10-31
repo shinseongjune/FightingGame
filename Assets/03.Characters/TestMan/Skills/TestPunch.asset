@@ -79,7 +79,11 @@ MonoBehaviour:
     useAttachFollow: 0
   spawnsProjectiles: 0
   projectileSpawns: []
-  startVfxKey: FX.Block.Mid
-  hitVfxKey: FX.Hit.H
+  startVfxKey: 
+  hitVfxKey: 
   guardVfxKey: 
   fxCues: []
+  startSfxKey: TestPunchStart
+  hitSfxKey: TestPunchHit
+  guardSfxKey: 
+  sfxCues: []

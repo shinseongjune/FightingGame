@@ -24,6 +24,7 @@ public sealed class SoundService : MonoBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         if (sfxLibrary != null) sfxLibrary.BuildMap();
         if (!bgmA) bgmA = gameObject.AddComponent<AudioSource>();

@@ -2919,6 +2919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb518fbc60ba574b864ce3e6858c08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  property: {fileID: 0}
 --- !u!1 &871754904
 GameObject:
   m_ObjectHideFlags: 0
@@ -5053,6 +5054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb518fbc60ba574b864ce3e6858c08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  property: {fileID: 0}
 --- !u!1 &1650738225
 GameObject:
   m_ObjectHideFlags: 0
@@ -5162,6 +5164,8 @@ MonoBehaviour:
   settleFastFallY: 12
   groundSnapEps: 0.08
   maxSettleTicks: 180
+  bgmClip: {fileID: 8300000, guid: e1afcf9c0522f8846ab7d8c0bfc45fa6, type: 3}
+  bgmGroup: {fileID: 2845146629840101031, guid: 443cc2d3e98041d42870c7d0dbb0e0ab, type: 2}
 --- !u!4 &1687032639
 Transform:
   m_ObjectHideFlags: 0
