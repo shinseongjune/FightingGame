@@ -19,4 +19,4 @@ MonoBehaviour:
   pitchJitter: 0
   is2D: 1
   prewarm: 4
-  outputGroup: {fileID: 0}
+  outputGroup: {fileID: -8782563399496038768, guid: 443cc2d3e98041d42870c7d0dbb0e0ab, type: 2}

@@ -480,6 +480,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sfxLibrary: {fileID: 11400000, guid: f36b99fd9ac57c8478915b45b12a3385, type: 2}
   masterMixer: {fileID: 24100000, guid: 443cc2d3e98041d42870c7d0dbb0e0ab, type: 2}
+  bgmGroup: {fileID: 2845146629840101031, guid: 443cc2d3e98041d42870c7d0dbb0e0ab, type: 2}
+  sfxGroup: {fileID: -8782563399496038768, guid: 443cc2d3e98041d42870c7d0dbb0e0ab, type: 2}
   bgmVolumeParam: BGM_dB
   sfxVolumeParam: SFX_dB
   bgmA: {fileID: 0}

@@ -38,12 +38,11 @@ public sealed class SfxInstance : MonoBehaviour
 
         if (follow != null)
         {
-            transform.SetParent(follow, worldPositionStays: false);
+            transform.position = follow.TransformPoint(Vector3.zero);
             transform.localPosition = Vector3.zero;
         }
         else
         {
-            transform.SetParent(null);
             transform.position = pos;
         }
 

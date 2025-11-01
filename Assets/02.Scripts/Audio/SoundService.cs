@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public sealed class SoundService : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public sealed class SoundService : MonoBehaviour
 
     [Header("Music")]
     [SerializeField] private AudioMixer masterMixer;
+    [SerializeField] private AudioMixerGroup bgmGroup;
+    [SerializeField] private AudioMixerGroup sfxGroup;
+
     [SerializeField] private string bgmVolumeParam = "BGM_dB";
     [SerializeField] private string sfxVolumeParam = "SFX_dB";
     [SerializeField] private AudioSource bgmA; // Crossfade용 두 트랙
@@ -17,6 +21,7 @@ public sealed class SoundService : MonoBehaviour
 
     private readonly Dictionary<string, Queue<SfxInstance>> pools = new();
     private readonly Dictionary<string, Transform> poolRoots = new();
+    private Transform scenePoolRoot;
 
     public static SoundService Instance { get; private set; }
 
@@ -31,6 +36,39 @@ public sealed class SoundService : MonoBehaviour
         if (!bgmB) bgmB = gameObject.AddComponent<AudioSource>();
         bgmA.loop = true; bgmB.loop = true;
         bgmA.playOnAwake = false; bgmB.playOnAwake = false;
+
+        if (bgmGroup)
+        {
+            bgmA.outputAudioMixerGroup = bgmGroup;
+            bgmB.outputAudioMixerGroup = bgmGroup;
+        }
+
+        EnsureScenePoolRoot();
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
+
+    private void OnSceneChanged(Scene oldScene, Scene newScene)
+    {
+        // 이전 씬의 풀 루트는 씬 언로드와 함께 파괴됨.
+        // 사전은 깨끗하게 비워서 참조를 끊어 줌.
+        pools.Clear();
+        poolRoots.Clear();
+        scenePoolRoot = null;
+        EnsureScenePoolRoot();
+    }
+
+    private void EnsureScenePoolRoot()
+    {
+        if (scenePoolRoot) return;
+        var go = new GameObject("__SFX_Pools__");
+        // 풀 루트를 '현재 활성 씬' 소속으로 이동 → 씬 전환 시 자동 파괴
+        SceneManager.MoveGameObjectToScene(go, SceneManager.GetActiveScene());
+        scenePoolRoot = go.transform;
     }
 
     // ---------- SFX ----------
@@ -70,7 +108,7 @@ public sealed class SoundService : MonoBehaviour
             pools[key] = q;
 
             var root = new GameObject($"SFXPool_{key}").transform;
-            root.SetParent(transform);
+            root.SetParent(scenePoolRoot, false);
             poolRoots[key] = root;
 
             for (int i = 0; i < entry.prewarm; ++i)
