@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Project
+  m_Title: Game
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 115
+  controlID: 24
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 70
+  controlID: 49
   draggingID: 0
 --- !u!114 &10
 MonoBehaviour:
@@ -1302,9 +1302,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 3.8987153, y: -0.56821823, z: 15.062187}
+    m_Target: {x: 666.1347, y: 772.43134, z: -1386.257}
     speed: 2
-    m_Value: {x: 3.8987153, y: -0.56821823, z: 15.062187}
+    m_Value: {x: 666.1347, y: 772.43134, z: -1386.257}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1350,20 +1350,20 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.04976993, y: -0.027866544, z: 0.0013776277, w: -0.99838597}
+    m_Target: {x: -0.10660594, y: -0.0053733946, z: 0.0005754579, w: -0.9943035}
     speed: 2
-    m_Value: {x: -0.04976918, y: -0.027866125, z: 0.001377607, w: -0.99837095}
+    m_Value: {x: -0.10660416, y: -0.0053733047, z: 0.00057544827, w: -0.99428695}
   m_Size:
-    m_Target: 10
+    m_Target: 9.46146
     speed: 2
-    m_Value: 10
+    m_Value: 9.46146
   m_Ortho:
     m_Target: 0
     speed: 2
     m_Value: 0
   m_CameraSettings:
-    m_Speed: 1.6345047
-    m_SpeedNormalized: 0.15500048
+    m_Speed: 3.1195047
+    m_SpeedNormalized: 0.30500048
     m_SpeedMin: 0.1
     m_SpeedMax: 10
     m_EasingEnabled: 0
@@ -1428,7 +1428,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: 46910
+  m_LastSelectedObjectID: 48262
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1468,26 +1468,26 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 90920000
+      m_SelectedIDs: 98b90000
       m_LastClickedID: 0
-      m_ExpandedIDs: 0884ffff2a89ffff4489ffff568cffff828cffffae8cffff2e93ffffd693fffffa93ffff8c98ffffa698ffff6ea6ffffceaaffff00abffff1aabffffaeb6ffff62bbffff7abbffff08bcffff52c0ffffe4c4fffffec4ffff5cf1ffff0efbfffff4ffffff68b70000
+      m_ExpandedIDs: 24d7ffff2edaffff1cdbffff88eaffffbaf5ffff0efbffff66bb0000c2bc0000aeca000096cb0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: KO Mark
+        m_OriginalName: KO Mark
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 52118
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_TrimLeadingAndTrailingWhitespace: 0
-        m_ClientGUIView: {fileID: 7}
+        m_ClientGUIView: {fileID: 10}
       m_SearchString: 
     m_ExpandedScenes: []
     m_CurrenRootInstanceID: 0
@@ -1542,7 +1542,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/02.Scripts/Input
+    - Assets/01.Scenes
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1552,15 +1552,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/02.Scripts/Input
+  - Assets/01.Scenes
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\FightingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 251}
-    m_SelectedIDs: 46ba0000
-    m_LastClickedID: 47686
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: 26ba0000
+    m_LastClickedID: 47654
     m_ExpandedIDs: 000000005ab900005cb900005eb9000060b9000062b9000064b9000066b9000068b900006ab900006cb900006eb9000070b9000072b9000074b9000076b9000078b900007ab900007cb900007eb9000080b9000082b9000084b9000086b9000088b900008ab900008cb900008eb9000090b9000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1622,18 +1622,18 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: 2c800000d48100009e6900001e7300003a850000548500006a0a0100b28f0000b88f0000568000007280000054800000f6130100ea130100221301009a130100be130100523601003a130100f47b0000047c0000f87b0000ee740000588eecff607c0000387e00003c8800005488000050880000f68a0000fa8a0000b88900007a8900007e89000092890000ae89000086890000a28900005c8900006e89000072890000768900009a890000b6890000b2890000a68900003a88000078890000748900008c8900000e9500000000000024fc000088cb00004cc200003cc2000038c2000040c2000056c2000050c2000044c2000056cc00004ecc000052cc00007ef5000064f400004ce2000032e1000018e000001ec000001ac00000d6c1000074f5ffff
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Default
-      m_OriginalName: Default
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 47748
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
       m_ClientGUIView: {fileID: 11}

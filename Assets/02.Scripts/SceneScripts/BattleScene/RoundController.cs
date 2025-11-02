@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class RoundController : MonoBehaviour, ITicker
 {
-    [SerializeField] WinMarks winMarks;
+    [SerializeField] private WinMarks winMarks;
+    [SerializeField] private GameObject koMark;
 
     private TickMaster _tm;
 
@@ -181,6 +182,7 @@ public class RoundController : MonoBehaviour, ITicker
         winMarks?.UpdateWinCount(p1RoundsWon, p2RoundsWon);
 
         OnRoundStartSFX();
+        koMark?.SetActive(false);
     }
 
     void StartFighting()
@@ -438,6 +440,8 @@ public class RoundController : MonoBehaviour, ITicker
 
     void OnKO(int winnerSlot)
     {
+        koMark?.SetActive(true);
+
         SoundService.Instance?.PlayKey(SfxDefaults.KO());
         // 승리/패배 보이스/징글 분리하고 싶으면 캐릭터별 키 체계로 확장 가능
     }
