@@ -18,9 +18,6 @@ public sealed class InputSourceInstaller : MonoBehaviour
     public InputBuffer inputBuffer;
     public CharacterProperty character;
 
-    [Header("AI Settings")]
-    public InputMacro_SO aiMacro;
-
     [Header("Replay Settings")]
     public ReplayRecorder replaySource; // (선택) 다른 객체에서 녹화된 걸 받아 재생하려면 null로 두고 나중에 세팅
     public bool replayLoop = true;
@@ -57,7 +54,8 @@ public sealed class InputSourceInstaller : MonoBehaviour
                 }
             case ControllerType.AI:
                 {
-                    var ai = new AIInputProvider(aiMacro, character);
+                    var enemy = character == BattleManager.I?.player1 ? BattleManager.I?.player2 : BattleManager.I?.player1;
+                    var ai = new AIInputProvider(character, enemy);
                     arbiter.Register(ai, priority: 100);
                     break;
                 }
