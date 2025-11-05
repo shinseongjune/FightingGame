@@ -194,7 +194,7 @@ public class Skill_SO : ScriptableObject
     public bool spawnsProjectiles;
     public ProjectileSpawnEvent[] projectileSpawns;
 
-    [Header("VFX Keys (optional; empty -> use defaults)")]
+    [Header("VFX Keys (optional; empty -> no spawn)")]
     public string startVfxKey;   // 기술 시작시 (예: 베기 오라)
     public string hitVfxKey;     // 이 기술이 적중할 때 (개별 기술 전용 스파크)
     public string guardVfxKey;   // 이 기술이 가드될 때 (개별 기술 전용 스파크)

@@ -226,9 +226,9 @@ public abstract class CharacterState
     protected void TryPlayStartVfx(Skill_SO skill)
     {
         if (FxService.Instance == null) return;
-        var key = string.IsNullOrEmpty(skill?.startVfxKey) ? FxDefaults.Start() : skill.startVfxKey;
-        if (!string.IsNullOrEmpty(key))
-            FxService.Instance.Spawn(key, fsm.transform.position, FacingRotation());
+        var key = skill?.startVfxKey;
+        if (string.IsNullOrEmpty(key)) return; // 빈 키면 아무것도 하지 않음
+        FxService.Instance.Spawn(key, fsm.transform.position, FacingRotation());
     }
 
     // 상태 프레임 카운터는 각 상태가 갖고 있다 가정 (없다면 int stateFrame; 증가)
@@ -265,8 +265,9 @@ public abstract class CharacterState
 
     protected void FireSkillStartSFX(Skill_SO s)
     {
-        var key = string.IsNullOrEmpty(s.startSfxKey) ? SfxDefaults.Start() : s.startSfxKey;
-        SoundService.Instance?.PlayAttached(key, tr); // 캐릭터 기준
+        var key = s?.startSfxKey;
+        if (string.IsNullOrEmpty(key)) return; // 빈 키면 아무것도 하지 않음
+        SoundService.Instance?.PlayAttached(key, tr);
     }
 
     protected void ProcessSfxCues(Skill_SO s, int currentFrame)

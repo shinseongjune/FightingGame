@@ -441,10 +441,9 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
             // 가드 시
             EmitGuardVfx(ev);
 
-            var guardKey = string.IsNullOrEmpty(ev.skill?.guardSfxKey)
-               ? SfxDefaults.Guard()
-               : ev.skill.guardSfxKey;
-            SoundService.Instance?.PlayAt(guardKey, ev.defender.transform.position);
+            var guardKey = ev.skill?.guardSfxKey;
+            if (!string.IsNullOrEmpty(guardKey))
+                SoundService.Instance?.PlayAt(guardKey, ev.defender.transform.position);
 
             if (ev.blockstun > 0)
             {
@@ -520,9 +519,9 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
             EmitHitVfx(ev, damage);
 
-            var sfxKey = string.IsNullOrEmpty(ev.skill?.hitSfxKey)
-             ? SfxDefaults.Hit(damage, air: !ev.defender.isGrounded)
-             : ev.skill.hitSfxKey;
+            var sfxKey = ev.skill?.hitSfxKey;
+            if (!string.IsNullOrEmpty(sfxKey))
+                SoundService.Instance?.PlayAt(sfxKey, ev.defender.transform.position);
 
             SoundService.Instance?.PlayAt(sfxKey, ev.defender.transform.position);
         }
@@ -909,13 +908,13 @@ public sealed class CollisionResolver : MonoBehaviour, ITicker
 
     private static string SkillOrDefault_Hit(Skill_SO skill, float damage, bool air)
     {
-        var k = skill != null ? skill.hitVfxKey : null;
-        return string.IsNullOrEmpty(k) ? FxDefaults.Hit(damage, air) : k;
+        // 빈 키면 아무것도 재생하지 않음
+        return (!string.IsNullOrEmpty(skill?.hitVfxKey)) ? skill.hitVfxKey : null;
     }
     private static string SkillOrDefault_Guard(Skill_SO skill /*, hitHeight 등 필요시*/)
     {
-        var k = skill != null ? skill.guardVfxKey : null;
-        return string.IsNullOrEmpty(k) ? FxDefaults.Guard() : k;
+        // 빈 키면 아무것도 재생하지 않음
+        return (!string.IsNullOrEmpty(skill?.guardVfxKey)) ? skill.guardVfxKey : null;
     }
 
     private static Quaternion FaceByDefender(CharacterProperty def)
