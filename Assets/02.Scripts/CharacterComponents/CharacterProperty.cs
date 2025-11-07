@@ -32,6 +32,18 @@ public enum CharacterStateTag
     ForcedAnimation,
 }
 
+[RequireComponent(typeof(AnimationPlayer))]
+[RequireComponent(typeof(CharacterAnimationConfig))]
+[RequireComponent(typeof(BoxPresetApplier))]
+[RequireComponent(typeof(CharacterFSM))]
+[RequireComponent(typeof(CharacterRootTicker))]
+[RequireComponent(typeof(CharacterSockets))]
+[RequireComponent(typeof(CharacterStateBootstrap))]
+[RequireComponent(typeof(ForcedAnimationStateBridge))]
+[RequireComponent(typeof(InputBuffer))]
+[RequireComponent(typeof(InputSourceInstaller))]
+[RequireComponent(typeof(PhysicsEntity))]
+[RequireComponent(typeof(CollisionResolver))]
 public class CharacterProperty : MonoBehaviour, ITicker
 {
     private readonly Dictionary<int, Dictionary<string, Transform>> _boneCacheByProp
@@ -47,30 +59,30 @@ public class CharacterProperty : MonoBehaviour, ITicker
 
     public string characterName;
 
-    public PhysicsEntity phys;
-    public CharacterFSM fsm;
-    public InputBuffer input;
+    [HideInInspector] public PhysicsEntity phys;
+    [HideInInspector] public CharacterFSM fsm;
+    [HideInInspector] public InputBuffer input;
     private Animator anim;
 
-    public CharacterStateTag characterStateTag;
+    [HideInInspector] public CharacterStateTag characterStateTag;
 
     [Header("Skill Settings")]
     public List<Skill_SO> allSkills; // 캐릭터가 가진 전체 스킬
-    public Skill_SO currentSkill;
+    [HideInInspector] public Skill_SO currentSkill;
 
-    public readonly List<GameObject> projectiles;
+    [HideInInspector] public readonly List<GameObject> projectiles;
 
-    public bool isFacingRight;
+    [HideInInspector] public bool isFacingRight;
 
-    public bool isStartUp;
-    public bool isRecovery;
+    [HideInInspector] public bool isStartUp;
+    [HideInInspector] public bool isRecovery;
     public bool isInputEnabled = true;
-    public bool isSkillCancelable;
-    public bool isInvincible;
-    public bool isAirInvincible;
-    public bool isProjectileInvincible;
-    public bool isRushCanceled;
-    public int superArmorCount;
+    [HideInInspector] public bool isSkillCancelable;
+    [HideInInspector] public bool isInvincible;
+    [HideInInspector] public bool isAirInvincible;
+    [HideInInspector] public bool isProjectileInvincible;
+    [HideInInspector] public bool isRushCanceled;
+    [HideInInspector] public int superArmorCount;
 
     public float hp;
     public float maxHp = 10000;
@@ -78,32 +90,32 @@ public class CharacterProperty : MonoBehaviour, ITicker
     public float saGauge;
     public float maxSAGauge = 300;
 
-    public bool isExhausted;
-    public bool isDriveGaugeCharging;
+    [HideInInspector] public bool isExhausted;
+    [HideInInspector] public bool isDriveGaugeCharging;
     public float driveGauge;
     public float maxDriveGauge = 600;
-    public float driveGaugeTickChargeAmount = 25/60;
+    [HideInInspector] public float driveGaugeTickChargeAmount = 25/60;
 
-    public int pendingHitstunFrames;
-    public int pendingBlockstunFrames;
-    public Vector2 pendingKnockback;
+    [HideInInspector] public int pendingHitstunFrames;
+    [HideInInspector] public int pendingBlockstunFrames;
+    [HideInInspector] public Vector2 pendingKnockback;
 
     // 공격 중복 충돌 문제 해결용
-    public int attackInstanceId;
+    [HideInInspector] public int attackInstanceId;
 
     public int parryJustEndFrame { get; private set; } = -1;
     public int parryHoldEndFrame { get; private set; } = -1;
     public bool IsInJustParry => Time.frameCount <= parryJustEndFrame;
     public bool IsInParry => Time.frameCount <= parryHoldEndFrame;
 
-    public int parryDisableFrame = 0;
+    [HideInInspector] public int parryDisableFrame = 0;
     public int parryLockEndFrame { get; private set; } = -1;
     public bool IsParryLocked => Time.frameCount <= parryLockEndFrame;
 
     #region === Combo (Defender-Centric) ===
     [Header("=== Combo (Defender-Centric) ===")]
     [Tooltip("히트 간 최대 허용 프레임(지나면 콤보 드랍)")]
-    public int comboKeepFrames = 120;   // 60fps 기준 2초
+    [HideInInspector] public int comboKeepFrames = 120;   // 60fps 기준 2초
 
     [Tooltip("n번째 히트에 곱해질 데미지 배율(인덱스: 1히트=0)")]
     public float[] comboDamageTable = new float[] {
@@ -113,7 +125,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     };
 
     [Tooltip("데미지 스케일 최소 바닥치")]
-    public float comboDamageFloor = 0.20f;
+    [HideInInspector] public float comboDamageFloor = 0.20f;
 
     // 콤보 상태(피격자 관점)
     [NonSerialized] public int currentComboCount = 0;   // 현재까지 맞은 히트 수
@@ -128,7 +140,7 @@ public class CharacterProperty : MonoBehaviour, ITicker
     float _settleFallSpeed;                                     // 강제 낙하 목표속도
     float _snapEps;                                             // 지면 스냅 오차
     bool _autoStandOnLand;                                      // 착지 시 자동 기상
-    public bool IsPostRoundSettling { get; private set; }
+    [HideInInspector] public bool IsPostRoundSettling { get; private set; }
 
     static readonly HashSet<CharacterStateTag> NeutralTagsForComboDrop = new()
     {

@@ -16,59 +16,57 @@ public class PhysicsEntity : MonoBehaviour
 
     [System.Serializable] public struct BoxNum { public Vector2 center; public Vector2 size; }
 
-    [Header("Default Box Numbers")]
     public BoxNum idleBody, crouchBody, jumpBody, downBody;
     public List<BoxNum> idleHurts, crouchHurts, jumpHurts;
     public List<BoxNum> idleWhiffs, crouchWhiffs, jumpWhiffs;
 
-    public CharacterProperty property;
+    [HideInInspector] public CharacterProperty property;
 
-    public Vector2 Position;
-    public Vector2 Velocity;
-    public bool isGravityOn = true;
-    public bool isGrounded = false;
-    public float groundY = 0f;
-
+    [HideInInspector] public Vector2 Position;
+    [HideInInspector] public Vector2 Velocity;
+    [HideInInspector] public bool isGravityOn = true;
+    [HideInInspector] public bool isGrounded = false;
+    [HideInInspector] public float groundY = 0f;
+        
     // 현재 활성 bodybox
-    public BoxComponent currentBodyBox;
+    [HideInInspector] public BoxComponent currentBodyBox;
     // 현재 활성 hurtbox
-    public List<BoxComponent> currentHurtBoxes;
+    [HideInInspector] public List<BoxComponent> currentHurtBoxes;
     // 현재 활성 wiffbox
-    public List<BoxComponent> currentWhiffBoxes;
+    [HideInInspector] public List<BoxComponent> currentWhiffBoxes;
 
 
     // 자세별 바디박스 프리셋
-    public BoxComponent idleBodyBox;
-    public List<BoxComponent> idleHurtBoxes;
-    public List<BoxComponent> idleWhiffBoxes;
+    [HideInInspector] public BoxComponent idleBodyBox;
+    [HideInInspector] public List<BoxComponent> idleHurtBoxes;
+    [HideInInspector] public List<BoxComponent> idleWhiffBoxes;
 
-    public BoxComponent crouchBodyBox;
-    public List<BoxComponent> crouchHurtBoxes;
-    public List<BoxComponent> crouchWhiffBoxes;
+    [HideInInspector] public BoxComponent crouchBodyBox;
+    [HideInInspector] public List<BoxComponent> crouchHurtBoxes;
+    [HideInInspector] public List<BoxComponent> crouchWhiffBoxes;
 
-    public BoxComponent jumpBodyBox;
-    public List<BoxComponent> jumpHurtBoxes;
-    public List<BoxComponent> jumpWhiffBoxes;
+    [HideInInspector] public BoxComponent jumpBodyBox;
+    [HideInInspector] public List<BoxComponent> jumpHurtBoxes;
+    [HideInInspector] public List<BoxComponent> jumpWhiffBoxes;
 
-    public BoxComponent downBodyBox;
+    [HideInInspector] public BoxComponent downBodyBox;
 
     // 물리 처리 모드
-    public PhysicsMode mode = PhysicsMode.Normal;
+    [HideInInspector] public PhysicsMode mode = PhysicsMode.Normal;
 
     // 충돌/히트 수신 토글
-    public bool collisionsEnabled = true; // (BoxManager에서 owner 단위 필터)
-    public bool receiveHits = true;       // (Hurt만 꺼야 할 때)
-    public bool pushboxEnabled = true;    // (몸통 밀치기/겹침해소에 쓸 경우)
-    public bool immovablePushbox = false; // 벽용
+    [HideInInspector] public bool collisionsEnabled = true; // (BoxManager에서 owner 단위 필터)
+    [HideInInspector] public bool receiveHits = true;       // (Hurt만 꺼야 할 때)
+    [HideInInspector] public bool pushboxEnabled = true;    // (몸통 밀치기/겹침해소에 쓸 경우)
+    [HideInInspector] public bool immovablePushbox = false; // 벽용
 
     // Carried 모드용
-    public PhysicsEntity followTarget;
-    public Vector2 followOffset;
+    [HideInInspector] public PhysicsEntity followTarget;
+    [HideInInspector] public Vector2 followOffset;
+    [HideInInspector] public Transform followTransform;
 
     // 내부: 이전에 등록했던 기본 허트박스 추적용
     private readonly List<BoxComponent> _registeredDefaultHurt = new();
-
-    public Transform followTransform;
 
     void Awake()
     {

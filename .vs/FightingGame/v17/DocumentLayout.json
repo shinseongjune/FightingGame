@@ -3,7 +3,19 @@
   "WorkspaceRootPath": "D:\\Unity\\FightingGame\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\combat\\skill_so.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\characterproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\characterproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\inputbuffer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\inputbuffer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\physicsentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\physicsentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|d:\\unity\\fightinggame\\assets\\02.scripts\\combat\\skill_so.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\combat\\skill_so.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -23,7 +35,7 @@
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\states\\abstractclass\\characterstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|d:\\unity\\fightinggame\\assets\\02.scripts\\input\\aiinputprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\input\\aiinputprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\input\\aiinputprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -89,10 +101,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\states\\actionstates\\skillperformstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\states\\actionstates\\skillperformstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\characterproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\characterproperty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\states\\throwstates\\throwstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -163,20 +171,12 @@
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\charactersockets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\physicscomponents\\physicsentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\physicscomponents\\physicsentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\physics\\physicsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\physics\\physicsmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\runtime\\system\\asset\\characterlibrary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\runtime\\system\\asset\\characterlibrary.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\charactercomponents\\inputbuffer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|solutionrelative:assets\\02.scripts\\charactercomponents\\inputbuffer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B80C8F63-B71D-7C14-9B69-8D5F5BF791CD}|GG.GameplayCore.csproj|D:\\Unity\\FightingGame\\assets\\02.scripts\\input\\inputrecognizer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -402,7 +402,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -414,70 +414,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "GameManager.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAQwAwAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T12:09:55.307Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "InputData.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\InputData.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\InputData.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\InputData.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\Input\\InputData.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAmwB0AAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T05:44:53.351Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "RoundController.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
-              "ViewState": "AgIAAKEBAAAAAAAAAAAlwLUBAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-07T10:55:18.858Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CharacterState.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
-              "ViewState": "AgIAAAEBAAAAAAAAAAA7wA4BAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-10T13:27:29.386Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "CollisionResolver.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
-              "ViewState": "AgIAAF0BAAAAAAAAAIA3wHEBAABhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-23T04:32:49.811Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Skill_SO.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Combat\\Skill_SO.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Combat\\Skill_SO.cs",
@@ -490,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "SfxDefaults.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\SfxDefaults.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\SfxDefaults.cs",
@@ -498,12 +435,11 @@
               "RelativeToolTip": "Assets\\02.Scripts\\Audio\\SfxDefaults.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-29T20:43:02.2Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-29T20:43:02.2Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "BattleManager.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\BattleScene\\BattleManager.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\BattleScene\\BattleManager.cs",
@@ -515,7 +451,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 22,
               "Title": "TitlePreloader.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\TitleScene\\TitlePreloader.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\TitleScene\\TitlePreloader.cs",
@@ -527,7 +463,106 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PhysicsEntity.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
+              "ViewState": "AgIAADYAAAAAAAAAAAAowEUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T09:38:45.149Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "InputBuffer.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-04T10:02:51.241Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CharacterProperty.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAAAC0AAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-10T13:28:17.554Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CollisionResolver.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\CollisionResolver.cs",
+              "ViewState": "AgIAAF0BAAAAAAAAAIA3wHEBAABhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-23T04:32:49.811Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CharacterState.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\States\\AbstractClass\\CharacterState.cs",
+              "ViewState": "AgIAAAEBAAAAAAAAAAA7wA4BAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-10T13:27:29.386Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RoundController.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\BattleScene\\RoundController.cs",
+              "ViewState": "AgIAAKEBAAAAAAAAAAAlwLUBAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-07T10:55:18.858Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "InputData.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\InputData.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\InputData.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\InputData.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\Input\\InputData.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAmwB0AAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-26T05:44:53.351Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "GameManager.cs",
+              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
+              "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
+              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
+              "RelativeToolTip": "Assets\\02.Scripts\\SceneScripts\\GameManager.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwAwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-05T12:09:55.307Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "SfxInstance.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\SfxInstance.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\SfxInstance.cs",
@@ -539,7 +574,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "InputSourceInstaller.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\InputSourceInstaller.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\InputSourceInstaller.cs",
@@ -551,7 +586,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "AIInputProvider.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\AIInputProvider.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\AIInputProvider.cs",
@@ -559,12 +594,11 @@
               "RelativeToolTip": "Assets\\02.Scripts\\Input\\AIInputProvider.cs",
               "ViewState": "AgIAACAAAAAAAAAAAAAawEMAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-18T12:55:37.946Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-18T12:55:37.946Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "InputDataBuilder.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\AI\\InputDataBuilder.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\AI\\InputDataBuilder.cs",
@@ -576,7 +610,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "InputArbiter.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\InputArbiter.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\InputArbiter.cs",
@@ -588,7 +622,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "LocalInputProvider.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Input\\LocalInputProvider.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Input\\LocalInputProvider.cs",
@@ -600,7 +634,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 19,
               "Title": "FxService.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Effects\\FxService.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Effects\\FxService.cs",
@@ -612,7 +646,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "SfxEntry_SO.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\SfxEntry_SO.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\SfxEntry_SO.cs",
@@ -624,7 +658,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "SoundService.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\SoundService.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\SoundService.cs",
@@ -636,7 +670,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 20,
               "Title": "AudioLibrary_SO.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\AudioLibrary_SO.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\AudioLibrary_SO.cs",
@@ -648,7 +682,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 24,
               "Title": "SkillPerformState.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\ActionStates\\SkillPerformState.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\States\\ActionStates\\SkillPerformState.cs",
@@ -660,7 +694,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 23,
               "Title": "TitleSceneController.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\SceneScripts\\TitleScene\\TitleSceneController.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\SceneScripts\\TitleScene\\TitleSceneController.cs",
@@ -672,7 +706,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 21,
               "Title": "VolumeSettings.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Audio\\VolumeSettings.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Audio\\VolumeSettings.cs",
@@ -684,7 +718,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "FxDefaults.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Effects\\FxDefaults.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Effects\\FxDefaults.cs",
@@ -696,7 +730,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "ThrowState.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\States\\ThrowStates\\ThrowState.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\States\\ThrowStates\\ThrowState.cs",
@@ -708,19 +742,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "CharacterProperty.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\CharacterProperty.cs",
-              "ViewState": "AgIAAO4BAAAAAAAAAAA6wB8CAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-10T13:28:17.554Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "FxInstance.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Effects\\FxInstance.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Effects\\FxInstance.cs",
@@ -732,7 +754,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "CharacterFSM.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterFSM.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterFSM.cs",
@@ -744,7 +766,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "BoxComponent.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Physics\\BoxComponent.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Physics\\BoxComponent.cs",
@@ -756,7 +778,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "SABar.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\UI\\BattleScene\\SABar.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\UI\\BattleScene\\SABar.cs",
@@ -768,7 +790,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "CharacterStateBootstrap.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterStateBootstrap.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterStateBootstrap.cs",
@@ -780,7 +802,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "Combos.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\UI\\BattleScene\\Combos.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\UI\\BattleScene\\Combos.cs",
@@ -792,7 +814,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "HPBar.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\UI\\BattleScene\\HPBar.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\UI\\BattleScene\\HPBar.cs",
@@ -804,7 +826,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "WinMarks.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\UI\\BattleScene\\WinMarks.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\UI\\BattleScene\\WinMarks.cs",
@@ -816,7 +838,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "TimerText.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\UI\\BattleScene\\TimerText.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\UI\\BattleScene\\TimerText.cs",
@@ -828,7 +850,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "DebugBoxRenderer.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Debug\\DebugBoxRenderer.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Debug\\DebugBoxRenderer.cs",
@@ -840,7 +862,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "CharacterRootTicker.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterRootTicker.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterRootTicker.cs",
@@ -852,7 +874,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "BoxPresetApplier.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\BoxPresetApplier.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\BoxPresetApplier.cs",
@@ -864,7 +886,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "ProjectileController.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\Projectile\\ProjectileController.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\Projectile\\ProjectileController.cs",
@@ -876,7 +898,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "BoxManager.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Physics\\BoxManager.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Physics\\BoxManager.cs",
@@ -888,7 +910,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "CharacterSockets.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\CharacterSockets.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\CharacterSockets.cs",
@@ -900,7 +922,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "PhysicsManager.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Physics\\PhysicsManager.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Physics\\PhysicsManager.cs",
@@ -912,19 +934,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
-              "Title": "PhysicsEntity.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\PhysicsComponents\\PhysicsEntity.cs",
-              "ViewState": "AgIAAAQBAAAAAAAAAAAqwAsAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T09:38:45.149Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "CharacterLibrary.cs",
               "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\Runtime\\System\\Asset\\CharacterLibrary.cs",
               "RelativeDocumentMoniker": "Assets\\02.Scripts\\Runtime\\System\\Asset\\CharacterLibrary.cs",
@@ -933,18 +943,6 @@
               "ViewState": "AgIAABcAAAAAAAAAAAAwwCgAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-10T12:07:38.322Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 43,
-              "Title": "InputBuffer.cs",
-              "DocumentMoniker": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
-              "RelativeDocumentMoniker": "Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
-              "ToolTip": "D:\\Unity\\FightingGame\\Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
-              "RelativeToolTip": "Assets\\02.Scripts\\CharacterComponents\\InputBuffer.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAowCwAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T10:02:51.241Z"
             },
             {
               "$type": "Document",

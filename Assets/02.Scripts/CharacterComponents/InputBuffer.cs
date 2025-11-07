@@ -6,7 +6,7 @@ public class InputBuffer : MonoBehaviour
 {
     private CharacterProperty character;
 
-    public int maxBufferSize = 30;
+    [HideInInspector] public int maxBufferSize = 30;
     public Queue<InputData> inputQueue { get; private set; } = new();
 
     private InputSystem_Actions inputActions;
@@ -15,14 +15,14 @@ public class InputBuffer : MonoBehaviour
     private int backHold = 0;
     private int downHold = 0;
 
-    public InputData LastInput;
+    [HideInInspector] public InputData LastInput;
 
-    public bool captureFromDevice = true;          // 하드웨어 입력 캡처 on/off
-    public bool respectCharacterInputLock = true;  // isInputEnabled=false면 강제로 중립 노출
-    public bool enqueueNeutralWhenLocked = true;   // 잠금 시에도 중립을 큐에 넣어 타임라인 전진
+    [HideInInspector] public bool captureFromDevice = true;          // 하드웨어 입력 캡처 on/off
+    [HideInInspector] public bool respectCharacterInputLock = true;  // isInputEnabled=false면 강제로 중립 노출
+    [HideInInspector] public bool enqueueNeutralWhenLocked = true;   // 잠금 시에도 중립을 큐에 넣어 타임라인 전진
 
-    public bool useArbiterSource = false;
-    public InputArbiter arbiter;
+    [HideInInspector] public bool useArbiterSource = false;
+    [HideInInspector] public InputArbiter arbiter;
 
     private void Awake()
     {

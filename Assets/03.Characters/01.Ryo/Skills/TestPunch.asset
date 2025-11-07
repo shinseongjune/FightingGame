@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a035117b5aaf5640817826b316697f1, type: 3}
+  m_Name: TestPunch
+  m_EditorClassIdentifier: 
+  skillName: TestPunch
+  description: Test Basic Punch
+  conditions:
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 1
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 6
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 7
+  - currentSkill: {fileID: 0}
+    currentCharacterState: 18
+  command:
+    inputData:
+    - direction: 0
+      attack: 1
+      backCharge: 0
+      downCharge: 0
+      isUsed: 0
+      tick: 0
+    isStrict: 0
+    maxFrameGap: 4
+  damageOnHit: 300
+  hitstunDuration: 60
+  blockstunDuration: 4
+  push:
+    hitDistance: 0.45
+    hitDurationFrames: 8
+    guardDistance: 0.3
+    guardDurationFrames: 6
+    airHitDistance: 0.35
+    airHitDurationFrames: 6
+    easingType: 0
+  knockdown:
+    mode: 0
+    popUpApexHeight: 0.5
+    downFrames: 40
+    slideDistance: 0
+    slideDurationFrames: 8
+    techable: 1
+  driveGaugeChargeAmount: 10
+  saGaugeChargeAmount: 15
+  hitLevel: 0
+  animationClipName: TestPunch
+  boxLifetimes:
+  - startFrame: 6
+    endFrame: 10
+    type: 1
+    box:
+      center: {x: 0.4, y: 1.1}
+      size: {x: 1, y: 0.3}
+    incrementAttackInstance: 0
+  rehitCooldownFrames: 0
+  throwAnimationClipName: 
+  beingThrownAnimationClipName: 
+  skillFlag: 0
+  throwCfg:
+    impactFrame: 0
+    releaseFrame: 0
+    launchVelocity: {x: 0, y: 0}
+    damage: 0
+    postHitstunFrames: 0
+    hardKnockdown: 0
+    holdAnchorIndex: 0
+    comboLockFrames: 0
+    useAttachFollow: 0
+  spawnsProjectiles: 0
+  projectileSpawns: []
+  startVfxKey: 
+  hitVfxKey: 
+  guardVfxKey: 
+  fxCues: []
+  startSfxKey: TestPunchStart
+  hitSfxKey: TestPunchHit
+  guardSfxKey: 
+  sfxCues: []
