@@ -6316,7 +6316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51277abde6b096428317b0514fe5633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: 
+  characterName: "\uB8CC"
   phys: {fileID: 0}
   fsm: {fileID: 0}
   input: {fileID: 0}
@@ -6471,20 +6471,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleBody:
-    center: {x: 0, y: 0}
-    size: {x: 0, y: 0}
+    center: {x: 0, y: 0.4}
+    size: {x: 0.4, y: 0.8}
   crouchBody:
-    center: {x: 0, y: 0}
-    size: {x: 0, y: 0}
+    center: {x: 0, y: 0.25}
+    size: {x: 0.4, y: 0.5}
   jumpBody:
-    center: {x: 0, y: 0}
-    size: {x: 0, y: 0}
+    center: {x: 0, y: 1.4}
+    size: {x: 0.4, y: 1}
   downBody:
-    center: {x: 0, y: 0}
-    size: {x: 0, y: 0}
-  idleHurts: []
-  crouchHurts: []
-  jumpHurts: []
+    center: {x: 0, y: 0.2}
+    size: {x: 1, y: 0.2}
+  idleHurts:
+  - center: {x: 0, y: 0.6}
+    size: {x: 0.6, y: 1.4}
+  crouchHurts:
+  - center: {x: 0, y: 0.3}
+    size: {x: 0.6, y: 0.7}
+  jumpHurts:
+  - center: {x: 0, y: 1.2}
+    size: {x: 0.6, y: 1.4}
   idleWhiffs: []
   crouchWhiffs: []
   jumpWhiffs: []
