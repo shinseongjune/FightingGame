@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 0d609dc872291d44a9eed5b7094cd319
   m_SerializeEntries:
+  - m_GUID: 01ee7baa4ff1c424fbd25cb8ab117d50
+    m_Address: Ryo_Knockdown_Ground
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02fcd49885ff3cf4c89a86e2635f885f
+    m_Address: Ryo/Lose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 03ce7e14c802fe44884ee2716b5c1158
     m_Address: Portrait/TestMan2
     m_ReadOnly: 0
@@ -22,6 +32,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 043306c38864a2f449f6fef4972ddf6d
     m_Address: TestMan2/TestJumpF
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0744cedb6592d984a843684a09c7d954
+    m_Address: Ryo/Knockdown
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08511094b00bd5f49ad7343c0c5541b4
+    m_Address: Ryo/DriveParryLoop
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -37,6 +57,21 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0e0004b0f72e10e478f4b34368656bec
     m_Address: TestMan2/TestLose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 115dffd4ed176f7418a3207caa825a0a
+    m_Address: Ryo/WakeUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16e0c483935fb3c42b749ee005790065
+    m_Address: Ryo/WalkF
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f536868e6699824ca5ee36ff98b767b
+    m_Address: Ryo/JumpF
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -85,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e04942e1cb10ec49a99fe78f89af6db
+    m_Address: Ryo/DriveParryStart
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4a794a594a2305841aac72d4e79181f8
     m_Address: TestMan2/TestJumpUp
     m_ReadOnly: 0
@@ -97,6 +137,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4c188c390b9bd864b8c4374fa346715f
     m_Address: TestMan2/TestPreBattle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cf67f38a6612154f98a47bea3a808c7
+    m_Address: Ryo/DriveParryEnd
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -120,6 +165,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cd1e40f47d7e6040bc7798c88854637
+    m_Address: Ryo/WalkB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5fa1637a73934434a8dece05a591343d
     m_Address: TestMan2/TestThrown
     m_ReadOnly: 0
@@ -130,6 +180,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ae4697e2c987be4b9293243c66184da
+    m_Address: Ryo/CrouchHit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dba25c7a32ce6a4bb00b3c4ab643ae1
+    m_Address: Ryo/CrouchGuard
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 79d72fc824999254aa53bcfd705bc335
     m_Address: TestMan/TestDriveImpact
     m_ReadOnly: 0
@@ -137,6 +197,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7c9c488a04338ef4caa74480f21a69f1
     m_Address: TestMan/TestJumpB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f56e2cffce8ddc4dbcbb0677414977f
+    m_Address: Ryo/PreBattle
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -172,6 +237,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 96c7e1f8733f45b4ca981c43f15800d6
     m_Address: TestMan/TestWalkB
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d649c750e1dc604fb9b471d41b3d60f
+    m_Address: Ryo/JumpB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -220,13 +290,28 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5c50be326fefad498699af6fe73024f
+    m_Address: Ryo/Fall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b8fcfcbc7a07daf4e9b002ad2a33d0f7
     m_Address: TestMan2/TestJumpB
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdd42035c9af6614b8c316a9ade58c74
+    m_Address: Ryo/DriveImpact
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: be6a9a005a3a1c74ab3d57540426046b
     m_Address: TestMan/TestWin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf3312d34b8ef1a46a8780e29723d517
+    m_Address: Ryo/Win
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -257,6 +342,26 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: da87f57b09bdd01448e3e51e0032292e
     m_Address: Illust/TestMan
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: def2a43b0fe50854dab4eb7a0a134865
+    m_Address: Ryo/GroundHit
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e19d7d082c6c4a14f85a94e8e65f2f45
+    m_Address: Ryo/Crouch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3713353a18948d4d90c7c8b6008a3e8
+    m_Address: Ryo/Land
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5b27fc10a1c9f4429fc46d6c4728297
+    m_Address: Ryo/JumpUp
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
