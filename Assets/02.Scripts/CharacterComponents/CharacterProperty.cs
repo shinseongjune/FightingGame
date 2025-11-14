@@ -32,6 +32,7 @@ public enum CharacterStateTag
     ForcedAnimation,
 }
 
+[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(AnimationPlayer))]
 [RequireComponent(typeof(CharacterAnimationConfig))]
 [RequireComponent(typeof(BoxPresetApplier))]
